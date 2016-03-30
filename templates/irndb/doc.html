@@ -1,84 +1,46 @@
 {% extends "irndb/base.html" %}
 {% block title %}Documentation{% endblock %}
 
-{% load static %}
+{% load staticfiles %}
 {% block content %}
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+});
+</script>
 
 <div class="row">
  <div class="col-md-12">
    <h3 class="page-header">Documentation</h3>
-   <!-- Nav tabs -->
-   <ul class="nav nav-tabs">
-     <li class="active"><a href="#overview" data-toggle="tab">Overview</a>
-     </li>
-     <li><a href="#desc" data-toggle="tab">Description</a>
-     </li>
-     <li><a href="#resources" data-toggle="tab">Resources</a>
-     </li>
-     <li><a href="#stats" data-toggle="tab">Statistics</a>
-     </li>
-   </ul>
-       
-   <!-- Tab panes -->
-   <div class="tab-content">
-     <div class="tab-pane fade in active" id="overview">
-       <h4>Overview Tab</h4>
-       <p>Lorem ipsum dolor sit amet, consectetur
-         adipisicing elit, sed do eiusmod tempor
-         incididunt ut labore et dolore magna
-         aliqua. Ut enim ad minim veniam, quis
-         nostrud exercitation ullamco laboris nisi ut
-         aliquip ex ea commodo consequat. Duis aute
-         irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla
-         pariatur. Excepteur sint occaecat cupidatat
-         non proident, sunt in culpa qui officia
-         deserunt mollit anim id est laborum.</p>
-     </div>
-     <div class="tab-pane fade" id="desc">
-       <h4>Description Tab</h4>
-       <p>Lorem ipsum dolor sit amet, consectetur
-         adipisicing elit, sed do eiusmod tempor
-         incididunt ut labore et dolore magna
-         aliqua. Ut enim ad minim veniam, quis
-         nostrud exercitation ullamco laboris nisi ut
-         aliquip ex ea commodo consequat. Duis aute
-         irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla
-         pariatur. Excepteur sint occaecat cupidatat
-         non proident, sunt in culpa qui officia
-         deserunt mollit anim id est laborum.</p>
-     </div>
-     <div class="tab-pane fade" id="resources">
-       <h4>Resources Tab</h4>
-       <p>Lorem ipsum dolor sit amet, consectetur
-         adipisicing elit, sed do eiusmod tempor
-         incididunt ut labore et dolore magna
-         aliqua. Ut enim ad minim veniam, quis
-         nostrud exercitation ullamco laboris nisi ut
-         aliquip ex ea commodo consequat. Duis aute
-         irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla
-         pariatur. Excepteur sint occaecat cupidatat
-         non proident, sunt in culpa qui officia
-         deserunt mollit anim id est laborum.</p>
-         </div>
-     <div class="tab-pane fade" id="stats">
-       <h4>Statistics Tab</h4>
-       <p>Lorem ipsum dolor sit amet, consectetur
-         adipisicing elit, sed do eiusmod tempor
-         incididunt ut labore et dolore magna
-         aliqua. Ut enim ad minim veniam, quis
-         nostrud exercitation ullamco laboris nisi ut
-         aliquip ex ea commodo consequat. Duis aute
-         irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla
-         pariatur. Excepteur sint occaecat cupidatat
-         non proident, sunt in culpa qui officia
-         deserunt mollit anim id est laborum.</p>
-     </div>
-   </div>
- 
+    <div id="tabsInfo">
+      <ul>
+        <li><a href="{% url 'irndb:doc_url_name' %}?tab=1">Overview</a></li>
+        <li><a href="{% url 'irndb:doc_url_name' %}?tab=2">Description</a></li>
+        <li><a href="{% url 'irndb:doc_url_name' %}?tab=3">Resources</a></li>
+        {% comment %}
+        <li><a href="{% url 'irndb:doc_url_name' %}?tab=4">Statistics</a></li>
+        {% endcomment %}
+      </ul>
+    </div> <!-- end tabs-->
  </div>
  <!-- /.col-lg-12 -->
 </div>

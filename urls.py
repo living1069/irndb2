@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'tables/$', views.tables_method, name='tables_url_name'),
     url(r'charts/$', views.charts_method, name='charts_url_name'),                   
     url(r'search/$', views.search_method, name='search_url_name'),
+    url(r'browse/$', views.browse_method, name='browse_url_name'),
     # redirect non-matching urls to home/
     url(r'^.*$', RedirectView.as_view(url='home/', permanent=False), name='index'), 
 )

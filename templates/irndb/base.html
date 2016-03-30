@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--
+{% comment %}
 All js and css component should be in the DJANGO app 'static/irndb' folder
-Replace in the code below "irndb" with the appname
--->
+{% endcomment %}
 
 {% load staticfiles %}
 
@@ -31,9 +30,6 @@ Replace in the code below "irndb" with the appname
     <!-- DataTables Responsive CSS -->
     <!--<link href="{% static 'irndb/bower_components/datatables-responsive/css/responsive.dataTables.scss' %}" rel="stylesheet">-->
 
-    <!-- Custom CSS -->
-    <link href="{% static 'irndb/dist/css/app.css' %}" rel="stylesheet" type="text/css">
-
     <!-- Custom Fonts -->
     <link href="{% static 'irndb/bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
@@ -46,7 +42,11 @@ Replace in the code below "irndb" with the appname
 
     <!-- jQuery -->
     <script src="{% static 'irndb/bower_components/jquery/dist/jquery.min.js' %}"></script>
-    
+
+    <!--JQUERY ui interface -->
+    <link rel="stylesheet" type="text/css" href="{% static 'irndb/dist/js/jquery-ui-1.11.2/jquery-ui.css' %}">
+    <script type="text/javascript" charset="utf8" src="{% static 'irndb/dist/js/jquery-ui-1.11.2/jquery-ui.min.js' %}"></script>
+ 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'irndb/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     
@@ -59,6 +59,9 @@ Replace in the code below "irndb" with the appname
     
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'irndb/dist/js/app.js' %}"></script>
+
+    <!-- Custom CSS -->
+    <link href="{% static 'irndb/dist/css/app.css' %}" rel="stylesheet" type="text/css">
     
 </head>
 
@@ -75,6 +78,7 @@ Replace in the code below "irndb" with the appname
 {% url 'irndb:tables_url_name' as tables %}
 {% url 'irndb:charts_url_name' as charts %}
 {% url 'irndb:search_url_name' as search %}
+{% url 'irndb:browse_url_name' as browse %}
 
 <body>
   <div id="wrapper">
@@ -139,31 +143,49 @@ Replace in the code below "irndb" with the appname
               <a href="{{ charts }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
             </li>
             <li>
-              <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+              <a href="#"><img src="{% static 'irndb/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="#">Second Level Item</a>
+                  <a href="{{ browse }}?type=mirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Second Level Item</a>
+                  <a href="#">Pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> piRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse }}?type=pirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Third Level <span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a href="#">Third Level Item</a>
-                    </li>
-                    <li>
-                      <a href="#">Third Level Item</a>
-                    </li>
-                    <li>
-                      <a href="#">Third Level Item</a>
-                    </li>
-                    <li>
-                      <a href="#">Third Level Item</a>
-                    </li>
-                  </ul>
-                  <!-- /.nav-third-level -->
+                  <a href="#">Pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> lncRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse }}?type=lncrna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="#">Pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></i> targets<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse }}?type=target">Browse/search</a>
+                </li>
+                <li>
+                  <a href="#">Pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -192,7 +214,7 @@ Replace in the code below "irndb" with the appname
           <div class="col-lg-12 text-right">
             <hr>
             <p><a href="http://sschmeier.com"><i class="fa fa-home
-            fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2016 | v0.1</p>
+            fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.3.7</p>
           </div>
         </div>
         <!-- ./Footer row -->

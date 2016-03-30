@@ -1,0 +1,392 @@
+{% extends "irndb/base.html" %}
+{% block title %}Documentation{% endblock %}
+
+{% load static %}
+{% block content %}
+
+
+<style>
+#table-5 {
+	background-color: #f5f5f5;
+	padding: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #ebebeb;
+    width: 100%;
+}
+
+#table-5 a {
+    color: #1E5E9A;
+}
+#table-5 a:hover {
+    color: #4a7eae;
+}
+
+#table-5 td, #table-5 th {
+	padding: 1px 5px;
+}
+#table-5 thead {
+	font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+	text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+#table-5 th {
+	text-align: left;
+	border-bottom: 1px solid #fff;
+}
+#table-5 td {
+	font-size: 14px;
+}
+
+#table-5 td.h {
+    font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+    text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+
+#table-5 td:hover {
+	background-color: #f5f5f5;
+}
+</style>
+
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+});
+</script>
+
+<div class="row">
+ <div class="col-md-12">
+   <h3 class="page-header">Documentation</h3>
+
+<div id="tabsInfo"> <!-- 1 -->
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="{% url 'irndb:doc_url_name' %}?type=d">Description</a></li>
+    <li><a href="#resources">Resources</a></li>
+    {% comment %}
+    <li><a href="{% url 'irndb:doc' %}?type=s">Statistics</a></li>
+    {% endcomment %}
+  </ul>
+  <div id="overview">
+    <p>
+    The database for immunologically relevant noncoding-RNA (IRNdb) was developed foremost to aid our research into microRNA-regulated and lncRNA-regulated processes during murine tuberculosis infection. However, microRNAs in particular influence a wide variety of biological processes and as such may influence many pathways of the immune system. Thus, we present IRNdb to the wider research community as a tool to harness information on microRN-, piRNA-, and lncRNA-regulation in immunological research.
+    </p>
+    <p>
+    IRNdb combines information about <b>murine</b> microRNA/piRNA/lncRNA=>target regulation
+    with information about the targets themselves, e.g. relevance to
+    immunological processes, pathways, Gene Ontology terms as well as a variety
+    of immunologically driven experiments. This is done to develop an understanding of the influence of the different RNA classes on the immune system. In IRNdb we focus on target
+    genes with known immunological relevance in mouse and/or human that we mined from several sources.
+    </p>
+    {% comment %}
+    <p>
+    In IRNdb, one can browse <a class="m1" href="{% url 'irndb:mb' %}" title="Browse miRNAs"> microRNAs</a> / <a class="m1" href="{% url 'irndb:pirnab' %}" title="Browse piRNAs">piRNAs</a> / <a class="m1" href="{% url 'irndb:lb' %}" title="Browse lncRNAs">lncRNAs</a> or particular <a class="t1" href="{% url 'irndb:tb' 'A' %}" title="Browse target genes">targets</a> of interest. A researcher is able to browse pathways of interest for targets that are regulated by RNAs. There is a lot of information available for target geness, e.g. pathway information, gene ontology term associations, expression in biological/immunological-relevant experiments. Finally, we include our data on murine time-course tuberculosis infection.
+    </p>
+    {% endcomment %}
+  </div>
+
+
+  <div id="resources">
+
+    <h4>
+     microRNA target information
+    </h4>
+    <table id="table-5">
+      <tbody>
+        <thead>
+        <th width="200px">Name</th>
+        <th>Description</th>
+        <th width="120px">Date accessed</th>
+        <th width="20px">Cite</th>
+        </thead>
+        <tr>
+          <td><a href="http://mirtarbase.mbc.nctu.edu.tw/" title="miRTarBse">miRTarBase</a></td>
+          <td><b>Experimentally supported</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/24304892" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="miRTarBase update 2014: an information resource for experimentally validated miRNA-target interactions. Nucleic Acids Res. 2014 Jan;42(Database issue):D78-85." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://mirecords.biolead.org/" title="miRecords">miRecords</a></td>
+          <td><b>Experimentally supported</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/18996891" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="miRecords: an integrated resource for microRNA-target interactions Nucleic Acids Res. 2009 Jan;37(Database issue):D105-10." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://diana.imis.athena-innovation.gr/DianaTools/index.php?r=microT_CDS/index" title="DIANA microT-CDS">DIANA microT-CDS</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23680784" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="DIANA-microT web server v5.0: service integration into miRNA functional analysis workflows. Nucleic Acids Res. 2013 Jul;41(Web Server issue):W169-73." /></a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="http://www.mirz.unibas.ch/ElMMo3/" title="ElMMo3">ElMMo3</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/17331257" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Inference of miRNA targets using evolutionary conservation and pathway analysis. BMC Bioinformatics. 2007 Mar 1;8:69." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.ebi.ac.uk/enright-srv/microcosm/htdocs/targets/v5/" title="MicroCosm">MicroCosm</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/14709173" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="MicroRNA targets in Drosophila. Genome Biol. 2003;5(1):R1. Epub 2003 Dec 12." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.microrna.org/microrna/" title="microRNA.org">microRNA.org</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/18158296" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="The microRNA.org resource: targets and expression. Nucleic Acids Res. 2008 Jan;36(Database issue):D149-53." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://mirdb.org/miRDB/" title="http://mirdb.org/miRDB/">miRDB</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25378301" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="miRDB: an online resource for microRNA target prediction and functional annotations. Nucleic Acids Res. 2015 Jan;43(Database issue):D146-52. q" /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://mirnamap.mbc.nctu.edu.tw/" title="miRNAMap2">miRNAMap2</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/18029362" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="miRNAMap 2.0: genomic maps of microRNAs in metazoan genomes. Nucleic Acids Res. 2008 Jan;36(Database issue):D165-9." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://dorina.mdc-berlin.de" title="PicTar2">PicTar2</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25416797" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="DoRiNA 2.0--upgrading the doRiNA database of RNA interactions in post-transcriptional regulation. Nucleic Acids Res. 2015 Jan;43(Database issue):D160-7." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://genie.weizmann.ac.il/pubs/mir07/" title="PITA">PITA</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/17893677" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="The role of site accessibility in microRNA target recognition. Nat Genet. 2007 Oct;39(10):1278-84." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.targetscan.org/mmu_61/" title="TargetScanMouse">TargetScanMouse</a></td>
+          <td><b>Predicted</b> microRNA target interactions.</td>
+          <td>Jan 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/17612493" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="MicroRNA targeting specificity in mammals: determinants beyond seed pairing. Mol Cell. 2007 Jul 6;27(1):91-105." /></a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>
+     lncRNA target information
+    </h4>
+    <table id="table-5">
+      <tbody>
+        <thead>
+        <th width="200px">Name</th>
+        <th>Description</th>
+        <th width="120px">Date accessed</th>
+        <th width="20px">Cite</th>
+        </thead>
+        <tr>
+          <td><a href="http://www.cuilab.cn/lncrnadisease" title="LncRNADisease">LncRNADisease</a></td>
+          <td><b>Experimentally supported</b> lncRNA target interactions.</td>
+          <td>October 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/23175614" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="LncRNADisease: a database for long-non-coding RNA-associated diseases. Nucleic Acids Res. 2013 Jan 1;41(D1):D983-6. " /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.lncrna2target.org" title="LncRNA2Target">LncRNA2Target</a></td>
+          <td><b>Experimentally supported</b> lncRNA target interactions.</td>
+          <td>October 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25399422"
+     alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}"
+     title="LncRNA2Target: a database for differentially expressed genes after lncRNA knockdown or overexpression. Nucleic Acids Res. 2015 Jan;43(Database issue):D193-6." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://bioinformatics.ustc.edu.cn/lncreg/" title="LncReg">LncReg</a></td>
+          <td><b>Experimentally supported</b> lncRNA target interactions.</td>
+          <td>October 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/26363021"
+     alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="LncReg: a reference resource for lncRNA-associated regulatory networks. Database (Oxford). 2015 Sep 10;2015." /></a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>
+     piRNA target information
+    </h4>
+    <table id="table-5">
+      <tbody>
+        <thead>
+        <th width="200px">Name</th>
+        <th>Description</th>
+        <th width="120px">Date accessed</th>
+        <th width="20px">Cite</th>
+        </thead>
+        <tr>
+          <td><a href="http://regulatoryrna.org/database/piRNA/" title="piRBase">piRBase</a></td>
+          <td><b>Experimentally supported</b> piRNA target interactions.</td>
+          <td>October 2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25425034" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="piRBase: a web resource assisting piRNA functional study. Database (Oxford). 2014 Nov 25;2014:bau110." /></a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>
+     Immunological gene information
+    </h4>
+    <table id="table-5">
+      <tbody>
+       <thead>
+        <th width="200px">Name</th>
+        <th>Description</th>
+        <th width="120px">Date accessed</th>
+        <th width="20px">Cite</th>
+        </thead>
+        <tr>
+          <td><a href="http://www.innatedb.com/">InnateDB</a></td>
+          <td>InnateDB contains <b>mouse</b> genes that play role in immunological processes mined from literature. This collection of genes, together with the <a href="http://www.septicshock.org/">SepticShock</a> genes (see below), are the core of the mouse immunological gene set. All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23180781" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="InnateDB: systems biology of innate immunity and beyond--recent updates and continuing curation. Nucleic Acids Res. 2013 Jan;41(Database issue):D1228-33. doi: 10.1093/nar/gks1147. Epub 2012 Nov 24." /></a>
+          </td>
+
+        </tr>
+        <tr>
+          <td><a href="http://www.septicshock.org/">SepticShock</a></td>
+          <td>Contains <b>mouse</b> genes that play role in immunological processes. The list includes genes with potential relevance to macrophage response to microbial stimulation.</td>
+          <td>Nov 2014</td>
+          <td><a href="" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="" /></a></td>
+        </tr>
+        <tr>
+          <td><a href="https://immport.niaid.nih.gov/">ImmPort</a></td>
+          <td>The list of immunologically related genes in ImmPort is a collection of <b>human</b> genes, which was formed with the goal of retrieving all genes that have immune system-related functions. All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/24791905" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="ImmPort: disseminating data to the public for the future of immunology. Immunol Res. 2014 May;58(2-3):234-9. doi: 10.1007/s12026-014-8516-1." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://structure.bmc.lu.se/idbase/Immunome/index.php">Immunome database</a></td>
+          <td>Immunology-related <b>human</b> genes were collected from research articles, textbooks and electronic information sources. The list contains genes that are directly involved in immunological processes. All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/17294181" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Molecular characterization of the immune system: emergence of proteins, processes, and domains. Immunogenetics. 2007 May;59(5):333-48. Epub 2007 Feb 9." /></a> <br>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/17434156" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Immunome: a reference set of genes and proteins for systems biology of the human immune system. Cell Immunol. 2006 Dec;244(2):87-9. Epub 2007 Apr 16." /></a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href="http://www.innatedb.com/redirect.do?go=resourcesGeneLists">Immunogenetic Related Information Source</a></td>
+          <td>This gene list, of <b>human</b> immune genes (April 28, 2013), is derived from the IRIS online database of known defence genes (note that the IRIS database does not seem to be available anymore). All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/15780753" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="IRIS: a database surveying known human immune system genes. Genomics. 2005 Apr;85(4):503-11." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.innatedb.com/redirect.do?go=resourcesGeneLists">MAPK/NFKB network</a></td>
+          <td>This <b>human</b> gene list was derived from in house curation of the p38, ERK, JNK signalling pathways (Raymond Lo and Fiona Roche) and the NFKB transcriptional regulatory module (Jenn Gardy). It contains 761 genes (April 28, 2013); members of the TNF-alpha and IFN-alpha signalling pathway derived from Transpath data were also included. All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23180781" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="InnateDB: systems biology of innate immunity and beyond--recent updates and continuing curation. Nucleic Acids Res. 2013 Jan;41(Database issue):D1228-33. doi: 10.1093/nar/gks1147. Epub 2012 Nov 24." /></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>
+     General
+    </h4>
+    <table id="table-5">
+      <tbody>
+        <thead>
+        <th width="200px">Name</th>
+        <th>Description</th>
+        <th width="120px">Date accessed</th>
+        <th width="20px">Cite</th>
+        </thead>
+        <tr>
+          <td><a href="http://mirbase.org/" title="miRBase.org">miRBase</a></td>
+          <td>General information about microRNA.</td>
+          <td>Dec 2014</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/24275495" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="miRBase: annotating high confidence microRNAs using deep sequencing data. Nucleic Acids Res. 2014 Jan;42(Database issue):D68-73." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.ncbi.nlm.nih.gov/gene">NCBI gene</a></td>
+          <td>General information about target genes.</td>
+          <td>Dec 2014</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.wikipathways.org/index.php/WikiPathways">Wikipathways</a></td>
+          <td>Wikipathways information for target genes.</td>
+          <td>Nov 2014</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/22096230" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="WikiPathways: building research communities on biological pathways. Nucleic Acids Res. 2012 Jan;40(Database issue):D1301-7." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.kegg.jp/">KEGG: Kyoto Encyclopedia of Genes and Genomes</a></td>
+          <td>Pathway information for target genes.</td>
+          <td>Sep 2014</td>
+          <td><a href="" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="" /></a></td>
+        </tr><tr>
+          <td><a href="http://geneontology.org/">Gene Ontology</a></td>
+          <td>Biological processes and biological functions associated to target genes.</td>
+          <td>Nov 2014</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/10802651" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Gene ontology: tool for the unification of biology. The Gene Ontology Consortium. Nat Genet. 2000 May;25(1):25-9." /></a></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.broadinstitute.org/gsea/msigdb/">MSigDB</a></td>
+          <td>Information about <b>human</b> target gene differential expression in immunological experiments. The data is derived from multiple species and converted in MSigDB to human. All <b>human</b> genes were converted to <b>mouse</b> via <a href="http://www.ncbi.nlm.nih.gov/homologene">NCBI Homologene</a>.</td>
+          <td>Nov 2014</td>
+          <td>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/16199517" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005 Oct 25;102(43):15545-50." /></a> <br>
+            <a href=" http://www.ncbi.nlm.nih.gov/pubmed/21546393" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Molecular signatures database (MSigDB) 3.0. Bioinformatics. 2011 Jun 15;27(12):1739-40." /></a>
+          </td>
+        </tr>
+        <tr>
+          <td><a href=" http://www.sciencemag.org/content/347/6225/1010.full" title="Transcribed enhancers lead waves of coordinated transcription in transitioning mammalian cells. Science. 2015 Feb 27;347(6225):1010-4.">Tuberculosis dataset</a></td>
+          <td>Expression levels and fold-changes of target genes.</td>
+          <td>2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25678556" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="Transcribed enhancers lead waves of coordinated transcription in transitioning mammalian cells. Science. 2015 Feb 27;347(6225):1010-4." /></a></td>
+        </tr>
+        <tr>
+          <td>TFBS: <a href="https://www.encodeproject.org/search/?type=experiment&assay_term_name=ChIP-seq&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&target.investigated_as=transcription%20factor">Encode</a></td>
+          <td>Transcription factor binding sites using ChIP. We used the <a href="http://genome.ucsc.edu/cgi-bin/hgLiftOver">liftOver tool</a> to lift all coordinates to mm10.</td>
+          <td>2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/25409824" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="A comparative encyclopedia of DNA elements in the mouse genome. Nature. 2014 Nov 20;515(7527):355-64. doi: 10.1038/nature13992." /></a></td>
+        </tr>
+         <tr>
+          <td>TFBS: <a href="http://jilab.biostat.jhsph.edu/database/cgi-bin/hmChIP.pl">hmChIP</a></td>
+          <td>Transcription factor binding sites using ChIP. We used the <a href="http://genome.ucsc.edu/cgi-bin/hgLiftOver">liftOver tool</a> to lift all coordinates to mm10.</td>
+          <td>2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/21450710" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="hmChIP: a database and web server for exploring publicly available human and mouse ChIP-seq and ChIP-chip data. Bioinformatics. 2011 May 15;27(10):1447-8. doi: 10.1093/bioinformatics/btr156. Epub 2011 Mar 30." /></a></td>
+        </tr>
+         <tr>
+          <td>TFBS: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22940246">htChIP</a></td>
+          <td>Transcription factor binding sites using high-throughput ChIP (htChIP) from Garber et al. We used the <a href="http://genome.ucsc.edu/cgi-bin/hgLiftOver">liftOver tool</a> to lift all coordinates to mm10.</td>
+          <td>2015</td>
+          <td><a href="http://www.ncbi.nlm.nih.gov/pubmed/22940246" alt="Pubmed"><img src="{% static 'irndb/images/pubmed-small.png' %}" title="A high-throughput chromatin immunoprecipitation approach reveals principles of dynamic gene regulation in mammals. Mol Cell. 2012 Sep 14;47(5):810-22." /></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> <!-- end tabs-->
+
+ 
+ </div>
+ <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+
