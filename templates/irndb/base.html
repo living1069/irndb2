@@ -18,7 +18,7 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
     <!-- FAVICON -->
     <link rel="shortcut icon" href="{% static 'irndb/images/favicon.ico' %}">
 
-    <title>{% block title %}Home{% endblock %} - Testapp</title>
+    <title>{% block title %}Home{% endblock %} - IRNdb</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'irndb/bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
@@ -62,7 +62,7 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
 
     <!-- Custom CSS -->
     <link href="{% static 'irndb/dist/css/app.css' %}" rel="stylesheet" type="text/css">
-    
+ 
 </head>
 
 {% comment "Set app namespace" %}
@@ -79,6 +79,9 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
 {% url 'irndb:charts_url_name' as charts %}
 {% url 'irndb:search_url_name' as search %}
 {% url 'irndb:browse_url_name' as browse %}
+{% url 'irndb:browse_pw_url_name' as browse_pw %}
+
+
 
 <body>
   <div id="wrapper">
@@ -137,19 +140,13 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
               <a href="{{ contact }}"><i class="fa fa-envelope fa-fw"></i> Contact</a>
             </li>
             <li>
-              <a href="{{ tables }}"><i class="fa fa-table fa-fw"></i> Tables</a>
-            </li>
-            <li>
-              <a href="{{ charts }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
-            </li>
-            <li>
               <a href="#"><img src="{% static 'irndb/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
                   <a href="{{ browse }}?type=mirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Pathways</a>
+                  <a href="{{ browse_pw }}?type=mirna">Browse pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -161,7 +158,7 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
                   <a href="{{ browse }}?type=pirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Pathways</a>
+                  <a href="{{ browse_pw }}?type=pirna">Pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -173,7 +170,7 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
                   <a href="{{ browse }}?type=lncrna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Pathways</a>
+                  <a href="{{ browse_pw }}?type=lncrna">Pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -185,10 +182,16 @@ All js and css component should be in the DJANGO app 'static/irndb' folder
                   <a href="{{ browse }}?type=target">Browse/search</a>
                 </li>
                 <li>
-                  <a href="#">Pathways</a>
+                  <a href="{{ browse_pw }}?type=target">Pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="{{ tables }}"><i class="fa fa-table fa-fw"></i> Tables</a>
+            </li>
+            <li>
+              <a href="{{ charts }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
             </li>
           </ul>
         </div>

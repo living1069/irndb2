@@ -59,6 +59,21 @@ def browse_method(request):
         return render(request, "irndb/browse_pirna.html", context)
     else:
         return render(request, "irndb/home.html", context)
+
+def browse_pw_method(request):
+    context = {}
+    sType = request.GET.get('type', 'x')
+    context = {}
+    if sType == 'mirna':
+        return render(request, "irndb/browse_pw_mirna.html", context)
+    elif sType == 'target':
+        return render(request, "irndb/browse_pw_target.html", context)
+    elif sType == 'lncrna':
+        return render(request, "irndb/browse_pw_lncrna.html", context)
+    elif sType == 'pirna':
+        return render(request, "irndb/browse_pw_pirna.html", context)
+    else:
+        return render(request, "irndb/home.html", context)
     
 def tables_method(request):
     context = {}

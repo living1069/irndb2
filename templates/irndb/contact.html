@@ -11,7 +11,7 @@
    <div class="col-lg-8">
    <div class="well">
      <p>
-     The database is developed at the <a class="g" href="http://inms.massey.ac.nz">Institute of Natural and Mathematical Sciences</a> at <a href="http://massey.ac.nz">Massey University</a>.<br> If you have suggestions or concerns please contact us:
+     The database is developed at the <a href="http://inms.massey.ac.nz">Institute of Natural and Mathematical Sciences</a> at <a href="http://massey.ac.nz">Massey University</a>.<br> If you have suggestions or concerns please contact us:
      <br><br>
      </p>
      <p>
@@ -20,7 +20,7 @@
      <!--
      // Email obfuscator script 2.1 by Tim Williams, University of Arizona
      // Random encryption key feature by Andrew Moulden, Site Engineering Ltd
-   // This code is freeware provided these four comment lines remain intact
+     // This code is freeware provided these four comment lines remain intact
      // A wizard to generate this code is at http://www.jottings.com/obfuscator/
      { coded = "B.BOopwDw4@p8BBwm.8O.u2"
      key = "RuUmYwNFvhTs7cD45LxIjAflCdpPaME1o6BWOgzXnZy0e3bkHGJ8Kirt9VqQS2"
@@ -49,5 +49,12 @@
  <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+
+<!-- Enrichment analysis for gene sets with Enrichr js defined in app.js-->
+<a href="#" class='btn btn-primary btn-sm' role='button' onclick="enrich({list: ['Irf1\nAida\nAkt3\n'], popup: true, description: 'Targets of mir-X'});">Enrichr: Target enrichment analysis</a>
+
+
+
+
 
 {% endblock %}
