@@ -4,6 +4,8 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+{% load staticfiles %}
+
 body {
     background-color: #f8f8f8;
 }
@@ -353,6 +355,8 @@ table.dataTable thead .sorting:after {
     color: #df8a13;
 }
 
+
+/* SEB custom navbar color */
 .navbar-custom {
     margin-bottom: 0;
     border-radius: 0;
@@ -360,3 +364,128 @@ table.dataTable thead .sorting:after {
     background-color: #134569;
     color: #FFFFFF;
 }
+
+/* SEB jquey ui tabs */
+#tabsInfo { 
+    background: transparent; 
+    border: none; 
+} 
+#tabsInfo .ui-widget-header { 
+    background: transparent; 
+    border: none; 
+    border-bottom: 1px solid #c0c0c0;
+    -moz-border-radius: 0px; 
+    -webkit-border-radius: 0px; 
+    border-radius: 0px; 
+} 
+#tabsInfo .ui-tabs-nav .ui-state-default { 
+    background: transparent; 
+    border: none; */
+} 
+#tabsInfo .ui-tabs-nav .ui-state-active { 
+    background: transparent url({% static 'irndb/images/uiTabsArrow.png' %}) no-repeat bottom center; 
+    border: none;
+    /*background: #c0c0c0;*/
+} 
+#tabsInfo .ui-tabs-nav .ui-state-default a { 
+    color: #c0c0c0; 
+}
+#tabsInfo .ui-tabs-nav .ui-state-default a:hover { 
+    color: #acacac; 
+}
+#tabsInfo .ui-tabs-nav .ui-state-active a { 
+    color: #134569;
+    /*color: white;*/
+}
+#tabsInfo .ui-tabs-nav .ui-state-active a:hover { 
+    color: #134569;
+    /*color: white*/
+}
+
+/* SEB: table */
+#tableSeb1 {
+	background-color: #f8f8f8;
+	padding: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	/*border: 1px solid #ebebeb;*/
+    border: 1px solid #f8f8f8;
+    width: 100%;
+}
+#tableSeb1 a {
+    color: #1E5E9A;
+}
+#tableSeb1 a:hover {
+    color: #4a7eae;
+}
+#tableSeb1 td, #tableSeb1 th {
+	padding: 1px 5px;
+}
+#tableSeb1 thead {
+	font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+	text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+#tableSeb1 th {
+	text-align: left;
+	border-bottom: 1px solid #fff;
+}
+#tableSeb1 td {
+	font-size: 14px;
+}
+#tableSeb1 td.h {
+    font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+    text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+#tableSeb1 td:hover {
+	background-color: #f8f8f8;
+}
+
+/*SEB special link colors in ui */
+.ui-accordion-content a.g:link { color:#897f76;text-decoration:none; }
+.ui-accordion-content a.g:active { color:#897f76;text-decoration:none; }
+.ui-accordion-content a.g:visited {color:#897f76;text-decoration:none; }
+.ui-accordion-content a.g:hover { color:#b1a399;text-decoration:underline;}
+
+.ui-accordion-content a.m1:link { color:#993333;text-decoration:none; }
+.ui-accordion-content a.m1:active { color:#993333;text-decoration:none; }
+.ui-accordion-content a.m1:visited { color:#993333;text-decoration:none; }
+.ui-accordion-content a.m1:hover { color:#c65353;text-decoration:underline; }
+
+.ui-accordion-content a.t1:link { color:#375796;text-decoration:none; }
+.ui-accordion-content a.t1:active { color:#D79635;text-decoration:none; }
+.ui-accordion-content a.t1:visited {color:#375796;text-decoration:none; }
+.ui-accordion-content a.t1:hover { color:#4080bf;text-decoration:underline;}
+
+.ui-widget-content .ui-tabs-panel a.t1:link { color:#375796;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.t1:active { color:#D79635;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.t1:visited { color:#375796;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.t1:hover { color:#4080bf;text-decoration:underline; }
+
+.ui-widget-content .ui-tabs-panel a.g:link { color:#897f76;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.g:active { color:#897f76;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.g:visited { color:#897f76;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.g:hover { color:#b1a399;text-decoration:underline; }
+
+.ui-widget-content .ui-tabs-panel a.m1:link { color:#993333;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.m1:active { color:#993333;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.m1:visited { color:#993333;text-decoration:none; }
+.ui-widget-content .ui-tabs-panel a.m1:hover { color:#c65353;text-decoration:underline; }
+
+/* general link colors classes */
+a.g:link { color:#897f76;text-decoration:none; }
+a.g:active { color:#897f76;text-decoration:none; }
+a.g:visited {color:#897f76;text-decoration:none; }
+a.g:hover { color:#b1a399;text-decoration:underline;}
+
+a.m1:link { color:#993333;text-decoration:none; }
+a.m1:active { color:#993333;text-decoration:none; }
+a.m1:visited { color:#993333;text-decoration:none; }
+a.m1:hover { color:#c65353;text-decoration:underline; }
+
+a.t1:link { color:#375796;text-decoration:none; }
+a.t1:active { color:#D79635;text-decoration:none; }
+a.t1:visited {color:#375796;text-decoration:none; }
+a.t1:hover { color:#4080bf;text-decoration:underline;}

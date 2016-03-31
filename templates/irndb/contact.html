@@ -1,108 +1,60 @@
 {% extends "irndb/base.html" %}
 {% block title %}Contact{% endblock %}
 
-{% load static %}
+{% load staticfiles %}
 {% block content %}
 
 <div class="row">
- <div class="col-md-12">
+ <div class="col-lg-12">
    <h3 class="page-header">Contact</h3>
 
-   <div class="panel panel-default">
-     <div class="panel-heading">
-       Default Panel
-     </div>
-     <div class="panel-body">
-       <p>Lorem ipsum dolor sit amet, consectetur
-         adipiscing elit. Vestibulum tincidunt est vitae
-         ultrices accumsan. Aliquam ornare lacus adipiscing,
-         posuere lectus et, fringilla augue.</p>
-     </div>
-   </div>
+   <div class="col-lg-8">
+   <div class="well">
+     <p>
+     The database is developed at the <a href="http://inms.massey.ac.nz">Institute of Natural and Mathematical Sciences</a> at <a href="http://massey.ac.nz">Massey University</a>.<br> If you have suggestions or concerns please contact us:
+     <br><br>
+     </p>
+     <p>
+      <center>
+     <script type="text/javascript">
+     <!--
+     // Email obfuscator script 2.1 by Tim Williams, University of Arizona
+     // Random encryption key feature by Andrew Moulden, Site Engineering Ltd
+     // This code is freeware provided these four comment lines remain intact
+     // A wizard to generate this code is at http://www.jottings.com/obfuscator/
+     { coded = "B.BOopwDw4@p8BBwm.8O.u2"
+     key = "RuUmYwNFvhTs7cD45LxIjAflCdpPaME1o6BWOgzXnZy0e3bkHGJ8Kirt9VqQS2"
+     shift=coded.length
+     link=""
+     for (i=0; i<coded.length; i++) {
+       if (key.indexOf(coded.charAt(i))==-1) {
+        ltr = coded.charAt(i)
+        link += (ltr)
+       }
+       else {     
+        ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+        link += (key.charAt(ltr))
+       }
+      }
+     document.write("<a href='mailto:"+link+"' class='btn btn-primary btn' role='button'>Contact</a>")
+     }
+    //-->
+    </script><noscript>Sorry, you need Javascript on to email us.</noscript>
    
-   <!-- Accordion -->
-   <div class="panel-group" id="accordion">
-     <div class="panel panel-default">
-       <div class="panel-heading">
-         <h4 class="panel-title">
-           <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Collapsible Group Item #1</a>
-         </h4>
-       </div>
-       <div id="collapseOne" class="panel-collapse collapse in">
-         <div class="panel-body">
-           Lorem ipsum dolor sit amet,
-           consectetur adipisicing elit, sed do
-           eiusmod tempor incididunt ut labore
-           et dolore magna aliqua. Ut enim ad
-           minim veniam, quis nostrud
-           exercitation ullamco laboris nisi ut
-           aliquip ex ea commodo
-           consequat. Duis aute irure dolor in
-           reprehenderit in voluptate velit
-           esse cillum dolore eu fugiat nulla
-           pariatur. Excepteur sint occaecat
-           cupidatat non proident, sunt in
-           culpa qui officia deserunt mollit
-           anim id est laborum.
-         </div>
-       </div>
-     </div>
-     <div class="panel panel-default">
-       <div class="panel-heading">
-         <h4 class="panel-title">
-           <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Collapsible Group Item #2</a>
-         </h4>
-       </div>
-       <div id="collapseTwo" class="panel-collapse collapse">
-         <div class="panel-body">
-           Lorem ipsum dolor sit amet,
-           consectetur adipisicing elit, sed do
-           eiusmod tempor incididunt ut labore
-           et dolore magna aliqua. Ut enim ad
-           minim veniam, quis nostrud
-           exercitation ullamco laboris nisi ut
-           aliquip ex ea commodo
-           consequat. Duis aute irure dolor in
-           reprehenderit in voluptate velit
-           esse cillum dolore eu fugiat nulla
-           pariatur. Excepteur sint occaecat
-           cupidatat non proident, sunt in
-           culpa qui officia deserunt mollit
-           anim id est laborum.
-         </div>
-       </div>
-     </div>
-     <div class="panel panel-default">
-       <div class="panel-heading">
-         <h4 class="panel-title">
-           <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Collapsible Group Item #3</a>
-         </h4>
-       </div>
-       <div id="collapseThree" class="panel-collapse collapse">
-         <div class="panel-body">
-           Lorem ipsum dolor sit amet,
-           consectetur adipisicing elit, sed do
-           eiusmod tempor incididunt ut labore
-           et dolore magna aliqua. Ut enim ad
-           minim veniam, quis nostrud
-           exercitation ullamco laboris nisi ut
-           aliquip ex ea commodo
-           consequat. Duis aute irure dolor in
-           reprehenderit in voluptate velit
-           esse cillum dolore eu fugiat nulla
-           pariatur. Excepteur sint occaecat
-           cupidatat non proident, sunt in
-           culpa qui officia deserunt mollit
-           anim id est laborum.
-         </div>
-       </div>
-     </div>
-     </div>
-
+      </center>
+     </p>
+   </div> <!-- well -->
+   </div> <!-- /.col-lg-8 -->
  </div>
  <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 
-{% endblock %}
+<!-- Enrichment analysis for gene sets with Enrichr js defined in app.js-->
+<a href="#" class='btn btn-primary btn-sm' role='button' onclick="enrich({list: ['Irf1\nAida\nAkt3\n'], popup: true, description: 'Targets of mir-X'});">Enrichr: Target enrichment analysis</a>
 
+
+
+
+
+{% endblock %}
