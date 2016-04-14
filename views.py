@@ -10,6 +10,18 @@ def search_method(request):
             context["search_term"] = query
             # use "query" to look up things and store in "result"
             context["search_results"] = ["Result1", "Result2"]
+
+            ## context["search_term"] = query
+            ## # use "query" to look up things and store in "result"
+            ## aE = Entity.objects.filter( Q(name__icontains=query) | \
+            ##                             Q(symbol__icontains=query) | \
+            ##                             Q(id__icontains=query) | \
+            ##                             Q(alt__icontains=query) | \
+            ##                             Q(uniprot__upid__icontains=query) | \
+            ##                             Q(uniprot__upacc__icontains=query) \
+            ##                             ).values_list('id', 'symbol', 'name','species','alt','type','uniprot__upid', 'uniprot__upacc').distinct()
+
+            
         else:
             context["search_term"] = "No term entered."
             context["search_results"] = []
