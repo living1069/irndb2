@@ -1,5 +1,8 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
+from django.db.models import Q, F, Count
+
+import collections
 
 # Create your views here.
 def search_method(request):
@@ -29,7 +32,8 @@ def search_method(request):
         return render(request, 'irndb/search.html', context)
     # if not GET method return homepage
     else:
-        return render(request, "irndb/home.html", context)
+        context["error"] = 'Not a GET request.'
+        return render(request, "irndb/404.html", context)
 
 def home_method(request):
     context = {}
@@ -55,7 +59,8 @@ def doc_method(request):
     elif sTab == '4':
         return render(request, "irndb/doc_stats.html", context)    
     else:
-        return render(request, "irndb/doc.html", context)
+        context["error"] = 'Tab "%s" not known.'%sTab
+        return render(request, "irndb/404.html", context)
 
 def browse_method(request):
     context = {}
@@ -70,29 +75,22 @@ def browse_method(request):
     elif sType == 'pirna':
         return render(request, "irndb/browse_pirna.html", context)
     else:
-        return render(request, "irndb/home.html", context)
+        context["error"] = 'Type "%s" not known.'%sType
+        return render(request, "irndb/404.html", context)
 
-def browse_pw_method(request):
+def browse_pw_method(request, pid):
     context = {}
     sType = request.GET.get('type', 'x')
     context = {}
     if sType == 'mirna':
-        return render(request, "irndb/browse_pw_mirna.html", context)
+        return render(request, "irndb/browse_pw.html", context)
     elif sType == 'target':
-        return render(request, "irndb/browse_pw_target.html", context)
+        return render(request, "irndb/browse_pw.html", context)
     elif sType == 'lncrna':
-        return render(request, "irndb/browse_pw_lncrna.html", context)
+        return render(request, "irndb/browse_pw.html", context)
     elif sType == 'pirna':
-        return render(request, "irndb/browse_pw_pirna.html", context)
+        return render(request, "irndb/browse_pw.html", context)
     else:
-        return render(request, "irndb/home.html", context)
-    
-def tables_method(request):
-    context = {}
-    return render(request, "irndb/tables.html", context)
-
-def charts_method(request):
-    context = {}
-    return render(request, "irndb/charts.html", context)
-
+        context["error"] = 'Type "%s" not known.'%sType
+        return render(request, "irndb/404.html", context)
 
