@@ -5,7 +5,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic.base import RedirectView
 from django.views.static import serve
 
-from irndb import views
+from irndb2 import views
 
 urlpatterns = [
     url(r'home/$', views.home_method, name='home_url_name'),
