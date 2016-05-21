@@ -1,0 +1,113 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Home{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+<!-- Morris Charts CSS -->
+<link href="{% static 'irndb2/bower_components/morrisjs/morris.css' %}" rel="stylesheet">
+<!-- Morris Charts JavaScript -->
+<script src="{% static 'irndb2/bower_components/raphael/raphael-min.js' %}"></script>
+<script src="{% static 'irndb2/bower_components/morrisjs/morris.min.js' %}"></script>
+
+<div class="row">
+ <div class="col-lg-12">
+   <h3 class="page-header">IRNdb - Database of immunologically relevant non-coding RNAs</h3>
+ </div>
+</div>
+<!-- /.row -->
+
+<div class="row">
+ <div class="col-lg-8">
+    <div class="panel panel-default">
+     <div class="panel-heading">Information</div>
+     <div class="panel-body" style="min-height: 180px;">
+     <p>
+      IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for mouse as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
+     </p>
+     <p>
+     IRNdb combines <a class="m1" href="{% url 'irn:mb' %}" title="Browse miRNAs">{{ mtotal }} miRNAs</a>, <a class="m1" href="{% url 'irn:pirnab' %}" title="Browse piRNAs"> {{ ptotal }} piRNAs</a>, <a class="m1" href="{% url 'irn:lb' %}" title="Browse lncRNAs"> {{ ltotal }} lncRNAs</a> and <a class="t1" href="{% url 'irn:tb' 'A' %}" title="Browse immune targets"> {{ tHM }} immunologically relevant mouse+human targets</b></a>.
+       </p>
+     </div>
+    </div>
+ </div><!-- /.col-lg-8 -->
+ 
+ <div class="col-lg-4">
+   <div class="panel panel-default">
+     <div class="panel-heading">Quick links</div>
+     <div class="panel-body" style="min-height: 180px;">
+       <p>
+       <b>Search</b> for <a class="t1" href="{% url 'irn:ts' %}" title="Search targets">target genes</a>.
+       </p>
+       <p>
+       <b>Browse/search</b> for <a class="m1" href="{% url 'irn:mb' %}" title="Search microRNAs">miRNAs</a>, <a class="m1" href="{% url 'irn:pirnab' %}" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{% url 'irn:lb' %}" title="Search lncRNAs">lncRNAs</a>.
+       </p>
+       <p>
+       <b>Browse pathways</b> targeted by <a class="m1" href="{% url 'irn:pb' %}" title="Search pathways"> miRNAs</a>, <a class="m1" href="{% url 'irn:pbp' %}" title="Search pathways"> piRNAs</a>, or <a class="m1" href="{% url 'irn:pbl' %}" title="Search pathways">lncRNAs</a>.<br/>
+       </p>
+     </div>
+    </div>
+  </div><!-- /.col-lg-4 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+ <div class="col-lg-8">
+  
+  <div class="panel panel-default">
+   <div class="panel-heading">Search IRNdb</div>
+   <div class="panel-body">
+     <!-- search bar -->
+     <form class="navbar-form" role="search" action="{{ search }}" method="GET">
+      <div class="input-group">
+       <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
+       <div class="input-group-btn">
+        <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button> 
+       </div>
+       </div>
+        &nbsp;&nbsp;GeneID, symbol, miRBaseAcc/ID, ... e.g. mmu-miR-18
+    </div>
+   <!-- /.panel-body -->
+  </div>
+  <!-- /.panel -->
+ </div>  <!-- /.col-lg-8 --> 
+ <div class="col-lg-4">
+  <div class="panel panel-default">
+   <div class="panel-heading">IRNdb entities</div>
+   <div class="panel-body" style="min-height: 350px; max-height:350px">
+    <div id="morris-donut-chart"></div>
+   </div>
+   <!-- /.panel-body -->
+  </div>
+  <!-- /.panel -->
+ </div>
+ <!-- /.col-lg-4 -->   
+</div>
+<!-- /.row -->
+
+<script>
+$(function() {
+ Morris.Donut({
+    element: 'morris-donut-chart',
+     data: [{
+      label: "Targets",
+      value: {{ tnum }}
+     },{
+      label: "miRNAs",
+      value: {{ mnum }}
+     }, {
+      label: "lncRNAs",
+      value: {{ lnum }}
+     }, {
+      label: "piRNAs",
+      value: {{ pnum }}
+     }],
+     resize: true
+ });
+
+});
+
+</script>
+
+
+{% endblock %}
+

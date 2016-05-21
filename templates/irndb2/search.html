@@ -1,0 +1,219 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Search{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+ <style>
+   #sebio1 { table-layout: fixed; }
+   #sebio2 { table-layout: fixed; }
+   #sebio3 { table-layout: fixed; }
+   #sebio4 { table-layout: fixed; }
+ </style>
+
+<div class="row">
+ <div class="col-lg-12">
+   <h3 class="page-header">Search results</h3>
+   <p>
+     {% if search_target %}
+     <div class="panel panel-info">
+       <div class="panel-heading">
+         Targets
+       </div>
+       <div class="panel-body">
+         <p>
+           <div class="dataTable_wrapper">
+             <table class="table table-condensed" id="sebio1">
+               <thead>
+                 <tr>
+                   <th title="Target symbol"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbol</th>
+                   <th title="Target name"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Name</th>
+                   <th title="Target geneid"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > GeneID</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {% for e in search_target %}
+                 <tr>
+                   <td><a class="t1" href="{% url 'irndb2:target_url_name' e.1 %}">{{ e.1 }}</a></td>
+                   <td>{{ e.2 }}</td>
+                   <td>{{ e.0 }}</td>
+                 </tr>
+                 {% endfor %}
+               </tbody>
+             </table> 
+             <!-- DataTables JavaScript -->
+             <script>
+               $(document).ready( function () {
+                  $('#sebio1').DataTable( {
+                      "columns": [
+                        {"width":"200px"},
+                        {"className":"text-left"}, 
+                        {"width":"90px"},
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+                  } );
+             </script>
+           </div>
+           <!-- /.table-responsive -->
+         </p>
+       </div>
+     </div>
+     {% endif %}
+    
+     {% if search_mirna %}
+     <div class="panel panel-danger">
+       <div class="panel-heading">
+         microRNAs
+       </div>
+       <div class="panel-body">
+         <p>
+
+  
+           <div class="dataTable_wrapper">
+             <table class="table table-condensed" id="sebio2">
+               <thead>
+                 <tr>
+                   <th title="microRNA name"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > Name</th>
+                   <th title="microRNA id"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > mirBase</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {% for e in search_mirna %}
+                 <tr>
+                   <td><a class="m1" href="{% url 'irndb2:mirna_url_name' e.2 %}">{{ e.2 }}</a></td>
+                   <td>{{ e.1 }}</td>
+                 </tr>
+                 {% endfor %}
+               </tbody>
+             </table> 
+             <!-- DataTables JavaScript -->
+             <script>
+               $(document).ready( function () {
+                  $('#sebio2').DataTable( {
+                      "columns": [
+                        {"width":"200px"},
+                        {"className":"text-left"}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+                  } );
+             </script>
+           </div>
+           <!-- /.table-responsive -->
+         </p>
+       </div>
+     </div>
+     {% endif %}
+     
+         
+     {% if search_lncrna %}
+     <div class="panel panel-warning">
+       <div class="panel-heading">
+         lncRNAs
+       </div>
+       <div class="panel-body">
+         <p>
+           <div class="dataTable_wrapper">
+             <table class="table table-condensed" id="sebio3">
+               <thead>
+                 <tr>
+                   <th title="lncRNA symbol"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Symbol</th>
+                   <th title="lncRNA name"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Name</th>
+                   <th title="lncRNA alias"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Alias</th>
+                 </tr>
+         </thead>
+               <tbody>
+                 {% for e in search_lncrna %}
+                 <tr>
+                   <td><a class="m1" href="{% url 'irndb2:lncrna_url_name' e.1 %}">{{ e.1 }}</a></td>
+                   <td>{{ e.3 }}</td>
+                   <td>{{ e.4 }}</td>
+                 </tr>
+                 {% endfor %}
+               </tbody>
+             </table> 
+             <!-- DataTables JavaScript -->
+             <script>
+               $(document).ready( function () {
+                  $('#sebio3').DataTable( {
+                      "columns": [
+                        {"width":"200px"},
+                        {"className":"text-left"}, 
+                        {"className":"text-left"}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+                  } );
+             </script>
+           </div>
+           <!-- /.table-responsive -->
+         </p>
+       </div>
+     </div>
+     {% endif %}
+
+     {% if search_pirna %}
+     <div class="panel panel-success">
+       <div class="panel-heading">
+         piRNAs
+       </div>
+       <div class="panel-body">
+         <p>
+           <div class="dataTable_wrapper">
+             <table class="table table-condensed" id="sebio4">
+               <thead>
+                 <tr>
+                   <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Name</th>
+                   <th title="piRNA alias"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Alias</th>
+                   <th title="piRNA accession"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Accession</th>
+             </tr>
+               </thead>
+               <tbody>
+                 {% for e in search_pirna %}
+                 <tr>
+                   <td><a class="m1" href="{% url 'irndb2:pirna_url_name' e.2 %}">{{ e.2 }}</a></td>
+                   <td>{{ e.1 }}</td>
+                   <td>{{ e.3 }}</td>
+                 </tr>
+                 {% endfor %}
+               </tbody>
+             </table> 
+             <!-- DataTables JavaScript -->
+             <script>
+               $(document).ready( function () {
+                  $('#sebio4').DataTable( {
+                      "columns": [
+                        {"width":"200px"},
+                        {"className":"text-left"}, 
+                        {"className":"text-left"}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+                  } );
+             </script>
+           </div>
+           <!-- /.table-responsive -->
+         </p>
+       </div>
+     </div>
+     {% endif %}
+
+         
+
+   
+ </div>
+ <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+

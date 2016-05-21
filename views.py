@@ -1,5 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
+from django.db.models import Q, F, Count
 import csv
 
 from irndb2.models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
@@ -12,18 +13,43 @@ def search_method(request):
         if query:
             context["search_term"] = query
             # use "query" to look up things and store in "result"
-            context["search_results"] = ["Result1", "Result2"]
-
+            
             ## context["search_term"] = query
             ## # use "query" to look up things and store in "result"
-            ## aE = Entity.objects.filter( Q(name__icontains=query) | \
-            ##                             Q(symbol__icontains=query) | \
-            ##                             Q(id__icontains=query) | \
-            ##                             Q(alt__icontains=query) | \
-            ##                             Q(uniprot__upid__icontains=query) | \
-            ##                             Q(uniprot__upacc__icontains=query) \
-            ##                             ).values_list('id', 'symbol', 'name','species','alt','type','uniprot__upid', 'uniprot__upacc').distinct()
+            res_target = Target.objects.filter( Q(tname__icontains=query) | \
+                                        Q(symbol__icontains=query) | \
+                                        Q(id__icontains=query)
+                                        ).values_list('id',
+                                                      'symbol',
+                                                      'tname').distinct()
 
+            res_mirna = Mirna.objects.filter( Q(mname__icontains=query) | \
+                                        Q(mirbase_id__icontains=query)
+                                        ).values_list('id',
+                                                      'mirbase_id',
+                                                      'mname').distinct()
+
+            res_lncrna = Lncrna.objects.filter( Q(lname__icontains=query) | \
+                                                Q(lsymbol__icontains=query) | \
+                                                Q(lalias__icontains=query) | \
+                                                Q(lgeneid__icontains=query)
+                                        ).values_list('id',
+                                                      'lsymbol',
+                                                      'lgeneid',
+                                                      'lname',
+                                                      'lalias').distinct()
+            res_pirna = Pirna.objects.filter( Q(pname__icontains=query) | \
+                                              Q(palias__icontains=query) | \
+                                              Q(paccession__icontains=query)
+                                        ).values_list('id',
+                                                      'palias',
+                                                      'pname',
+                                                      'paccession').distinct()
+
+            context["search_target"] = res_target
+            context["search_mirna"] = res_mirna
+            context["search_lncrna"] = res_lncrna
+            context["search_pirna"] = res_pirna
             
         else:
             context["search_term"] = "No term entered."
@@ -45,6 +71,62 @@ def home_method(request):
 def contact_method(request):
     context = {}
     return render(request, "irndb2/contact.html", context)
+
+def target_method(request, sym):
+    context = {}
+    a = Target.objects.filter(symbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
+        return render(request, "irndb2/404.html", context)
+    else:
+        obj = a[0]
+    
+    return render(request, "irndb2/target.html", context)
+
+def mirna_method(request, name):
+    context = {}
+    a = Mirna.objects.filter(mname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%name
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%name
+        return render(request, "irndb2/404.html", context)
+    else:
+        obj = a[0]
+    
+    return render(request, "irndb2/mirna.html", context)
+
+def lncrna_method(request, sym):
+    context = {}
+    a = Lncrna.objects.filter(lsymbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
+        return render(request, "irndb2/404.html", context)
+    else:
+        obj = a[0]
+    
+    return render(request, "irndb2/lncrna.html", context)
+
+def pirna_method(request, name):
+    context = {}
+    a = Pirna.objects.filter(pname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%name
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%name
+        return render(request, "irndb2/404.html", context)
+    else:
+        obj = a[0]
+    return render(request, "irndb2/pirna.html", context)
+
 
 def doc_method(request):
     context = {}

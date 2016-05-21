@@ -1,0 +1,48 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Documentation{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+});
+</script>
+
+<div class="row">
+ <div class="col-md-12">
+   <h3 class="page-header">Documentation</h3>
+    <div id="tabsInfo">
+      <ul>
+        <li><a href="{% url 'irndb2:doc_url_name' %}?tab=1">Overview</a></li>
+        <li><a href="{% url 'irndb2:doc_url_name' %}?tab=2">Description</a></li>
+        <li><a href="{% url 'irndb2:doc_url_name' %}?tab=3">Resources</a></li>
+        <li><a href="{% url 'irndb2:doc_url_name' %}?tab=4">Statistics</a></li>
+      </ul>
+    </div> <!-- end tabs-->
+ </div>
+ <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+
