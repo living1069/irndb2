@@ -80,9 +80,6 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
 {% url 'irndb2:charts_url_name' as charts %}
 {% url 'irndb2:search_url_name' as search %}
 {% url 'irndb2:browse_url_name' as browse %}
-{% url 'irndb2:browse_pw_url_name' as browse_pw %}
-
-
 
 <body>
   <div id="wrapper">
@@ -147,7 +144,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
                   <a href="{{ browse }}?type=mirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_pw }}?type=mirna">Browse pathways</a>
+                  <a href="{{ browse }}?type=mirna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -159,7 +156,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
                   <a href="{{ browse }}?type=pirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_pw }}?type=pirna">Pathways</a>
+                  <a href="{{ browse }}?type=pirna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -171,7 +168,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
                   <a href="{{ browse }}?type=lncrna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_pw }}?type=lncrna">Pathways</a>
+                  <a href="{{ browse }}?type=lncrna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -182,18 +179,22 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
                 <li>
                   <a href="{{ browse }}?type=target">Browse/search</a>
                 </li>
+		{% comment %}
                 <li>
-                  <a href="{{ browse_pw }}?type=target">Pathways</a>
+                  <a href="{{ browse }}?type=target&pw=1">Targeted pathways</a>
                 </li>
+		{% endcomment %}
               </ul>
               <!-- /.nav-second-level -->
             </li>
+            {% comment %}
             <li>
               <a href="{{ tables }}"><i class="fa fa-table fa-fw"></i> Tables</a>
             </li>
             <li>
               <a href="{{ charts }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
             </li>
+	    {% endcomment %}
           </ul>
         </div>
         <!-- /.sidebar-collapse -->

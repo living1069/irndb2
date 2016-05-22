@@ -68,10 +68,10 @@ def search_method(request):
 
 def home_method(request):
     context = {}
-    context['tnum'] = Target.objects.count()
-    context['mnum'] = Mirna.objects.count()
-    context['lnum'] = Lncrna.objects.count()
-    context['pnum'] = Pirna.objects.count()
+    context['num_target'] = Target.objects.all().count()
+    context['num_mirna'] = Mirna.objects.all().count()
+    context['num_lncrna'] = Lncrna.objects.all().count()
+    context['num_pirna'] = Pirna.objects.all().count()
     return render(request, "irndb2/home.html", context)
 
 def contact_method(request):
@@ -136,17 +136,17 @@ def pirna_method(request, name):
 
 def doc_method(request):
     context = {}
-    sTab = request.GET.get('tab', 'x')
+    tab = request.GET.get('tab', 'x')
     context = {}
-    if sTab not in ['1','2','3','4']:
+    if tab not in ['1','2','3','4']:
         return render(request, "irndb2/doc.html", context)
-    elif sTab == '1':
+    elif tab == '1':
         return render(request, "irndb2/doc_overview.html", context)
-    elif sTab == '2':
+    elif tab == '2':
         return render(request, "irndb2/doc_desc.html", context)
-    elif sTab == '3':
+    elif tab == '3':
         return render(request, "irndb2/doc_resources.html", context)
-    elif sTab == '4':
+    elif tab == '4':
         # fetch stats from db
         num_m2t_exp_mmuhsa = M2T_EXP.objects.filter(target__strict__gt=-1).values_list('mirna_id', 'target_id').distinct().count()
         num_m_exp_mmuhsa = M2T_EXP.objects.filter(target__strict__gt=-1).values_list('mirna_id').distinct().count()
@@ -222,93 +222,67 @@ def browse_method(request):
     dnl = request.GET.get('dnl', '0')
     filename = request.GET.get('f','data.csv')
     
-    entitytype = request.GET.get('type', 'x')
+    entitytype = request.GET.get('type', '0')
+    pathway = request.GET.get('pw', '0')
+
     context = {}
     if entitytype == 'mirna':
-        query_set = Mirna.objects.filter(num_immune__gt=0).distinct()
-        if dnl == '1':  # download instead of display
+        # download instead of display
+        if dnl == '1':  
+            query_set = Mirna.objects.filter(num_immune__gt=0).distinct()
             data = create_data_mirna(query_set, 0)
-            data = [['Name',
-                     'ID',
-                     'NumExperimentalMouseImmuneTargets',
-                     'NumPredictedMouseImmuneTargets',
-                     'NumExperimentalHumanInferredImmuneTargets',
-                     'NumPredictedHumanInferredImmuneTargets']] + data
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-            writer = csv.writer(response)
-            for row in data:
-                writer.writerow(row)
+            response = create_dnl_response(filename, data, ['Name','ID','NumExperimentalMouseImmuneTargets','NumPredictedMouseImmuneTargets','NumExperimentalHumanInferredImmuneTargets','NumPredictedHumanInferredImmuneTargets'])
             return response
-        else:  # no download
+        # browse pathways instead --> return pathway list
+        elif pathway == '1':
+            pw_list = get_pathways(query_set, 'mirna')
+            context["pw_type"] = "mirna"
+            context["data"] = pw_list
+            return render(request, "irndb2/browse_pw.html", context)
+        # no download --> browse mirnas
+        else:  
+            query_set = Mirna.objects.filter(num_immune__gt=0).distinct()
             context['data'] = create_data_mirna(query_set, 1)
             return render(request, "irndb2/browse_mirna.html", context)
     
     elif entitytype == 'target':
-        query_set = Target.objects.all().distinct()
         if dnl == '1':  # download instead of display
+            query_set = Target.objects.all().distinct()
             data = create_data_targets(query_set, 0)
-            data = [['symbol', 'name', 'geneid', 'ImmuneRelevanceInferredFrom', 'num_exp_miRNA', 'num_pred_miRNA', 'num_lncRNA', 'num_piRNA']] + data
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-            writer = csv.writer(response)
-            for row in data:
-                writer.writerow(row)
+            response = create_dnl_response(filename, data,['symbol', 'name', 'geneid', 'ImmuneRelevanceInferredFrom', 'num_exp_miRNA', 'num_pred_miRNA', 'num_lncRNA', 'num_piRNA'])
             return response
         else:  # no download
+            query_set = Target.objects.all().distinct()
             context['data'] = create_data_targets(query_set)
             return render(request, "irndb2/browse_target.html", context)
-    
+
     elif entitytype == 'lncrna':
-        query_set = Lncrna.objects.all().distinct()
         if dnl == '1':  # download instead of display
+            query_set = Lncrna.objects.all().distinct()
             data = create_data_lncrna(query_set, 0)
-            data = [['symbol', 'name', 'alias',  'NumMouseInferredImmuneTargets',
-                     'NumHumanInferredImmuneTargets']] + data
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-            writer = csv.writer(response)
-            for row in data:
-                writer.writerow(row)
+            response = create_dnl_response(filename, data, ['symbol', 'name', 'alias',  'NumMouseInferredImmuneTargets', 'NumHumanInferredImmuneTargets'])
             return response
         else:  # no download
+            query_set = Lncrna.objects.all().distinct()
             context['data'] = create_data_lncrna(query_set)
             return render(request, "irndb2/browse_lncrna.html", context)
+
     elif entitytype == 'pirna':
-        query_set = Pirna.objects.all().distinct()
         aQS = P2T.objects.all().select_related('pirna', 'target')
-        
         if dnl == '1':  # download instead of display
+            query_set = Pirna.objects.all().distinct()
             data = create_data_pirna(query_set, 0)
-            data = [['name', 'alias', 'accession',  'NumMouseInferredImmuneTargets',
-                     'NumHumanInferredImmuneTargets']] + data
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-            writer = csv.writer(response)
-            for row in data:
-                writer.writerow(row)
+            response = create_dnl_response(filename, data, ['name', 'alias', 'accession',  'NumMouseInferredImmuneTargets',
+             'NumHumanInferredImmuneTargets'])
             return response
         else:
+            query_set = Pirna.objects.all().distinct()
             context['data'] = create_data_pirna(query_set)
             return render(request, "irndb2/browse_pirna.html", context)
+
     else:
         return render(request, "irndb2/home.html", context)
 
-def browse_pw_method(request):
-    context = {}
-    entitytype = request.GET.get('type', 'x')
-    context = {}
-    if entitytype == 'mirna':
-        return render(request, "irndb2/browse_pw_mirna.html", context)
-    elif entitytype == 'target':
-        return render(request, "irndb2/browse_pw_target.html", context)
-    elif entitytype == 'lncrna':
-        return render(request, "irndb2/browse_pw_lncrna.html", context)
-    elif entitytype == 'pirna':
-        return render(request, "irndb2/browse_pw_pirna.html", context)
-    else:
-        return render(request, "irndb2/home.html", context)
-    
 def tables_method(request):
     context = {}
     return render(request, "irndb2/tables.html", context)
@@ -321,16 +295,16 @@ def charts_method(request):
 #----------------------------------------------------------------
 # NON-VIEW methods
 #----------------------------------------------------------------
-def create_data_pirna(aList, links=1):
+def create_data_pirna(entity_list, links=1):
     data = []
-    for e in aList:
+    for e in entity_list:
         alias = ', '.join(e.palias.split(','))
         acc_str = ', '.join(e.paccession.split(','))
         if links==1:
             name_str = '<a class="m1" href="" title="Link to IRNdb piRNA entry">%s</a>' % (e.pname)
             acc_str = '<a class="m1" href="http://www.ncbi.nlm.nih.gov/nuccore/%s" title="Link to NCBI">%s</a>' % (e.paccession, acc_str)
         else:
-            name_str = e.lname
+            name_str = e.pname
             
         aTemp = [
             name_str,
@@ -343,9 +317,9 @@ def create_data_pirna(aList, links=1):
         data.append(a)
     return data
 
-def create_data_lncrna(aList, links=1):
+def create_data_lncrna(entity_list, links=1):
     data = []
-    for e in aList:
+    for e in entity_list:
         num_immune_hsa  = e.num_immune - e.num_immune_strict
         alias = ', '.join(e.lalias.split(','))
 
@@ -368,9 +342,9 @@ def create_data_lncrna(aList, links=1):
         data.append(a)
     return data
 
-def create_data_targets(aList, links=1):
+def create_data_targets(entity_list, links=1):
     data = []
-    for e in aList:
+    for e in entity_list:
        
         # symbol, name, geneid, species, num_exp_mirna, num_pred_mirna, num_lncrna, num_piRNA
         if links==1:
@@ -401,9 +375,9 @@ def create_data_targets(aList, links=1):
     return data
 
 
-def create_data_mirna(aList, links=1):
+def create_data_mirna(entity_list, links=1):
     data = []
-    for e in aList:
+    for e in entity_list:
         e.num_exp_hsa  = e.num_immune_exp - e.num_immune_strict_exp # verified targets with immune relevance inferred from humans.
         e.num_pred_mmu = e.num_immune_strict - e.num_immune_strict_exp
         e.num_pred_hsa = e.num_immune - e.num_pred_mmu - e.num_exp_hsa - e.num_immune_strict_exp  # predicted targets with immune relevance inferred from humans.
@@ -425,3 +399,33 @@ def create_data_mirna(aList, links=1):
         a = [str(s) for s in aTemp]
         data.append(a)
     return data
+
+def create_dnl_response(filename, data, header):
+    data = [header] + data
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    writer = csv.writer(response)
+    for row in data:
+        writer.writerow(row)
+    return response
+
+def get_targets(entity_list, type):
+    """ Return targets for a rna set """
+    targets_exp, targets_pred = [], []
+    if type == 'mirna':
+        targets_exp  = M2T_EXP.objects.filter(mirna__in = entity_list).values('target').distinct()
+        targets_pred = M2T_PRED.objects.filter(mirna__in = entity_list).values('target').distinct()
+    elif type == 'lncrna':
+        targets_exp = L2T.objects.filter(lncrna__in = entity_list).values('target').distinct()
+        targets_pred = []
+    elif type == 'pirna':
+        targets_exp = P2T.objects.filter(pirna__in = entity_list).values('target').distinct()
+        targets_pred = []
+    return targets_exp, targets_pred
+
+def get_pathways(entity_list, type):
+    """"""
+    targets_exp, targets_pred = get_targets(entity_list, type)
+    
+    
+        
