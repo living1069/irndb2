@@ -50,10 +50,16 @@ def search_method(request):
             context["search_mirna"] = res_mirna
             context["search_lncrna"] = res_lncrna
             context["search_pirna"] = res_pirna
+            context["search_results"] = len(res_target) + len(res_mirna) + len(res_lncrna) + len(res_pirna)
+            cat_num = 0
+            for res in [res_target, res_mirna, res_lncrna, res_pirna]:
+                if len(res) > 0:
+                    cat_num += 1
+            context["search_cat"] = cat_num
             
         else:
             context["search_term"] = "No term entered."
-            context["search_results"] = []
+            context["search_results"] = 0
             
         return render(request, 'irndb2/search.html', context)
     # if not GET method return homepage
