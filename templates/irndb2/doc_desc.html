@@ -12,7 +12,7 @@
 <a name="target"></a>
 <h3>The target view</h3>
 <p>
-This is the view for one particular target gene. In this example we are looking at target gene <a class="t1" href="{% url 'irn:t' 18607 %}">Pdpk1</a>. The first tab shows all miRNAs that are either confirmed or predicted to be targeting <a class="t1" href="{% url 'irn:t' 18607 %}">Pdpk1</a>. We also are able to see the sources.
+This is the view for one particular target gene. In this example we are looking at target gene <a class="t1" href="{{ target_url }}Pdpk1">Pdpk1</a>. The first tab shows all miRNAs that are either confirmed or predicted to be targeting <a class="t1" href="{{ target_url }}Pdpk1">Pdpk1</a>. We also are able to see the sources.
 </p>
 <p>
 <img src="{% static 'irn/desc/target1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
@@ -39,7 +39,7 @@ The final <b>M.tb-tab</b> shows the expression and fold-changes (of available) o
 <h3>The microRNA view</h3>
 
 <p>
-Here, we have look at the miRNA view of an individual miRNA found either through the <a class="g" href="{% url 'irn:mb' %}">browse/search</a> function or through a target view of the site. In this example, we look at the miRNA <a class="m1" href="{% url 'irn:m' 1086 %}">mmu-miR-223-3p</a>. The first image shows the "Targets"-tab of the miRNA view. Here one can investigate the experimentally supported and predicted targets of the miRNA, considering only mouse or mouse+human immune genes.
+Here, we have look at the miRNA view of an individual miRNA found either through the <a class="g" href="{{ browse_url }}?type=mirna">browse/search</a> function or through a target view of the site. In this example, we look at the miRNA <a class="m1" href="{{ mirna_url }}mmu-miR-223-3p">mmu-miR-223-3p</a>. The first image shows the "Targets"-tab of the miRNA view. Here one can investigate the experimentally supported and predicted targets of the miRNA, considering only mouse or mouse+human immune genes.
 </p>
 <p>
 <img src="{% static 'irn/desc/mirna1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
@@ -73,7 +73,7 @@ Finally, on the <b>M.tb-tab</b> of the miRNA view, we show for <i>targets</i> th
 <a name="pathway"></a>
 <h3>The pathway view</h3>
 <p>
-Here, we have look at the pathway view. In this example, we look at the KEGG pathway <a class="m1" href="{% url 'irn:p' 'kegg' 'mmu05164' %}">Influenza A</a>. We find some general inforamtion about the pathway and the numbers of miRNAs, piRNAs, and lncRNA that target genes in the pathway. In addition, one can find association-maps of target genes to RNAs. Finally, we show the pathway map itself.
+Here, we have look at the pathway view. In this example, we look at the KEGG pathway <a class="m1" href="{{ pw_url }}mmu05164">Influenza A</a>. We find some general inforamtion about the pathway and the numbers of miRNAs, piRNAs, and lncRNA that target genes in the pathway. In addition, one can find association-maps of target genes to RNAs. Finally, we show the pathway map itself.
 </p>
 <p>
 <img src="{% static 'irn/desc/pathway1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >

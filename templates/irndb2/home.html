@@ -25,7 +25,7 @@
       IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for mouse as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
      </p>
      <p>
-     IRNdb combines <a class="m1" href="{{ browse }}?type=mirna" title="Browse miRNAs">{{ num_mirna }} miRNAs</a>, <a class="m1" href="{{ browse }}?type=pirna" title="Browse piRNAs">{{ num_pirna }} piRNAs</a>, <a class="m1" href="{{ browse }}?type=lncrna" title="Browse lncRNAs">{{ num_lncrna }} lncRNAs</a> and <a class="t1" href="{{ browse }}?type=target" title="Browse immune targets"> {{ num_target }} immunologically relevant murine targets</b></a>.
+     IRNdb combines <a class="m1" href="{{ browse_url }}?type=mirna" title="Browse miRNAs">{{ num_mirna }} miRNAs</a>, <a class="m1" href="{{ browse_url }}?type=pirna" title="Browse piRNAs">{{ num_pirna }} piRNAs</a>, <a class="m1" href="{{ browse_url }}?type=lncrna" title="Browse lncRNAs">{{ num_lncrna }} lncRNAs</a> and <a class="t1" href="{{ browse_url }}?type=target" title="Browse immune targets"> {{ num_target }} immunologically relevant murine targets</b></a>.
        </p>
      </div>
     </div>
@@ -36,13 +36,13 @@
      <div class="panel-heading">Quick links</div>
      <div class="panel-body" style="min-height: 180px;">
        <p>
-       <b>Search</b> for <a class="t1" href="{{browse}}?type=target" title="Search targets">target genes</a>.
+       <b>Search</b> for <a class="t1" href="{{browse_url}}?type=target" title="Search targets">target genes</a>.
        </p>
        <p>
-       <b>Browse/search</b> for <a class="m1" href="{{browse}}?type=mirna" title="Search microRNAs">miRNAs</a>, <a class="m1" href="{{browse}}?type=pirna" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{{browse}}?type=lncrna" title="Search lncRNAs">lncRNAs</a>.
+       <b>Browse/search</b> for <a class="m1" href="{{browse_url}}?type=mirna" title="Search microRNAs">miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{{browse_url}}?type=lncrna" title="Search lncRNAs">lncRNAs</a>.
        </p>
        <p>
-       <b>Browse pathways</b> targeted by <a class="m1" href="{{browse}}?type=mirna&pw=1" title="Search pathways"> miRNAs</a>, <a class="m1" href="{{browse}}?type=pirna&pw=1" title="Search pathways"> piRNAs</a>, or <a class="m1" href="{{browse}}?type=lncrna&pw=1" title="Search pathways">lncRNAs</a>.<br/>
+       <b>Browse pathways</b> targeted by <a class="m1" href="{{browse_url}}?type=mirna&pw=1" title="Search pathways"> miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna&pw=1" title="Search pathways"> piRNAs</a>, or <a class="m1" href="{{browse_url}}?type=lncrna&pw=1" title="Search pathways">lncRNAs</a>.<br/>
        </p>
      </div>
     </div>
@@ -57,7 +57,7 @@
    <div class="panel-heading">Search IRNdb</div>
    <div class="panel-body">
      <!-- search bar -->
-     <form class="navbar-form" role="search" action="{{ search }}" method="GET">
+     <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
       <div class="input-group">
        <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
        <div class="input-group-btn">
