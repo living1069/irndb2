@@ -224,6 +224,7 @@ def browse_method(request):
     
     entitytype = request.GET.get('type', '0')
     pathway = request.GET.get('pw', '0')
+    pathwaytype = request.GET.get('pwt', 'x')
 
     context = {}
     if entitytype == 'mirna':
@@ -262,6 +263,49 @@ def browse_method(request):
             data = create_data_lncrna(query_set, 0)
             response = create_dnl_response(filename, data, ['symbol', 'name', 'alias',  'NumMouseInferredImmuneTargets', 'NumHumanInferredImmuneTargets'])
             return response
+        # browse pathways instead --> return pathway list
+        elif pathway == '1':
+
+            # all t2l object
+            l2t_list = L2T.objects.all().select_related('lncrna','target').distinct()
+            dPW = {}
+            res_list = []
+            link_template = '<a class="m1" href="/irndb/%s/%s">%s</a>' 
+
+            if pathwaytype not in ["wikipathway","kegg"]:
+                context["rna_type_flat"] = entitytype
+                context["rna_type"] = "lncRNA"
+                return render_to_response("irndb2/browsepw.html", context)
+
+            elif pathwaytype == 'kegg':
+                # all t2kegg obj based on the targets of lncrnas
+                t2k_list = T2K.objects.filter(target__in = l2t_list.values('target').distinct()).select_related('target','kegg')
+                for t2k in t2k_list:
+                    if t2k.kegg in dPW:
+                        continue
+                    else:
+                        dPW[t2k.kegg] = None
+                        target_list = t2k_list.filter(kegg = t2k.kegg).values('target').distinct()
+                        lncrna_list = l2t_list.filter(target__in=target_list).values_list('lncrna__lsymbol').distinct().order_by('lncrna__lsymbol')
+                        res_list.append([str(t2k.kegg.keggname), str(t2k.kegg.keggid), str(len(target_list)), str('; '.join([link_template % (entitytype,t[0],t[0]) for t in lncrna_list])) ])
+
+            elif pathwaytype == "wikipathway":
+                # all t2wikipw obj based on the targets of lncrnas
+                t2w_list = T2W.objects.filter(target__in = l2t_list.values('target').distinct()).select_related('target','wikipath')
+                for t2w in t2w_list:
+                    if t2w.wikipath in dPW:
+                        continue
+                    else:
+                        target_list = t2w_list.filter(wikipath = t2w.wikipath).values('target').distinct()
+                        lncrna_list = l2t_list.filter(target__in=target_list).values_list('lncrna__lsymbol').distinct().order_by('lncrna__lsymbol')
+                        res_list.append([str(t2w.wikipath.wikipathname), str(t2w.wikipath.wikipathid), str(len(target_list)), str('; '.join([link_template % (entitytype,t[0],t[0]) for t in lncrna_list])) ])
+                   
+            
+            context["data"] = res_list
+            #pw_list = get_pathways(query_set, entitytype)
+            context["rna_type"] = "lncRNA"
+            #context["data"] = pw_list
+            return render(request, "irndb2/browsepw_kegg.html", context)
         else:  # no download
             query_set = Lncrna.objects.all().distinct()
             context['data'] = create_data_lncrna(query_set)
@@ -301,7 +345,7 @@ def create_data_pirna(entity_list, links=1):
         alias = ', '.join(e.palias.split(','))
         acc_str = ', '.join(e.paccession.split(','))
         if links==1:
-            name_str = '<a class="m1" href="" title="Link to IRNdb piRNA entry">%s</a>' % (e.pname)
+            name_str = '<a class="m1" href="/irndb/pirna/%s" title="Link to IRNdb piRNA entry">%s</a>' % (e.pname, e.pname)
             acc_str = '<a class="m1" href="http://www.ncbi.nlm.nih.gov/nuccore/%s" title="Link to NCBI">%s</a>' % (e.paccession, acc_str)
         else:
             name_str = e.pname
@@ -324,7 +368,7 @@ def create_data_lncrna(entity_list, links=1):
         alias = ', '.join(e.lalias.split(','))
 
         if links==1:
-            symbol_str = '<a class="m1" href="" title="Link to IRNdb lncRNA entry">%s</a>' % (e.lsymbol)
+            symbol_str = '<a class="m1" href="/irndb/lncrna/%s" title="Link to IRNdb lncRNA entry">%s</a>' % (e.lsymbol, e.lsymbol)
             name_str = '<a class="m1" href="%s" title="Link to NCBI gene">%s</a>' % (e.llink, e.lname)
             alias_str = '<a class="m1" href="%s" title="Link to NCBI gene">%s</a>' % (e.llink, alias)
         else:
@@ -348,7 +392,7 @@ def create_data_targets(entity_list, links=1):
        
         # symbol, name, geneid, species, num_exp_mirna, num_pred_mirna, num_lncrna, num_piRNA
         if links==1:
-            symbol_str = '<a class="t1" href="" title="Link to IRNdb target entry">%s</a>' % (e.symbol)
+            symbol_str = '<a class="t1" href="/irndb/target/%s" title="Link to IRNdb target entry">%s</a>' % (e.symbol, e.symbol)
             name_str = '<a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/%s" title="Link to NCBI gene">%s</a>' % (e.id, e.tname)
             geneid_str = '<a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/%s" title="Link to NCBI gene">%s</a>' % (e.id, e.id)
         else:
@@ -382,7 +426,7 @@ def create_data_mirna(entity_list, links=1):
         e.num_pred_mmu = e.num_immune_strict - e.num_immune_strict_exp
         e.num_pred_hsa = e.num_immune - e.num_pred_mmu - e.num_exp_hsa - e.num_immune_strict_exp  # predicted targets with immune relevance inferred from humans.
         if links==1:
-            mirna_str = '<a class="m1" href="" title="IRN miRNA details">%s</a>' % (e.mname)
+            mirna_str = '<a class="m1" href="/irndb/mirna/%s" title="IRN miRNA details">%s</a>' % (e.mname, e.mname)
             mirnaid_str = '<a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc=%s" title="Open miRNA in mirBase">%s</a>' % (e.mirbase_id, e.mirbase_id)
         else:
             mirna_str = e.mname
@@ -425,7 +469,10 @@ def get_targets(entity_list, type):
 
 def get_pathways(entity_list, type):
     """"""
-    targets_exp, targets_pred = get_targets(entity_list, type)
+    #
+    #targets_exp, targets_pred = get_targets(entity_list, type)
+    l2t_list = L2T.objects.filter(lncrna__in = entity_list).values('target', 'lncrna').distinct()
+    targets = l2t_list.values('target').distinct()
     
     
         
