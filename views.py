@@ -10,9 +10,11 @@ def kegg_method(request, id):
     context = {}
     return render(request, "irndb2/contact.html", context)
 
+
 def wp_method(request, id):
     context = {}
     return render(request, "irndb2/contact.html", context)
+
 
 def search_method(request):
     context = {}
@@ -82,9 +84,11 @@ def home_method(request):
     context['num_pirna'] = Pirna.objects.all().count()
     return render(request, "irndb2/home.html", context)
 
+
 def contact_method(request):
     context = {}
     return render(request, "irndb2/contact.html", context)
+
 
 def target_method(request, sym):
     context = {}
@@ -100,6 +104,7 @@ def target_method(request, sym):
     
     return render(request, "irndb2/target.html", context)
 
+
 def mirna_method(request, name):
     context = {}
     a = Mirna.objects.filter(mname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
@@ -114,6 +119,7 @@ def mirna_method(request, name):
     
     return render(request, "irndb2/mirna.html", context)
 
+
 def lncrna_method(request, sym):
     context = {}
     a = Lncrna.objects.filter(lsymbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
@@ -127,6 +133,7 @@ def lncrna_method(request, sym):
         obj = a[0]
     
     return render(request, "irndb2/lncrna.html", context)
+
 
 def pirna_method(request, name):
     context = {}
@@ -226,6 +233,7 @@ def doc_method(request):
     else:
         return render(request, "irndb2/doc.html", context)
 
+    
 def browse_method(request):
     dnl = request.GET.get('dnl', '0')
     filename = request.GET.get('f','data.csv')
@@ -259,13 +267,13 @@ def browse_method(request):
                 rna2t_list = M2T_EXP.objects.all().select_related('mirna','target').distinct()
                 #rna2t_list = M2T_EXP.objects.filter(target__strict = 1).select_related('mirna','target').distinct()
                 if dnl == '1':
-                    res_list = get_pathways3(entitytype, pathwaytype, '1')
+                    res_list = get_pathways(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways3(entitytype, pathwaytype, '0')
+                    res_list = get_pathways(entitytype, pathwaytype, '0')
                     context["data"] = res_list
-                    return render(request, "irndb2/browsepw_content2.html", context)
+                    return render(request, "irndb2/browsepw_content.html", context)
                 
         # no download --> browse mirnas
         else:  
@@ -301,13 +309,13 @@ def browse_method(request):
                 rna2t_list = L2T.objects.all().select_related('lncrna','target').distinct()
                 # get list of pathways
                 if dnl == '1':
-                    res_list = get_pathways3(entitytype, pathwaytype, '1')
+                    res_list = get_pathways(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways3(entitytype, pathwaytype, '0')
+                    res_list = get_pathways(entitytype, pathwaytype, '0')
                     context["data"] = res_list
-                    return render(request, "irndb2/browsepw_content2.html", context)
+                    return render(request, "irndb2/browsepw_content.html", context)
 
             
         else:  # no download
@@ -333,13 +341,13 @@ def browse_method(request):
                 rnasymbol = "pirna__pname"
                 # get list of pathways
                 if dnl == '1':
-                    res_list = get_pathways3(entitytype, pathwaytype, '1')
+                    res_list = get_pathways(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways3(entitytype, pathwaytype, '0')
+                    res_list = get_pathways(entitytype, pathwaytype, '0')
                     context["data"] = res_list
-                    return render(request, "irndb2/browsepw_content2.html", context)
+                    return render(request, "irndb2/browsepw_content.html", context)
 
         else:
             query_set = Pirna.objects.all().distinct()
@@ -349,9 +357,11 @@ def browse_method(request):
     else:
         return render(request, "irndb2/home.html", context)
 
+    
 def tables_method(request):
     context = {}
     return render(request, "irndb2/tables.html", context)
+
 
 def charts_method(request):
     context = {}
@@ -383,6 +393,7 @@ def create_data_pirna(entity_list, links=1):
         data.append(a)
     return data
 
+
 def create_data_lncrna(entity_list, links=1):
     data = []
     for e in entity_list:
@@ -407,6 +418,7 @@ def create_data_lncrna(entity_list, links=1):
         a = [str(s) for s in aTemp]
         data.append(a)
     return data
+
 
 def create_data_targets(entity_list, links=1):
     data = []
@@ -466,6 +478,7 @@ def create_data_mirna(entity_list, links=1):
         data.append(a)
     return data
 
+
 def create_dnl_response(filename, data, header):
     data = [header] + data
     response = HttpResponse(content_type='text/csv')
@@ -474,6 +487,7 @@ def create_dnl_response(filename, data, header):
     for row in data:
         writer.writerow(row)
     return response
+
 
 def get_targets(entity_list, type):
     """ Return targets for a rna set """
@@ -489,7 +503,8 @@ def get_targets(entity_list, type):
         targets_pred = []
     return targets_exp, targets_pred
 
-def get_pathways3(entitytype, pathwaytype, dnl='0'):
+
+def get_pathways(entitytype, pathwaytype, dnl='0'):
     rnalink_template = '<a class="m1" href="/irndb/%s/%s">%s</a>' # rnatype, rnasymbol/name, symbol/name
     pwlink_template = '<a title="Open in IRNdb" class="g" href="/irndb/%s/%s">%s</a>' # pathwaytype, pwid, pwname
     targetlink_template = '<a title="Open in IRNdb" class="t1" href="/irndb/target/%s">%s</a>' # symbol, symbol 
@@ -539,7 +554,12 @@ def get_pathways3(entitytype, pathwaytype, dnl='0'):
         for kegg, targetlist in dPW.items():
             if dnl != '1':
                 targetlist.sort()
-                res_list.append([str(pwlink_template % (pathwaytype, str(kegg.keggid), str(kegg.keggname))), targetlist])
+                str_table = '<table><tbody>'
+                for t_entry in targetlist:
+                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    str_table += row_str
+                str_table += '</tbody></table>'
+                res_list.append([str(pwlink_template % (pathwaytype, str(kegg.keggid), str(kegg.keggname))), str_table])
             else:
                 # here make one row per target
                 for tlist in targetlist:
@@ -588,7 +608,12 @@ def get_pathways3(entitytype, pathwaytype, dnl='0'):
         for wp, targetlist in dPW.items():
             if dnl != '1':
                 targetlist.sort()
-                res_list.append([str(pwlink_template % (pathwaytype, str(wp.wikipathid), str(wp.wikipathname))), targetlist])
+                str_table = '<table><tbody>'
+                for t_entry in targetlist:
+                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    str_table += row_str
+                str_table += '</tbody></table>'
+                res_list.append([str(pwlink_template % (pathwaytype, str(wp.wikipathid), str(wp.wikipathname))), str_table])
             else:
                 # here make one row per target
                 for tlist in targetlist:

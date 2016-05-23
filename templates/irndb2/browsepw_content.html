@@ -4,7 +4,6 @@
   #sebio{{ pwt }} { table-layout: fixed; }
 </style>
 
-
 <div class="panel panel-default">
   <div class="panel-body">
     <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
@@ -16,23 +15,21 @@
         <thead>
           <tr>
             <th title="Pathway name"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway name</th>
-            <th title="# targets regulated by RNA in pathway."><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;</th>
-            <th title="RNAs regulating targets in pathway">RNAs</th>
+            <th title="RNAs regulating targets in pathway">Targets / RNAs</th>
           </tr>
-      </thead>
+        </thead>       
       </table> 
       <!-- DataTables JavaScript -->
-      
+
       <script>
         var dataSet = {{ data|safe }};
-    
+      
         $(document).ready( function () {
           $('#sebio{{ pwt }}').DataTable( {
-                      "data": dataSet,
-                      "columns": [
+                    "data": dataSet,   
+                    "columns": [
                         {"width":"300px"},
-                        {"className": "text-right", "width":"40px"},
-                        {"className": "text-left"}
+                        {"className": "text-left", "bSortable": false}
                        ],
                     "order": [[ 0, "asc" ]],
                     "deferRender": true,
@@ -40,10 +37,9 @@
                     });
                } );
       </script>
-      
+
+ 
     </div>
-    <!-- /.table-responsive -->
-    
   </div>
 </div>
 
