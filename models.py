@@ -49,6 +49,10 @@ class Wikipath(models.Model):
 class T2W(models.Model):
     target   = models.ForeignKey(Target)
     wikipath = models.ForeignKey(Wikipath)
+    mirna_exp = models.CharField(max_length=700, db_index=True)
+    mirna_pred = models.CharField(max_length=4000, db_index=True)
+    lncrna = models.CharField(max_length=320, db_index=True)
+    pirna = models.CharField(max_length=100, db_index=True)
 
 class Kegg(models.Model):
     keggid   = models.CharField(max_length=20)
@@ -57,6 +61,10 @@ class Kegg(models.Model):
 class T2K(models.Model):
     target = models.ForeignKey(Target) # Target gene id
     kegg   = models.ForeignKey(Kegg) # kegg
+    mirna_exp = models.CharField(max_length=700, db_index=True)
+    mirna_pred = models.CharField(max_length=4200, db_index=True)
+    lncrna = models.CharField(max_length=250, db_index=True)
+    pirna = models.CharField(max_length=100, db_index=True)
 
 class Go(models.Model):
     goid   = models.CharField(max_length=10, db_index=True)
@@ -67,6 +75,10 @@ class T2G(models.Model):
     target = models.ForeignKey(Target) # Target gene id
     go     = models.ForeignKey(Go)
     pmid   = models.CharField(max_length=600) # changed to Char from Integer
+    mirna_exp = models.CharField(max_length=700, db_index=True)
+    mirna_pred = models.CharField(max_length=5100, db_index=True)
+    lncrna = models.CharField(max_length=320, db_index=True)
+    pirna = models.CharField(max_length=100, db_index=True)
     
 class Msigdb_c7(models.Model):
     geoid      = models.CharField(max_length=12)
@@ -80,7 +92,11 @@ class Msigdb_c7(models.Model):
 
 class T2C7(models.Model):
     target    = models.ForeignKey(Target) # Target gene id
-    msigdb_c7 = models.ForeignKey(Msigdb_c7) 
+    msigdb_c7 = models.ForeignKey(Msigdb_c7)
+    mirna_exp = models.CharField(max_length=700, db_index=True)
+    mirna_pred = models.CharField(max_length=5100, db_index=True)
+    lncrna = models.CharField(max_length=320, db_index=True)
+    pirna = models.CharField(max_length=100, db_index=True)
     
 # OTHER NCRNAs
 class Lncrna(models.Model):

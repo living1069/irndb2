@@ -259,11 +259,11 @@ def browse_method(request):
                 rna2t_list = M2T_EXP.objects.all().select_related('mirna','target').distinct()
                 #rna2t_list = M2T_EXP.objects.filter(target__strict = 1).select_related('mirna','target').distinct()
                 if dnl == '1':
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '1')
+                    res_list = get_pathways3(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '0')
+                    res_list = get_pathways3(entitytype, pathwaytype, '0')
                     context["data"] = res_list
                     return render(request, "irndb2/browsepw_content2.html", context)
                 
@@ -301,13 +301,14 @@ def browse_method(request):
                 rna2t_list = L2T.objects.all().select_related('lncrna','target').distinct()
                 # get list of pathways
                 if dnl == '1':
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '1')
+                    res_list = get_pathways3(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '0')
+                    res_list = get_pathways3(entitytype, pathwaytype, '0')
                     context["data"] = res_list
                     return render(request, "irndb2/browsepw_content2.html", context)
+
             
         else:  # no download
             query_set = Lncrna.objects.all().distinct()
@@ -330,15 +331,13 @@ def browse_method(request):
                 return render_to_response("irndb2/browsepw.html", context)
             else:
                 rnasymbol = "pirna__pname"
-                # all t2l object
-                rna2t_list = P2T.objects.all().select_related('pirna','target').distinct()
                 # get list of pathways
                 if dnl == '1':
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '1')
+                    res_list = get_pathways3(entitytype, pathwaytype, '1')
                     response = create_dnl_response(filename, res_list, ['Pathway_name', 'Pathway_id', 'Target', 'RNAs'])
                     return response
                 else:
-                    res_list = get_pathways2(rna2t_list, entitytype, pathwaytype, '0')
+                    res_list = get_pathways3(entitytype, pathwaytype, '0')
                     context["data"] = res_list
                     return render(request, "irndb2/browsepw_content2.html", context)
 
@@ -490,90 +489,52 @@ def get_targets(entity_list, type):
         targets_pred = []
     return targets_exp, targets_pred
 
-def get_pathways(entity_list, entitytype, pathwaytype):
-    """"""
-    if entitytype == "lncrna":
-        rnasymbol = "lncrna__lsymbol"
-    elif entitytype == "pirna":
-        rnasymbol = "pirna__pname"
-    elif entitytype == "mirna":
-        rnasymbol = "mirna__mname"
-        
-    dPW = {}
-    res_list = []
-    if pathwaytype == 'kegg':
-        # all t2kegg obj based on the targets of lncrnas
-        t2k_list = T2K.objects.filter(target__in = entity_list.values('target').distinct()).select_related('target','kegg')
-        for t2k in t2k_list:
-            if t2k.kegg in dPW:
-                continue
-            else:
-                dPW[t2k.kegg] = []
-                target_list = t2k_list.filter(kegg = t2k.kegg).values('target').distinct()
-                #return HttpResponse(target_list)
-                for t in target_list:
-                    rna_list = entity_list.filter(target = t).values_list(rnasymbol).distinct().order_by(rnasymbol)
-
-                    dPW[t2k.kegg].append([ t, [str(t[0]) for t in rna_list]])
-                    #res_list.append([str(t2k.kegg.kegg_name), str(t2k.kegg.keggid), str(t.symbol), rna_list])
-                #rna_list = entity_list.filter(target__in=target_list).values_list(symbol).distinct().order_by(symbol)
-                ## res_list.append([str(t2k.kegg.keggname),
-                ##                  str(t2k.kegg.keggid),
-                ##                  str(len(target_list)),
-                ##                  [str(t[0]) for t in rna_list]])
-        
-        for kegg, targetlist in dPW.items():
-            res_list.append([str(kegg.kegg_name), str(kegg.keggid), targetlist])
-            
-                
-    elif pathwaytype == "wikipathway":
-        # all t2wikipw obj based on the targets of lncrnas
-        t2w_list = T2W.objects.filter(target__in = entity_list.values('target').distinct()).select_related('target','wikipath')
-        for t2w in t2w_list:
-            if t2w.wikipath in dPW:
-                continue
-            else:
-                dPW[t2w.wikipath] = None
-                target_list = t2w_list.filter(wikipath = t2w.wikipath).values('target').distinct()
-                rna_list = entity_list.filter(target__in=target_list).values_list(rnasymbol).distinct().order_by(rnasymbol)
-                res_list.append([str(t2w.wikipath.wikipathname),
-                                 str(t2w.wikipath.wikipathid),
-                                 str(len(target_list)),
-                                 [str(t[0]) for t in rna_list]])
-    return res_list
-
-
-def get_pathways2(rna2t_list, entitytype, pathwaytype, dnl='0'):
+def get_pathways3(entitytype, pathwaytype, dnl='0'):
     rnalink_template = '<a class="m1" href="/irndb/%s/%s">%s</a>' # rnatype, rnasymbol/name, symbol/name
     pwlink_template = '<a title="Open in IRNdb" class="g" href="/irndb/%s/%s">%s</a>' # pathwaytype, pwid, pwname
     targetlink_template = '<a title="Open in IRNdb" class="t1" href="/irndb/target/%s">%s</a>' # symbol, symbol 
-        
-    if entitytype == "lncrna":
-        rnasymbol = "lncrna__lsymbol"
-    elif entitytype == "pirna":
-        rnasymbol = "pirna__pname"
-    elif entitytype == "mirna":
-        rnasymbol = "mirna__mname"
-        
+  
     dPW = {}
     res_list = []
     if pathwaytype == 'kegg':
-        # all t2kegg obj based on the targets of lncrnas
-        t2k_list = T2K.objects.filter(target__in = rna2t_list.values('target').distinct()).select_related('target','kegg')
-        for t2k in t2k_list:
-            if t2k.kegg in dPW:
-                continue
-            else:
-                dPW[t2k.kegg] = []
-                target_list = t2k_list.filter(kegg = t2k.kegg).values_list('target__symbol').distinct()
-                for t in target_list:
-                    rna_list = rna2t_list.filter(target__symbol = t[0]).values_list(rnasymbol).distinct().order_by(rnasymbol)
+        if entitytype == 'pirna':
+            t2pw_list = T2K.objects.filter(~Q(pirna = '0')).select_related('target', 'kegg').distinct()
+        elif entitytype == 'lncrna':
+            t2pw_list = T2K.objects.filter(~Q(lncrna = '0')).select_related('target', 'kegg').distinct()
+        elif entitytype == 'mirna':
+            t2pw_list = T2K.objects.filter(~Q(mirna_exp = '0')).select_related('target', 'kegg').distinct()
 
-                    if dnl != '1':
-                        dPW[t2k.kegg].append([ str(targetlink_template % (t[0], t[0])),
-                                               str('; '.join([rnalink_template % (entitytype, rna[0], rna[0]) for rna in rna_list]))])
-                    else:
-                        dPW[t2k.kegg].append([ str(t[0]), str(';'.join([str(rna[0]) for rna in rna_list]))])
+        for t2pw in t2pw_list:
+            if t2pw.kegg not in dPW:
+                dPW[t2pw.kegg] = []
+
+            if dnl != '1':
+                if entitytype == 'pirna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.pirna.split(',')])
+                elif entitytype == 'lncrna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.lncrna.split(',')])
+                elif entitytype == 'mirna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.mirna_exp.split(',')])
+
+
+                dPW[t2pw.kegg].append([ str(targetlink_template % (t2pw.target.symbol,
+                                                                   t2pw.target.symbol)),
+                                                                   rnas])
+            else:
+                if entitytype == 'pirna':
+                    rnas = str(t2pw.pirna)
+                elif entitytype == 'lncrna':
+                    rnas = str(t2pw.lncrna)
+                elif entitytype == 'mirna': 
+                    rnas = str(t2pw.mirna_exp)
+
+                dPW[t2pw.kegg].append([ str(t2pw.target.symbol), rnas])
 
         for kegg, targetlist in dPW.items():
             if dnl != '1':
@@ -582,25 +543,47 @@ def get_pathways2(rna2t_list, entitytype, pathwaytype, dnl='0'):
             else:
                 # here make one row per target
                 for tlist in targetlist:
-                    res_list.append([str(kegg.keggname),str(kegg.keggid),tlist[0], tlist[1]])
-
+                    res_list.append([str(kegg.keggname), str(kegg.keggid), tlist[0], tlist[1]])
+        
     elif pathwaytype == 'wikipathway':
-        # all t2kegg obj based on the targets of lncrnas
-        t2w_list = T2W.objects.filter(target__in = rna2t_list.values('target').distinct()).select_related('target','wikipath')
-        for t2w in t2w_list:
-            if t2w.wikipath in dPW:
-                continue
-            else:
-                dPW[t2w.wikipath] = []
-                target_list = t2w_list.filter(wikipath = t2w.wikipath).values_list('target__symbol').distinct()
-                for t in target_list:
-                    rna_list = rna2t_list.filter(target__symbol = t[0]).values_list(rnasymbol).distinct().order_by(rnasymbol)
+        if entitytype == 'pirna':
+            t2pw_list = T2W.objects.filter(~Q(pirna = '0')).select_related('target', 'wikipath').distinct()
+        elif entitytype == 'lncrna':
+            t2pw_list = T2W.objects.filter(~Q(lncrna = '0')).select_related('target', 'wikipath').distinct()
+        elif entitytype == 'mirna':
+            t2pw_list = T2W.objects.filter(~Q(mirna_exp = '0')).select_related('target', 'wikipath').distinct()
 
-                    if dnl != '1':
-                        dPW[t2w.wikipath].append([ str(targetlink_template % (t[0], t[0])),
-                                               str('; '.join([rnalink_template % (entitytype, rna[0], rna[0]) for rna in rna_list]))])
-                    else:
-                        dPW[t2w.wikipath].append([ str(t[0]), str(';'.join([str(rna[0]) for rna in rna_list]))])
+        for t2pw in t2pw_list:
+            if t2pw.wikipath not in dPW:
+                dPW[t2pw.wikipath] = []
+
+            if dnl != '1':
+                if entitytype == 'pirna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.pirna.split(',')])
+                elif entitytype == 'lncrna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.lncrna.split(',')])
+                elif entitytype == 'mirna':
+                    rnas = '; '.join([str(rnalink_template % (entitytype,
+                                                rna.strip(),
+                                                rna.strip())) for rna in t2pw.mirna_exp.split(',')])
+
+
+                dPW[t2pw.wikipath].append([ str(targetlink_template % (t2pw.target.symbol,
+                                                                   t2pw.target.symbol)),
+                                                                   rnas])
+            else:
+                if entitytype == 'pirna':
+                    rnas = str(t2pw.pirna)
+                elif entitytype == 'lncrna':
+                    rnas = str(t2pw.lncrna)
+                elif entitytype == 'mirna': 
+                    rnas = str(t2pw.mirna_exp)
+
+                dPW[t2pw.wikipath].append([ str(t2pw.target.symbol), rnas])
 
         for wp, targetlist in dPW.items():
             if dnl != '1':
@@ -609,7 +592,6 @@ def get_pathways2(rna2t_list, entitytype, pathwaytype, dnl='0'):
             else:
                 # here make one row per target
                 for tlist in targetlist:
-                    res_list.append([str(wp.wikipathname),str(wp.wikipathid),tlist[0], tlist[1]])
-
+                    res_list.append([ str(wp.wikipathid), str(wp.wikipathname), tlist[0], tlist[1]])
 
     return res_list
