@@ -5,7 +5,13 @@ import csv
 
 from irndb2.models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
 
-# Create your views here.
+# GLOBAL VARIABLE: change according to the url.py of the main project
+# e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
+_APP_LINK_PREFIX = '/apps/irndb'
+
+#----------------------------------------------------------------
+# VIEW methods
+#----------------------------------------------------------------
 def kegg_method(request, id):
     context = {}
     return render(request, "irndb2/contact.html", context)
@@ -240,10 +246,6 @@ def browse_method(request):
     entitytype = request.GET.get('type', '0')
     pathway = request.GET.get('pw', '0')
     pathwaytype = request.GET.get('pwt', 'x')
-
-    rnalink_template = '<a class="m1" href="/irndb/%s/%s">%s</a>' # rnatype, rnasymbol/name, symbol/name
-    pwlink_template = '<a title="Open in IRNdb" class="g" href="/irndb/%s/%s">%s</a>' # pathwaytype, pwid, pwname
-    targetlink_template = '<a title="Open in IRNdb" class="t1" href="/irndb/target/%s">%s</a>' # symbol, symbol 
     
     context = {}
     context["entity_type"] = entitytype
@@ -377,7 +379,9 @@ def create_data_pirna(entity_list, links=1):
         alias = ', '.join(e.palias.split(','))
         acc_str = ', '.join(e.paccession.split(','))
         if links==1:
-            name_str = '<a class="m1" href="/irndb/pirna/%s" title="Link to IRNdb piRNA entry">%s</a>' % (e.pname, e.pname)
+            name_str = '<a class="m1" href="%s/pirna/%s" title="Link to IRNdb piRNA entry">%s</a>' % (_APP_LINK_PREFIX,
+                                                                                                          e.pname,
+                                                                                                          e.pname)
             acc_str = '<a class="m1" href="http://www.ncbi.nlm.nih.gov/nuccore/%s" title="Link to NCBI">%s</a>' % (e.paccession, acc_str)
         else:
             name_str = e.pname
@@ -401,7 +405,9 @@ def create_data_lncrna(entity_list, links=1):
         alias = ', '.join(e.lalias.split(','))
 
         if links==1:
-            symbol_str = '<a class="m1" href="/irndb/lncrna/%s" title="Link to IRNdb lncRNA entry">%s</a>' % (e.lsymbol, e.lsymbol)
+            symbol_str = '<a class="m1" href="%s/lncrna/%s" title="Link to IRNdb lncRNA entry">%s</a>' % (_APP_LINK_PREFIX,
+                                                                                                          e.lsymbol,
+                                                                                                          e.lsymbol)
             name_str = '<a class="m1" href="%s" title="Link to NCBI gene">%s</a>' % (e.llink, e.lname)
             alias_str = '<a class="m1" href="%s" title="Link to NCBI gene">%s</a>' % (e.llink, alias)
         else:
@@ -426,7 +432,9 @@ def create_data_targets(entity_list, links=1):
        
         # symbol, name, geneid, species, num_exp_mirna, num_pred_mirna, num_lncrna, num_piRNA
         if links==1:
-            symbol_str = '<a class="t1" href="/irndb/target/%s" title="Link to IRNdb target entry">%s</a>' % (e.symbol, e.symbol)
+            symbol_str = '<a class="t1" href="%s/target/%s" title="Link to IRNdb target entry">%s</a>' % (_APP_LINK_PREFIX,
+                                                                                                          e.symbol,
+                                                                                                          e.symbol)
             name_str = '<a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/%s" title="Link to NCBI gene">%s</a>' % (e.id, e.tname)
             geneid_str = '<a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/%s" title="Link to NCBI gene">%s</a>' % (e.id, e.id)
         else:
@@ -460,7 +468,9 @@ def create_data_mirna(entity_list, links=1):
         e.num_pred_mmu = e.num_immune_strict - e.num_immune_strict_exp
         e.num_pred_hsa = e.num_immune - e.num_pred_mmu - e.num_exp_hsa - e.num_immune_strict_exp  # predicted targets with immune relevance inferred from humans.
         if links==1:
-            mirna_str = '<a class="m1" href="/irndb/mirna/%s" title="IRN miRNA details">%s</a>' % (e.mname, e.mname)
+            mirna_str = '<a class="m1" href="%s/mirna/%s" title="IRN miRNA details">%s</a>' % (_APP_LINK_PREFIX,
+                                                                                               e.mname,
+                                                                                               e.mname)
             mirnaid_str = '<a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc=%s" title="Open miRNA in mirBase">%s</a>' % (e.mirbase_id, e.mirbase_id)
         else:
             mirna_str = e.mname
@@ -489,25 +499,10 @@ def create_dnl_response(filename, data, header):
     return response
 
 
-def get_targets(entity_list, type):
-    """ Return targets for a rna set """
-    targets_exp, targets_pred = [], []
-    if type == 'mirna':
-        targets_exp  = M2T_EXP.objects.filter(mirna__in = entity_list).values('target').distinct()
-        targets_pred = M2T_PRED.objects.filter(mirna__in = entity_list).values('target').distinct()
-    elif type == 'lncrna':
-        targets_exp = L2T.objects.filter(lncrna__in = entity_list).values('target').distinct()
-        targets_pred = []
-    elif type == 'pirna':
-        targets_exp = P2T.objects.filter(pirna__in = entity_list).values('target').distinct()
-        targets_pred = []
-    return targets_exp, targets_pred
-
-
 def get_pathways(entitytype, pathwaytype, dnl='0'):
-    rnalink_template = '<a class="m1" href="/irndb/%s/%s">%s</a>' # rnatype, rnasymbol/name, symbol/name
-    pwlink_template = '<a title="Open in IRNdb" class="g" href="/irndb/%s/%s">%s</a>' # pathwaytype, pwid, pwname
-    targetlink_template = '<a title="Open in IRNdb" class="t1" href="/irndb/target/%s">%s</a>' # symbol, symbol 
+    rnalink_template = '<a class="m1" href="%s/%s/%s">%s</a>' # _APP_LINK_PREFIX, rnatype, rnasymbol/name, symbol/name
+    pwlink_template = '<a title="Open in IRNdb" class="g" href="%s/%s/%s">%s</a>' # _APP_LINK_PREFIX, pathwaytype, pwid, pwname
+    targetlink_template = '<a title="Open in IRNdb" class="t1" href="%s/target/%s">%s</a>' # _APP_LINK_PREFIX, symbol, symbol 
   
     dPW = {}
     res_list = []
@@ -525,20 +520,24 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
 
             if dnl != '1':
                 if entitytype == 'pirna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.pirna.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.pirna.split(',')])
                 elif entitytype == 'lncrna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.lncrna.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.lncrna.split(',')])
                 elif entitytype == 'mirna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.mirna_exp.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.mirna_exp.split(',')])
 
 
-                dPW[t2pw.kegg].append([ str(targetlink_template % (t2pw.target.symbol,
+                dPW[t2pw.kegg].append([ str(targetlink_template % (_APP_LINK_PREFIX,
+                                                                   t2pw.target.symbol,
                                                                    t2pw.target.symbol)),
                                                                    rnas])
             else:
@@ -559,7 +558,10 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                     row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
                     str_table += row_str
                 str_table += '</tbody></table>'
-                res_list.append([str(pwlink_template % (pathwaytype, str(kegg.keggid), str(kegg.keggname))), str_table])
+                res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
+                                                        pathwaytype,
+                                                        str(kegg.keggid),
+                                                        str(kegg.keggname))), str_table])
             else:
                 # here make one row per target
                 for tlist in targetlist:
@@ -579,22 +581,26 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
 
             if dnl != '1':
                 if entitytype == 'pirna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.pirna.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.pirna.split(',')])
                 elif entitytype == 'lncrna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.lncrna.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.lncrna.split(',')])
                 elif entitytype == 'mirna':
-                    rnas = '; '.join([str(rnalink_template % (entitytype,
-                                                rna.strip(),
-                                                rna.strip())) for rna in t2pw.mirna_exp.split(',')])
+                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.mirna_exp.split(',')])
 
 
-                dPW[t2pw.wikipath].append([ str(targetlink_template % (t2pw.target.symbol,
-                                                                   t2pw.target.symbol)),
-                                                                   rnas])
+                dPW[t2pw.wikipath].append([ str(targetlink_template % (_APP_LINK_PREFIX,
+                                                                       t2pw.target.symbol,
+                                                                       t2pw.target.symbol)),
+                                                                       rnas])
             else:
                 if entitytype == 'pirna':
                     rnas = str(t2pw.pirna)
@@ -613,7 +619,10 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                     row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
                     str_table += row_str
                 str_table += '</tbody></table>'
-                res_list.append([str(pwlink_template % (pathwaytype, str(wp.wikipathid), str(wp.wikipathname))), str_table])
+                res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
+                                                        pathwaytype,
+                                                        str(wp.wikipathid),
+                                                        str(wp.wikipathname))), str_table])
             else:
                 # here make one row per target
                 for tlist in targetlist:
