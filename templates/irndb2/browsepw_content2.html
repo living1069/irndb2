@@ -1,0 +1,63 @@
+{% load staticfiles %}
+
+<style>
+  #sebio{{ pwt }} { table-layout: fixed; }
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    
+    <div class="dataTable_wrapper">
+      <table class="table table-condensed" id="sebio{{ pwt }}">
+        <thead>
+          <tr>
+            <th title="Pathway name"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway name</th>
+            <th title="RNAs regulating targets in pathway">Targets / RNAs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr>
+            <td>{{row.0|safe}}</td>
+            <td>
+              <table>
+                <tbody>
+                {% for target in row.1 %}
+                <tr>
+                  <td style="width:120px; vertical-align: top;">{{target.0|safe}}</td>
+                  <td>{{target.1|safe}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        
+        
+      </table> 
+      <!-- DataTables JavaScript -->
+
+      <script>
+        $(document).ready( function () {
+          $('#sebio{{ pwt }}').DataTable( {
+                      "columns": [
+                        {"width":"300px"},
+                        {"className": "text-left", "bSortable": false}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+               } );
+      </script>
+ 
+    </div>
+  </div>
+</div>
+
