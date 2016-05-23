@@ -72,17 +72,21 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
      )
 {% endcomment %}
 
-{% url 'irndb2:home_url_name' as home %}
-{% url 'irndb2:target_url_name' as target %}
-{% url 'irndb2:mirna_url_name' as mirna %}
-{% url 'irndb2:lncrna_url_name' as lncrna %}
-{% url 'irndb2:pirna_url_name' as pirna %}
-{% url 'irndb2:contact_url_name' as contact %}
+{% url 'irndb2:home_url_name' as home_url %}
+{% url 'irndb2:target_url_name' as target_url %}
+{% url 'irndb2:mirna_url_name' as mirna_url %}
+{% url 'irndb2:lncrna_url_name' as lncrna_url %}
+{% url 'irndb2:pirna_url_name' as pirna_url %}
+{% url 'irndb2:kegg_url_name' as kegg_url %}
+{% url 'irndb2:wp_url_name' as wp %}
+{% url 'irndb2:contact_url_name' as contact_url %}
 {% url 'irndb2:doc_url_name' as doc %}
-{% url 'irndb2:tables_url_name' as tables %}
-{% url 'irndb2:charts_url_name' as charts %}
-{% url 'irndb2:search_url_name' as search %}
-{% url 'irndb2:browse_url_name' as browse %}
+{% url 'irndb2:tables_url_name' as tables_url %}
+{% url 'irndb2:charts_url_name' as charts_url %}
+{% url 'irndb2:search_url_name' as search_url %}
+{% url 'irndb2:browse_url_name' as browse_url %}
+{% url 'static' as static_url %}
+
 
 <body>
   <div id="wrapper">
@@ -96,14 +100,14 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{{ home }}"><img src="{% static 'irndb2/images/logo.png' %}" style="height: 100%; width: auto;"></a>
+        <a class="navbar-brand" href="{{ home_url }}"><img src="{% static 'irndb2/images/logo.png' %}" style="height: 100%; width: auto;"></a>
       </div>
       <!-- /.navbar-header -->
 
       {% comment "Add search bar to the right in the navbar" %}
       <!-- navbar-top-right -->
       <div class="col-lg-2 pull-right">
-        <form class="navbar-form" role="search" action="{{ search }}" method="GET">
+        <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
             <div class="input-group-btn">
@@ -120,7 +124,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
       <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
           <!-- search bar -->
-          <form class="navbar-form" role="search" action="{{ search }}" method="GET">
+          <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
             <div class="input-group">
               <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
               <div class="input-group-btn">
@@ -132,22 +136,22 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
 
           <ul class="nav" id="side-menu">
             <li>
-              <a href="{{ home }}"><i class="fa fa-home fa-fw"></i> Home</a>
+              <a href="{{ home_url }}"><i class="fa fa-home fa-fw"></i> Home</a>
             </li>
             <li>
-              <a href="{{ doc }}"><i class="fa fa-info-circle fa-fw"></i> Documentation</a>
+              <a href="{{ doc_url }}"><i class="fa fa-info-circle fa-fw"></i> Documentation</a>
             </li>
             <li>
-              <a href="{{ contact }}"><i class="fa fa-envelope fa-fw"></i> Contact</a>
+              <a href="{{ contact_url }}"><i class="fa fa-envelope fa-fw"></i> Contact</a>
             </li>
             <li>
               <a href="#"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse }}?type=mirna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=mirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse }}?type=mirna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=mirna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -156,10 +160,10 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> piRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse }}?type=pirna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=pirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse }}?type=pirna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=pirna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -168,10 +172,10 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> lncRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse }}?type=lncrna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=lncrna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse }}?type=lncrna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=lncrna&pw=1">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -180,11 +184,11 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></i> targets<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse }}?type=target">Browse/search</a>
+                  <a href="{{ browse_url }}?type=target">Browse/search</a>
                 </li>
 		{% comment %}
                 <li>
-                  <a href="{{ browse }}?type=target&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=target&pw=1">Targeted pathways</a>
                 </li>
 		{% endcomment %}
               </ul>
@@ -192,10 +196,10 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
             </li>
             {% comment %}
             <li>
-              <a href="{{ tables }}"><i class="fa fa-table fa-fw"></i> Tables</a>
+              <a href="{{ tables_url }}"><i class="fa fa-table fa-fw"></i> Tables</a>
             </li>
             <li>
-              <a href="{{ charts }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
+              <a href="{{ charts_url }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
             </li>
 	    {% endcomment %}
           </ul>
@@ -221,8 +225,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
         <div class="row">
           <div class="col-lg-12 text-right">
             <hr>
-            <p><a href="http://sschmeier.com"><i class="fa fa-home
-            fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.4</p>
+            <p><a href="http://sschmeier.com"><i class="fa fa-home fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.4</p>
           </div>
         </div>
         <!-- ./Footer row -->

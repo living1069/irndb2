@@ -1,5 +1,5 @@
 {% extends "irndb2/base.html" %}
-{% block title %}Documentation{% endblock %}
+{% block title %}Browse:pathways:{{rna_title}}{% endblock %}
 
 {% load staticfiles %}
 {% block content %}
@@ -29,14 +29,12 @@ $(function() {
 </script>
 
 <div class="row">
- <div class="col-md-12">
-   <h3 class="page-header">Documentation</h3>
+ <div class="col-lg-12">
+   <h3 class="page-header">Browse pathways ({{entity_type}})</h3>
     <div id="tabsInfo">
       <ul>
-        <li><a href="{{ doc_url }}?tab=1">Overview</a></li>
-        <li><a href="{{ doc_url }}?tab=2">Description</a></li>
-        <li><a href="{{ doc_url }}?tab=3">Resources</a></li>
-        <li><a href="{{ doc_url }}?tab=4">Statistics</a></li>
+        <li><a href="{{ browse_url }}?type={{entity_type}}&pw=1&pwt=kegg">KEGG</a></li>
+        <li><a href="{{ browse_url }}?type={{entity_type}}&pw=1&pwt=wikipathway">Wikipathway</a></li>
       </ul>
     </div> <!-- end tabs-->
  </div>
