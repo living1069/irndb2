@@ -1,0 +1,76 @@
+{% extends "irndb2/base.html" %}
+{% block title %}{{ l.lsymbol }}{% endblock %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+
+});
+</script>
+
+<h3><img src="{% static 'irndb2/images/lncrna.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;lncRNA view</h3>
+
+{% if l %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>{{ l.lsymbol }}</b>
+  </div>
+  <div class="panel-body">
+    <p>
+
+    <table id="tableinfo">
+      <tr>
+        <td><b>Symbol:</b></td><td><a class="m1" href="{{ l.llink }}" title="Link to external">{{ l.lsymbol }}</td>
+      </tr>
+      <tr>
+        <td><b>Name:</b></td><td><a class="m1" href="{{ l.llink }}" title="Link to external">{{ l.lname }}</a></td>
+      </tr>
+      <tr>
+        <td><b>Alias:</b></td><td><a class="m1" href="{{ l.llink }}" title="Link to external">{{ l.lalias }}</a></td>
+      </tr>
+      <tr>
+        <td><b>lncRNA sources:</b></td><td>{{ l.sources }}</td>
+      </tr>
+    </table>
+ 
+    </p>
+  </div>
+</div>
+
+<div id="tabsInfo">
+  <ul>
+    <li><a href="{{ lncrna_url }}{{ l.lsymbol }}?type=t">Targets</a></li>
+    <li><a href="{{ lncrna_url }}{{ l.lsymbol }}?type=p">Pathways</a></li>
+    <li><a href="{{ lncrna_url }}{{ l.lsymbol }}?type=g">GO</a></li>
+  </ul>
+</div>
+  
+{% else %}
+ <p>lncRNA not found.</p>
+{% endif %}
+
+{% endblock %}

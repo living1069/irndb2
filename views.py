@@ -12,8 +12,193 @@ _APP_LINK_PREFIX = '/apps/irndb'
 #----------------------------------------------------------------
 # VIEW methods
 #----------------------------------------------------------------
+def lncrna_method(request, sym, flush=True): # need to change to False for prod.
+    """"""
+    context = {}
+    context["entity_type"] = "lncrna"
+    
+    ## flush the session store of pirna
+    if flush:
+        try:
+            del request.session['lncrnas']
+        except:
+            request.session['lncrnas'] = {}
+ 
+    # Need a store for pirnas if not already there
+    if 'lncrnas' not in request.session:
+        request.session['lncrnas'] = {}
+
+    a = Lncrna.objects.filter(lsymbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
+        return render(request, "irndb2/404.html", context)
+    else:
+        lncrna_obj = a[0]
+        lid = lncrna_obj.id
+
+    # lncRNA exists get some more info for lncRNA
+    # target sources where lncRNA was inferred from
+    res_list = L2T.objects.filter(lncrna=lncrna_obj).values_list('source').distinct().order_by('source')
+    res_list = ','.join([t[0] for t in res_list])
+    res_list = ', '.join(res_list.split(','))
+    lncrna_obj.sources = res_list
+    
+    # adjust alias
+    lncrna_obj.lalias = ', '.join(lncrna_obj.lalias.split(','))
+    
+    # fetch type via GET method
+    sTYPE = request.GET.get('type', 'x') # some char not in use
+    if sTYPE not in ["p","g","t"]: # add possible tabs here
+        context['l'] = lncrna_obj
+        context['aImmStrict'] = []
+        context['aImm'] = []
+        return render_to_response("irndb2/lncrna_base.html", context)
+
+    bL = 0
+    iExisted = 0
+    ## check if lncrna still in session/cache if so, use existing and return
+    if lid in request.session['lncrnas']:
+        bL = 1
+        aTargets = request.session['lncrnas'][lid]['targets']
+        iExisted = 1
+    else: # need to fetch targets of lncRNA
+        aTargets = L2T.objects.filter(lncrna=lid).select_related('target').values_list('target',
+                                                                              'target__symbol',
+                                                                              'target__tname',
+                                                                              'target__strict',
+                                                                              'target__immusources',
+                                                                              'pmid',
+                                                                              'source').distinct().order_by('target__symbol')
+        aTargets = list(aTargets)
+        aTargetsFinal = []
+        for t in aTargets:
+            t = list(t)
+            t[4] = [s.strip() for s in t[4].split(',')]
+            aTargetsFinal.append(t)
+            t[6] = ', '.join(t[6].split(','))
+        aTargets = aTargetsFinal
+
+        request.session['lncrnas'][lid] = {'targets':aTargets}
+        request.session.modified = True
+
+    #-- target tab --
+    if sTYPE == "t":
+        context['l'] = lncrna_obj
+        context['targets'] = aTargets
+        context['bL'] = bL
+        context['existed'] = iExisted
+        return render(request, 'irndb2/rna_targets.html', context)
+
+    #-- GO tab --
+    if sTYPE == 'g':
+        ## fetch pathways from session cache if exists or create new
+        if 'goprocess' in request.session['lncrnas'][lid]:
+            aP  = request.session['lncrnas'][lid]['goprocess']
+            aF  = request.session['lncrnas'][lid]['gofunction']
+            iGexisted = 1
+        else:
+            iGexisted = 0
+            aP = []
+            aF = []
+
+            aIDs = [t[0] for t in aTargets]
+            aG = T2G.objects.filter(target__in=aIDs).select_related('target', 'go').values_list('go__goid', 'go__goname', 'go__gocat', 'target__id', 'target__symbol', 'target__tname').distinct()
+
+            dGp = {}
+            dGf = {}
+            for tRes in aG:
+                tG = (tRes[0], tRes[1])
+                if tRes[2]=='Process':
+                    if tG not in dGp:
+                        dGp[tG] = set()
+                    dGp[tG].add((tRes[4], tRes[3], tRes[5]))
+                elif tRes[2]=='Function':
+                    if tG not in dGf:
+                        dGf[tG] = set()
+                    dGf[tG].add((tRes[4], tRes[3], tRes[5]))
+
+            aP = []
+            for k,v in dGp.items():
+                aT = list(v)
+                aT.sort()
+                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+            aF = []
+            for k,v in dGf.items():
+                aT = list(v)
+                aT.sort()
+                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+
+
+            request.session['lncrnas'][lid]['goprocess'] = aP
+            request.session['lncrnas'][lid]['gofunction'] = aF
+            request.session.modified = True
+
+        context['go_p'] = aP
+        context['go_f'] = aF
+        context['existed'] = iGexisted
+        return render(request, 'irndb2/rna_go.html', context)
+
+    #-- pathway tab --
+    elif sTYPE=="p":
+        ## fetch pathways from session cache if exists or create new
+        if 'wikipath' in request.session['lncrnas'][lid]:
+            aW  = request.session['lncrnas'][lid]['wikipath']
+            aK  = request.session['lncrnas'][lid]['kegg']
+            iPexisted = 1
+        else:
+            ## create new
+            iPexisted = 0
+            # target ids
+            aIDs = [t[0] for t in aTargets]
+            # wikipath exp
+            aWtemp = T2W.objects.filter(target__in=aIDs).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list(v)
+                aT.sort()
+                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+            aW = aWtemp[:]
+
+            aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list(v)
+                aT.sort()
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+            aK = aWtemp[:]
+
+            ## puch to session cash
+            request.session['lncrnas'][lid]['wikipath'] = aW
+            request.session['lncrnas'][lid]['kegg'] = aK
+            request.session.modified = True
+
+        context['wikipath'] = aW
+        context['kegg'] = aK
+        context['type'] = sTYPE
+        context['existed'] = iPexisted
+        return render(request, 'irndb2/rna_pathways.html', context)
+
+
 def pirna_method(request, name, flush=True): # need to change to False for prod.
     """"""
+    context = {}
+    context['entity_type'] = 'pirna'
+    
     ## ## flush the session store of pirna
     if flush:
         try:
@@ -57,7 +242,9 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     # fetch type via GET method
     sTYPE = request.GET.get('type', 'x') # some char not in use
     if sTYPE not in ["p","g","t"]: # add possible tabs here
-        context = {'p':pirna_obj, 'aImmStrict':[], 'aImm':[]}
+        context['p'] = pirna_obj
+        context['aImmStrict'] = []
+        context['aImm'] = []
         return render_to_response("irndb2/pirna_base.html", context)
 
     bL = 0
@@ -91,8 +278,11 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
 
     #-- target tab --
     if sTYPE == "t":
-        context = {'p':pirna_obj, 'targets':aTargets, 'bL':bL, 'existed':iExisted}
-        return render(request, 'irndb2/pirna_t.html', context)
+        context['p'] = pirna_obj
+        context['targets'] = aTargets
+        context['bL'] = bL
+        context['existed'] = iExisted
+        return render(request, 'irndb2/rna_targets.html', context)
 
     #-- GO tab --
     if sTYPE == 'g':
@@ -138,8 +328,10 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
             request.session['pirnas'][pid]['gofunction'] = aF
             request.session.modified = True
 
-        context = {'go_p':aP, 'go_f':aF, 'existed':iGexisted}
-        return render(request, 'irndb2/pirna_g.html', context)
+        context['go_p'] = aP
+        context['go_f'] = aF
+        context['existed'] = iGexisted
+        return render(request, 'irndb2/rna_go.html', context)
 
     #-- pathway tab --
     elif sTYPE=="p":
@@ -187,8 +379,11 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
             request.session['pirnas'][pid]['kegg'] = aK
             request.session.modified = True
 
-        context = {'wikipath':aW, 'kegg':aK, 'type':sTYPE, 'existed':iPexisted}
-        return render(request, 'irndb2/pirna_p.html', context)
+        context['wikipath'] = aW
+        context['kegg'] = aK
+        context['type'] = sTYPE
+        context['existed'] = iPexisted
+        return render(request, 'irndb2/rna_pathways.html', context)
 
 
 def kegg_method(request, id):
@@ -303,35 +498,6 @@ def mirna_method(request, name):
         obj = a[0]
     
     return render(request, "irndb2/mirna.html", context)
-
-
-def lncrna_method(request, sym):
-    context = {}
-    a = Lncrna.objects.filter(lsymbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
-    if len(a)>1:
-        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
-        return render(request, "irndb2/404.html", context)
-    elif len(a)==0:
-        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
-        return render(request, "irndb2/404.html", context)
-    else:
-        obj = a[0]
-    
-    return render(request, "irndb2/lncrna.html", context)
-
-
-## def pirna_method(request, name):
-##     context = {}
-##     a = Pirna.objects.filter(pname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
-##     if len(a)>1:
-##         context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%name
-##         return render(request, "irndb2/404.html", context)
-##     elif len(a)==0:
-##         context["error"] = 'Query "%s" resulted in 0 entities.'%name
-##         return render(request, "irndb2/404.html", context)
-##     else:
-##         obj = a[0]
-##     return render(request, "irndb2/pirna.html", context)
 
 
 def doc_method(request):
