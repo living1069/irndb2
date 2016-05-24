@@ -2,6 +2,7 @@
 {% block title %}{{p.pname}}{% endblock %}
 
 {% load staticfiles %}
+
 {% block content %}
 
 <script>
@@ -40,7 +41,8 @@ $(function() {
   </div>
   <div class="panel-body">
     <p>
-      <table>
+      
+      <table id="tableinfo">
         <tr>
           <td><b>Name:</b></td><td><a class="m1" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="Link to piRNA source">{{ p.pname }}</a></td>
         </tr>
@@ -51,17 +53,18 @@ $(function() {
           <td><b>Accession(s):</b></td><td><a class="m1" href="{{ p.paccession_link }}" title="Open piRNA at NCBI">{{ p.paccession }}</a></td>
         </tr>
         <tr>
-          <td><b>Sequence:</b></td><td>{{ p.pseq }}</a></td>
-       </tr>
-       <tr>
-         <td><b>piRNA DB source(s):&nbsp;</b></td><td><a class="g" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="piRNA source link">{{ p.psource }}</a></td>
-       </tr>
-       <tr>
-         <td><b>piRNA PMID source(s):&nbsp;</b></td><td><a class="g" href="{{ p.ppmid_link  }}" title="piRNA source link">{{ p.ppmid }}</a></td>
-       </tr> 
-     </table>
-   </p>
-</div>
+          <td><b>Sequence:</b></td><td>{{ p.pseq }}</td>
+        </tr>
+        <tr>
+          <td><b>piRNA DB source(s):&nbsp;</b></td><td><a class="g" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="piRNA source link">{{ p.psource }}</a></td>
+        </tr>
+        <tr>
+          <td><b>piRNA PMID source(s):&nbsp;</b></td><td><a class="g" href="{{ p.ppmid_link  }}" title="piRNA source link">{{ p.ppmid }}</a></td>
+        </tr> 
+      </table>
+  
+    </p>
+  </div>
 </div>
 
 <div id="tabsInfo">
