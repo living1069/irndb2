@@ -29,18 +29,9 @@
             <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' w.pathid %}">{{ w.pathname }}</a></td>
             <!--<td><a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:{{ w.pathid }}"><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > {{ w.pathname }}</a></td>-->
             <td>
-              <table id="res">
-                <tbody>
-                  {% for target in w.targets %}
-                  <tr>
-                    <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
-                     </td>
-                    <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                 </tbody>
-              </table>
+              {% for target in w.targets %}
+              <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
+              {% endfor %}
             </td>
             <td>{{ w.targets|length }}</td>
           </tr>
@@ -48,20 +39,33 @@
         </tbody>
       </table> 
       
-      <script>
-        $(document).ready( function () {
-          $('#sebioWikipath1').DataTable( {
-       "columns": [ { "width": "350px" },   {  "bSortable": false },  { "width": "75px", "className": "text-right" } ],
-       "order": [[ 0, "asc" ]]
+    <script>
+    $(document).ready( function () {
+      var table1 = $('#sebioWikipath1').DataTable( {
+         "columns": [
+             { "width": "450px" },
+             {  "bSortable": false },
+             { "width": "75px", "className": "text-right" }
+          ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel' ]
         } );
-        } );
-      </script>
+        table1.buttons().container()
+                     .appendTo( '#sebioWikipath1_wrapper .col-sm-6:eq(0)' );
+       } );
+     </script>
       {% else %}
       <p>No wikipathways found for immune targets.</p>
       {% endif %}
     </div>
   </div>
 </div>
+
+
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -92,18 +96,9 @@
             <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:kegg_url_name' w.pathid %}">{{ w.pathname }}</a></td>
             <!--<td><a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:{{ w.pathid }}"><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > {{ w.pathname }}</a></td>-->
              <td>
-               <table id="res">
-                 <tbody>
                    {% for target in w.targets %}
-                   <tr>
-                     <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
-                     </td>
-                     <td><a class="t1" title="Link to NCBI gene"  href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
-                     </td>
-                   </tr>
+                  <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>, 
                    {% endfor %}
-                 </tbody>
-               </table>
              </td>
             <td>{{ w.targets|length }}</td>
           </tr>
@@ -113,10 +108,21 @@
       
       <script>
         $(document).ready( function () {
-         $('#sebioKegg1').DataTable( {
-        "columns": [  { "width": "350px" },   { "bSortable": false },  { "width": "75px", "className": "text-right"} ],
-           "order": [[ 0, "asc" ]] 
+         var table2 = $('#sebioKegg1').DataTable( {
+         "columns": [
+             { "width": "450px" },
+             {  "bSortable": false },
+             { "width": "75px", "className": "text-right" }
+          ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel' ]
         } );
+        table2.buttons().container()
+                     .appendTo( '#sebioKegg1_wrapper .col-sm-6:eq(0)' );
        } );
       </script>
       {% else %}
@@ -125,3 +131,4 @@
     </div>
   </div>
 </div>
+

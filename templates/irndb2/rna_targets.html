@@ -64,21 +64,25 @@
 
     <script>
     $(document).ready( function () {
-      $('#sebio1').DataTable( {
+      var table = $('#sebio1').DataTable( {
          "columns": [
-         {"width":"120px"},
-         null, 
-         {"width":"30px", "className": "text-center"},
-         {"width":"120px", "bSortable": false},
-         {"width":"120px", "className": "text-center"},
-         {"width":"20px", "className": "text-center", "bSortable": false},
-         ],
-         "order": [[ 0, "asc" ]],
-         "deferRender": true,
-         responsive: true
-      });
-    } );
-
+           {"width":"120px"},
+           null, 
+           {"width":"30px", "className": "text-center"},
+           {"width":"120px", "bSortable": false},
+           {"width":"120px", "className": "text-center"},
+           {"width":"20px", "className": "text-center", "bSortable": false},
+          ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 15,
+          buttons: [ 'copy', 'excel' ]
+        });
+        table.buttons().container()
+                     .appendTo( '#sebio1_wrapper .col-sm-6:eq(0)' );
+       } );
     </script>
    </div>
   </div>

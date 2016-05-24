@@ -25,18 +25,9 @@
            <tr>
              <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
              <td>
-               <table id="res">
-                 <tbody>
-                   {% for target in w.targets %}
-                   <tr>
-                     <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
-                     </td>
-                     <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
-                     </td>
-                   </tr>
-                   {% endfor %}
-                 </tbody>
-               </table>
+               {% for target in w.targets %}
+               <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
+               {% endfor %}
              </td>
              <td>{{ w.targets|length }}</td>
            </tr>
@@ -46,13 +37,20 @@
       
       <script>
         $(document).ready( function () {
-          $('#sebioG1').DataTable( {
+          var tableG1 = $('#sebioG1').DataTable( {
               "columns": [ 
-                    { "width": "350px" },
+                    { "width": "450px" },
                     { "orderable": false },
                     { "width": "75px", "className": "text-right"} ],
-           "order": [[ 0, "asc" ]] 
-         });
+              "order": [[ 0, "asc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 10,
+              buttons: [ 'copy', 'excel' ]
+        });
+         tableG1.buttons().container()
+                     .appendTo( '#sebioG1_wrapper .col-sm-6:eq(0)' );
        });
       </script>
       {% else %}
@@ -87,18 +85,9 @@
           <tr>
             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
             <td>
-              <table id="res">
-                <tbody>
-                  {% for target in w.targets %}
-                  <tr>
-                    <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
-                    </td>
-                    <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+              {% for target in w.targets %}
+              <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
+              {% endfor %}
             </td>
             <td>{{ w.targets|length }}</td>
           </tr>
@@ -107,14 +96,21 @@
        </table> 
       
       <script>
-        $(document).ready( function () {
-         $('#sebioG2').DataTable( {
-           "columns": [ 
-                    { "width": "350px" },
-                    {  "bSortable": false },
+         $(document).ready( function () {
+          var tableG2 = $('#sebioG2').DataTable( {
+              "columns": [ 
+                    { "width": "450px" },
+                    { "orderable": false },
                     { "width": "75px", "className": "text-right"} ],
-           "order": [[ 0, "asc" ]] 
-         });
+              "order": [[ 0, "asc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 10,
+              buttons: [ 'copy', 'excel' ]
+        });
+         tableG2.buttons().container()
+                     .appendTo( '#sebioG2_wrapper .col-sm-6:eq(0)' );
        });
       </script>
       {% else %}

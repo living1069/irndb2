@@ -14,10 +14,11 @@
    
        <div class="panel panel-default">
          <div class="panel-body">
+           {% comment %}
            <a href="{{ browse_url }}?type=mirna&dnl=1">
            <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
            </a>
-             
+           {% endcomment %}
            <div class="dataTable_wrapper">
              <table class="table table-condensed" id="sebio1">
                <thead>
@@ -37,7 +38,7 @@
                var dataSet = {{ data|safe }};
                  
                   $(document).ready( function () {
-                  $('#sebio1').DataTable( {
+                  var table = $('#sebio1').DataTable( {
                       "data": dataSet,
                       "columns": [
                         {"width":"160px"},
@@ -49,8 +50,13 @@
                        ],
                     "order": [[ 2, "desc" ]],
                     "deferRender": true,
-                    responsive: true
-                    });
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 20,
+                    buttons: [ 'copy', 'excel' ]
+                  });
+                 table.buttons().container()
+                     .appendTo( '.col-sm-6:eq(0)' );
                } );
              </script>
              
