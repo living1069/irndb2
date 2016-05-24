@@ -70,19 +70,18 @@ $(function() {
 <div id="tabsInfo">
   <ul>
     {% comment %}
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=t"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Targets</a></li>
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=p"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Pathways</a></li>
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=g"><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=t"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Targets</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=p"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Pathways</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=g"><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO</a></li>
     {% endcomment %}
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=t">Targets</a></li>
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=p">Pathways</a></li>
-    <li><a href="{{ pirna_url}}{{ p.name }}?type=g">GO</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=t">Targets</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=p">Pathways</a></li>
+    <li><a href="{{ pirna_url }}{{ p.name }}?type=g">GO</a></li>
   </ul>
 </div>
   
 {% else %}
  <p>piRNA not found.</p>
 {% endif %}
-
 
 {% endblock %}

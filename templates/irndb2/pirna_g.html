@@ -5,7 +5,7 @@
     <b>GO-PROCESS: Immune targets ({{go_p|length}})</b>
   </div>
   <div class="panel-body">
-    <a href="{{ browse_url }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     {% if go_p %}
@@ -65,7 +65,7 @@
     <b>GO-FUNCTION: Immune targets ({{ go_f|length }})</b>
   </div>
   <div class="panel-body">
-    <a href="{{ browse_url }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     {% if go_f %}

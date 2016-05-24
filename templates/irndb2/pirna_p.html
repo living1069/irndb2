@@ -7,7 +7,7 @@
 
   <div class="panel-body">
     {% if wikipath %}
-    <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     
@@ -75,7 +75,7 @@
   <div class="panel-body">
 
     {% if kegg %}
-    <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     

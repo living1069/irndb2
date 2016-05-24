@@ -7,7 +7,7 @@
     <b>Targets ({{targets|length}})</b>
   </div>
   <div class="panel-body">
-    <a href="{{ browse_url }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     
@@ -41,14 +41,14 @@
                <tbody>
                  {% for isource in t.4 %}
                  <tr>
-                    <td><a class="g" href="{{ doc_url }}">{{ isource }}</a></td>
+                    <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">{{ isource }}</a></td>
                  </tr>
                  {% endfor %}
                </tbody>
            </table>
 
         </td>
-        <td><a class="g" href="{{ doc_url }}">piRBase</a></td>
+        <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">piRBase</a></td>
         <td>
           <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ t.5 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></a>
         </td>
