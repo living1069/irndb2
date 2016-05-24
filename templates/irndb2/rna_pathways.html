@@ -2,14 +2,17 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>WIKIPATHWAYS for immune targets of lncRNA ({{ wikipath|length }})</b>
+    <b>WIKIPATHWAYS for immune targets ({{ wikipath|length }})</b>
   </div>
 
   <div class="panel-body">
     {% if wikipath %}
+
+    {% comment %}
     <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
+    {% endcomment %}
     
     <div class="dataTable_wrapper">
       <table id="sebioWikipath1" class="table table-condensed">
@@ -53,16 +56,8 @@
         } );
         } );
       </script>
-      <style>
-        #sebioWikipath1_filter input {
-        background-color: #fcfcff;
-        padding: 2px;
-        border: solid 1px #dcdcdc;
-        transition: box-shadow 0.3s, border 0.3s;
-        }
-      </style>
       {% else %}
-      <p>No wikipathways found for immune targets of lncRNA.</p>
+      <p>No wikipathways found for immune targets.</p>
       {% endif %}
     </div>
   </div>
@@ -75,9 +70,12 @@
   <div class="panel-body">
 
     {% if kegg %}
+
+    {% comment %} 
     <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
+    {% endcomment %}
     
     <div class="dataTable_wrapper">
       <table id="sebioKegg1" class="table table-condensed">

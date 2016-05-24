@@ -7,10 +7,11 @@
     <b>Targets ({{targets|length}})</b>
   </div>
   <div class="panel-body">
+    {% comment %}
     <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
-    
+    {% endcomment %}
     <div class="dataTable_wrapper">
     <table id="sebio1" class="table table-condensed">
       <thead>
@@ -47,9 +48,13 @@
                </tbody>
            </table>
 
-        </td>
-        <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">piRBase</a></td>
-        <td>
+         </td>
+         {% if entity_type == 'lncrna' %}
+         <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">{{ t.6 }}</a></td>
+         {% elif entity_type == 'pirna' %}
+         <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">piRBase</a></td>
+         {% endif %}
+         <td>
           <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ t.5 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></a>
         </td>
       </tr>

@@ -5,9 +5,11 @@
     <b>GO-PROCESS: Immune targets ({{go_p|length}})</b>
   </div>
   <div class="panel-body">
+    {% comment %}
     <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
+    {% endcomment %}
     {% if go_p %}
     <div class="dataTable_wrapper">
       <table id="sebioG1" class="table table-condensed">
@@ -65,9 +67,11 @@
     <b>GO-FUNCTION: Immune targets ({{ go_f|length }})</b>
   </div>
   <div class="panel-body">
+    {% comment %}
     <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
+    {% endcomment %}
     {% if go_f %}
     <div class="dataTable_wrapper">
       <table id="sebioG2" class="table table-condensed">
