@@ -1,0 +1,85 @@
+{% extends "irndb2/base.html" %}
+{% block title %}{{p.pname}}{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+
+});
+</script>
+
+<h3><img src="{% static 'irndb2/images/pirna.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;piRNA view</h3>
+
+{% if p %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>{{ p.pname }}</b>
+  </div>
+  <div class="panel-body">
+    <p>
+      <table>
+        <tr>
+          <td><b>Name:</b></td><td><a class="m1" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="Link to piRNA source">{{ p.pname }}</a></td>
+        </tr>
+        <tr>
+          <td><b>Alias:</b></td><td><a class="m1" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="Link to piRNA source">{{ p.palias }}</a></td>
+        </tr>
+        <tr>
+          <td><b>Accession(s):</b></td><td><a class="m1" href="{{ p.paccession_link }}" title="Open piRNA at NCBI">{{ p.paccession }}</a></td>
+        </tr>
+        <tr>
+          <td><b>Sequence:</b></td><td>{{ p.pseq }}</a></td>
+       </tr>
+       <tr>
+         <td><b>piRNA DB source(s):&nbsp;</b></td><td><a class="g" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.pname}}" title="piRNA source link">{{ p.psource }}</a></td>
+       </tr>
+       <tr>
+         <td><b>piRNA PMID source(s):&nbsp;</b></td><td><a class="g" href="{{ p.ppmid_link  }}" title="piRNA source link">{{ p.ppmid }}</a></td>
+       </tr> 
+     </table>
+   </p>
+</div>
+</div>
+
+<div id="tabsInfo">
+  <ul>
+    {% comment %}
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=t"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Targets</a></li>
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=p"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Pathways</a></li>
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=g"><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO</a></li>
+    {% endcomment %}
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=t">Targets</a></li>
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=p">Pathways</a></li>
+    <li><a href="{{ pirna_url}}{{ p.name }}?type=g">GO</a></li>
+  </ul>
+</div>
+  
+{% else %}
+ <p>piRNA not found.</p>
+{% endif %}
+
+
+{% endblock %}

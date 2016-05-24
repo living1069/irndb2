@@ -1,0 +1,137 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>WIKIPATHWAYS for immune targets of lncRNA ({{ wikipath|length }})</b>
+  </div>
+
+  <div class="panel-body">
+    {% if wikipath %}
+    <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    
+    <div class="dataTable_wrapper">
+      <table id="sebioWikipath1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Wikipathway Name</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in wikipath %}
+          <tr>
+            <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' w.pathid %}">{{ w.pathname }}</a></td>
+            <!--<td><a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:{{ w.pathid }}"><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > {{ w.pathname }}</a></td>-->
+            <td>
+              <table id="res">
+                <tbody>
+                  {% for target in w.targets %}
+                  <tr>
+                    <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
+                     </td>
+                    <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                 </tbody>
+              </table>
+            </td>
+            <td>{{ w.targets|length }}</td>
+          </tr>
+           {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+          $('#sebioWikipath1').DataTable( {
+       "columns": [ { "width": "350px" },   {  "bSortable": false },  { "width": "75px", "className": "text-right" } ],
+       "order": [[ 0, "asc" ]]
+        } );
+        } );
+      </script>
+      <style>
+        #sebioWikipath1_filter input {
+        background-color: #fcfcff;
+        padding: 2px;
+        border: solid 1px #dcdcdc;
+        transition: box-shadow 0.3s, border 0.3s;
+        }
+      </style>
+      {% else %}
+      <p>No wikipathways found for immune targets of lncRNA.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>KEGG PATHWAYS for immune targets ({{ kegg|length }})</b>
+  </div>
+  <div class="panel-body">
+
+    {% if kegg %}
+    <a href="{{ browse }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    
+    <div class="dataTable_wrapper">
+      <table id="sebioKegg1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway Name</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in kegg %}
+          <tr>
+            <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:kegg_url_name' w.pathid %}">{{ w.pathname }}</a></td>
+            <!--<td><a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:{{ w.pathid }}"><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > {{ w.pathname }}</a></td>-->
+             <td>
+               <table id="res">
+                 <tbody>
+                   {% for target in w.targets %}
+                   <tr>
+                     <td style="width:90px"><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>
+                     </td>
+                     <td><a class="t1" title="Link to NCBI gene"  href="http://www.ncbi.nlm.nih.gov/gene/{{ target.1 }}">{{ target.2 }}</a>
+                     </td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+             </td>
+            <td>{{ w.targets|length }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+         $('#sebioKegg1').DataTable( {
+        "columns": [  { "width": "350px" },   { "bSortable": false },  { "width": "75px", "className": "text-right"} ],
+           "order": [[ 0, "asc" ]] 
+        } );
+       } );
+      </script>
+      <style>
+        #sebioKegg1_filter input {
+        background-color: #fcfcff;
+        padding: 2px;
+        border: solid 1px #dcdcdc;
+        transition: box-shadow 0.3s, border 0.3s;
+        }
+      </style>
+      {% else %}
+      <p>No KEGG pathways found for immune targets.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
