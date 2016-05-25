@@ -44,7 +44,7 @@ def mirna_method(request, name, flush=True):
     aImmStrict = []
     aImmExp = []
     aImm = []
-
+    
     ## check if mirna still in session/cache if so, use existing and return
     if mid in request.session['mirnas']:
         bM = 1
@@ -92,18 +92,17 @@ def mirna_method(request, name, flush=True):
         return render(request, 'irndb2/mirna_base.html', context)
     
     elif sTYPE=='g':
-        ## fetch go from session cache if exists or create new
-        if 'go_p_exp' in request.session['mirnas'][mid]:
-            aPexp  = request.session['mirnas'][mid]['go_p_exp']
-            aPpred = request.session['mirnas'][mid]['go_p']
-            aFexp  = request.session['mirnas'][mid]['go_f_exp']
-            aFpred = request.session['mirnas'][mid]['go_f']
-            sGexisted = '1'
+        ## fetch pathways from session cache if exists or create new
+        if 'goprocess' in request.session['mirnas'][mid]:
+            aP  = request.session['mirnas'][mid]['goprocess']
+            aF  = request.session['mirnas'][mid]['gofunction']
         else:
-            ## targets immunological mouse experiemtnal
-            sGexisted = '0'
-            aTargets = list(set([a[0] for a in aImmStrictExp+aImmExp]))
-            aG = T2G.objects.filter(target__in=aTargets).select_related('target', 'go').values_list('go__goid', 'go__goname', 'go__gocat', 'target__id', 'target__symbol', 'target__tname').distinct()
+            aP = []
+            aF = []
+
+            aIDs = list(set([a[0] for a in aImmStrictExp+aImmExp+aImm+aImmStrict]))
+            aG = T2G.objects.filter(target__in=aIDs).select_related('target', 'go').values_list('go__goid', 'go__goname', 'go__gocat', 'target__id', 'target__symbol', 'target__tname').distinct()
+
             dGp = {}
             dGf = {}
             for tRes in aG:
@@ -117,140 +116,74 @@ def mirna_method(request, name, flush=True):
                         dGf[tG] = set()
                     dGf[tG].add((tRes[4], tRes[3], tRes[5]))
 
-            aPexp = []
+            aP = []
             for k,v in dGp.items():
                 aT = list(v)
                 aT.sort()
-                aPexp.append({'goid':k[0], 'goname':k[1], 'targets':aT})
-            aFexp = []
+                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+            aF = []
             for k,v in dGf.items():
                 aT = list(v)
                 aT.sort()
-                aFexp.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
 
-            ## predicted mouse
-            aTargets = list(set([a[0] for a in aImmStrict+aImm]))
-            aG = T2G.objects.filter(target__in=aTargets).select_related('target', 'go').values_list('go__goid', 'go__goname', 'go__gocat', 'target__id', 'target__symbol', 'target__tname').distinct()
-            dGp = {}
-            dGf = {}
-            for tRes in aG:
-                tG = (tRes[0], tRes[1])
-                if tRes[2]=='Process':
-                    if tG not in dGp:
-                        dGp[tG] = set()
-                    dGp[tG].add((tRes[4], tRes[3], tRes[5]))
-                elif tRes[2]=='Function':
-                    if tG not in dGf:
-                        dGf[tG] = set()
-                    dGf[tG].add((tRes[4], tRes[3], tRes[5]))
 
-            aPpred = []
-            for k,v in dGp.items():
-                aT = list(v)
-                aT.sort()
-                aPpred.append({'goid':k[0], 'goname':k[1], 'targets':aT})
-            aFpred = []
-            for k,v in dGf.items():
-                aT = list(v)
-                aT.sort()
-                aFpred.append({'goid':k[0], 'goname':k[1], 'targets':aT})
-
-            ## puch to session cash
-            request.session['mirnas'][mid]['go_p_exp'] = aPexp
-            request.session['mirnas'][mid]['go_p'] = aPpred
-            request.session['mirnas'][mid]['go_f_exp'] = aFexp
-            request.session['mirnas'][mid]['go_f'] = aFpred
+            request.session['mirnas'][mid]['goprocess'] = aP
+            request.session['mirnas'][mid]['gofunction'] = aF
             request.session.modified = True
 
-
-        context = {'go_p_exp':aPexp, 'go_p':aPpred, 'go_f_exp':aFexp, 'go_f':aFpred, 'existed':sGexisted}
-        return render(request, 'irndb2/mg.html', context)
+        context['go_p'] = aP
+        context['go_f'] = aF
+        return render(request, 'irndb2/rna_go.html', context)
 
     elif sTYPE=="p":
         ## fetch pathways from session cache if exists or create new
         if 'wikipath_exp' in request.session['mirnas'][mid]:
-            aWexp  = request.session['mirnas'][mid]['wikipath_exp']
-            aKexp  = request.session['mirnas'][mid]['kegg_exp']
-            aWpred = request.session['mirnas'][mid]['wikipath_pred']
-            aKpred = request.session['mirnas'][mid]['kegg_pred']
-            sPexisted = '1'
+            aW  = request.session['mirnas'][mid]['wikipath']
+            aK  = request.session['mirnas'][mid]['kegg']
         else:
             ## create new
-            sPexisted = '0'
-            ## targets immunological mouse+human experiemtnal
-            aTargets = list(set([a[0] for a in aImmStrictExp+aImmExp]))
+            # target ids
+            aIDs = list(set([a[0] for a in aImmStrictExp+aImmExp+aImm+aImmStrict]))
+           
             # wikipath exp
-            aW = T2W.objects.filter(target__in=aTargets).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            aWtemp = T2W.objects.filter(target__in=aIDs).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
             dW = {}
-            for tRes in aW:
+            for tRes in aWtemp:
                 tW = (tRes[0], tRes[1])
                 if tW not in dW:
                     dW[tW] = set()
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
-            aW = []
+            aWtemp = []
             for k,v in dW.items():
                 aT = list(v)
                 aT.sort()
-                aW.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
-            aWexp = aW[:]
+                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+            aW = aWtemp[:]
 
-            aW = T2K.objects.filter(target__in=aTargets).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
             dW = {}
-            for tRes in aW:
+            for tRes in aWtemp:
                 tW = (tRes[0], tRes[1])
                 if tW not in dW:
                     dW[tW] = set()
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
-            aW = []
+            aWtemp = []
             for k,v in dW.items():
                 aT = list(v)
                 aT.sort()
-                aW.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
-            aKexp = aW[:]
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+            aK = aWtemp[:]
 
-            ## targets / predicted
-            aTargets = list(set([a[0] for a in aImmStrict+aImm]))
-            aW = T2W.objects.filter(target__in=aTargets).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
-            dW = {}
-            for tRes in aW:
-                tW = (tRes[0], tRes[1])
-                if tW not in dW:
-                    dW[tW] = set()
-                dW[tW].add((tRes[3], tRes[2], tRes[4]))
-            aW = []
-            for k,v in dW.items():
-                aT = list(v)
-                aT.sort()
-                aW.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
-            aWpred = aW[:]
-
-            aW = T2K.objects.filter(target__in=aTargets).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
-            dW = {}
-            for tRes in aW:
-                tW = (tRes[0], tRes[1])
-                if tW not in dW:
-                    dW[tW] = set()
-                dW[tW].add((tRes[3], tRes[2], tRes[4]))
-            aW = []
-            for k,v in dW.items():
-                aT = list(v)
-                aT.sort()
-                aW.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
-            aKpred = aW[:]
-
-            ## puch to session cash
-            request.session['mirnas'][mid]['wikipath_exp'] = aWexp
-            request.session['mirnas'][mid]['kegg_exp'] = aKexp
-            request.session['mirnas'][mid]['wikipath_pred'] = aWpred
-            request.session['mirnas'][mid]['kegg_pred'] = aKpred
+            ## push to session cash
+            request.session['mirnas'][mid]['wikipath'] = aW
+            request.session['mirnas'][mid]['kegg'] = aK
             request.session.modified = True
 
-        #return HttpResponse(sOut)
-
-        context = {'wikipath_exp':aWexp, 'wikipath_pred':aWpred, 'kegg_exp':aKexp, 'kegg_pred':aKpred, 'type':sTYPE, 'existed':sPexisted}
-
-        ## sent to differnt side, as it will be displayed in m.html in a tab
-        return render(request, 'irndb2/mp.html', context)
+        context['wikipath'] = aW
+        context['kegg'] = aK
+        context['type'] = sTYPE
+        return render(request, 'irndb2/rna_pathways.html', context)
 
     ## elif sTYPE == "r":
     ##     aFINAL = []
@@ -282,12 +215,12 @@ def mirna_method(request, name, flush=True):
         aTargetsExp = aImmStrictExp + aImmExp
         # predicted mouse targets
         aTargets = aImmStrict + aImm
-
-        context = {'m':mirna_obj,
-               'targets_imm':aTargets,
-               'targets_imm_exp':aTargetsExp,
-               'bM':bM,
-               'type':sTYPE}
+        context['targets_imm'] = aTargets
+        context['targets_imm_exp'] = aTargetsExp
+        context['enrichr_exp'] = '\\n'.join([t[1] for t in aTargetsExp])
+        context['enrichr_pred'] = '\\n'.join([t[1] for t in aTargets])
+        context['bM'] = bM
+        context['type'] = sTYPE
 
         return render(request, 'irndb2/mirna_targets.html', context)
 
@@ -368,6 +301,8 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     if sTYPE == "t":
         context['l'] = lncrna_obj
         context['targets'] = aTargets
+        context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
+        context['enrichr_name'] = lncrna_obj.lsymbol
         context['bL'] = bL
         context['existed'] = iExisted
         return render(request, 'irndb2/rna_targets.html', context)
@@ -560,6 +495,8 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     if sTYPE == "t":
         context['p'] = pirna_obj
         context['targets'] = aTargets
+        context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
+        context['enrichr_name'] = pirna_obj.pname
         context['bL'] = bL
         context['existed'] = iExisted
         return render(request, 'irndb2/rna_targets.html', context)
