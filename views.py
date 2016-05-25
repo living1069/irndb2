@@ -12,6 +12,219 @@ _APP_LINK_PREFIX = '/apps/irndb'
 #----------------------------------------------------------------
 # VIEW methods
 #----------------------------------------------------------------
+def mirna_method(request, name, flush=True):
+    context = {}
+    context["entity_type"] = "mirna"
+    
+    ## flush the session store of pirna
+    if flush:
+        try:
+            del request.session['mirnas']
+        except:
+            request.session['mirnas'] = {}
+ 
+    # Need a store for rnas if not already there
+    if 'mirnas' not in request.session:
+        request.session['mirnas'] = {}
+
+    a = Mirna.objects.filter(mname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%name
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%name
+        return render(request, "irndb2/404.html", context)
+    else:
+        mirna_obj = a[0]
+        mid = mirna_obj.id
+
+    context["m"] = mirna_obj
+
+    aImmStrictExp = []
+    aImmStrict = []
+    aImmExp = []
+    aImm = []
+    
+    ## check if mirna still in session/cache if so, use existing and return
+    if mid in request.session['mirnas']:
+        bM = 1
+        aImmStrictExp = request.session['mirnas'][mid]['targets_imm_strict_exp']
+        aImmStrict = request.session['mirnas'][mid]['targets_imm_strict']
+        aImmExp = request.session['mirnas'][mid]['targets_imm_exp']
+        aImm = request.session['mirnas'][mid]['targets_imm']
+    else:
+        bM = 0
+        #aTargets_all = set()
+        # targets
+        mE = M2T_EXP.objects.filter(mirna=mid,target__strict__gt=-1).select_related('target').values_list('target__id', 'target__symbol','target__tname','target__immusources','target__strict','sources').distinct()
+        for tRes in mE:
+            #aTargets_all.add(tRes[0])
+            tRes = list(tRes)
+            tRes[3] = tRes[3].split(',')
+            tRes[5] = tRes[5].split(',')
+            if tRes[4] == 1:
+                aImmStrictExp.append(tRes) ## id, symbol, tname, immusources, strict, sources
+            else:
+                aImmExp.append(tRes)
+
+        mP = M2T_PRED.objects.filter(mirna=mid,target__strict__gt=-1).select_related('target').values_list('target__id', 'target__symbol','target__tname','target__immusources','target__strict','sources').distinct()
+        for tRes in mP:
+            #aTargets_all.add(tRes[0])
+            tRes = list(tRes)
+            tRes[3] = tRes[3].split(',')
+            tRes[5] = tRes[5].split(',')
+            if tRes[4] == 1:
+                aImmStrict.append(tRes)
+            else:
+                aImm.append(tRes)
+
+        ## setup session variable with targets of miRNA
+        request.session['mirnas'][mid] = { 'targets_imm_strict':aImmStrict,
+                                           'targets_imm':aImm,
+                                           'targets_imm_strict_exp':aImmStrictExp,
+                                           'targets_imm_exp':aImmExp }
+        request.session.modified = True
+
+     ## type of context to return
+    sTYPE = request.GET.get('type', 'a')
+    if sTYPE not in ['p','g','r','t']:
+        context = {'m':mirna_obj}
+        return render(request, 'irndb2/mirna_base.html', context)
+    
+    elif sTYPE=='g':
+        ## fetch pathways from session cache if exists or create new
+        if 'goprocess' in request.session['mirnas'][mid]:
+            aP  = request.session['mirnas'][mid]['goprocess']
+            aF  = request.session['mirnas'][mid]['gofunction']
+        else:
+            aP = []
+            aF = []
+
+            aIDs = list(set([a[0] for a in aImmStrictExp+aImmExp+aImm+aImmStrict]))
+            aG = T2G.objects.filter(target__in=aIDs).select_related('target', 'go').values_list('go__goid', 'go__goname', 'go__gocat', 'target__id', 'target__symbol', 'target__tname').distinct()
+
+            dGp = {}
+            dGf = {}
+            for tRes in aG:
+                tG = (tRes[0], tRes[1])
+                if tRes[2]=='Process':
+                    if tG not in dGp:
+                        dGp[tG] = set()
+                    dGp[tG].add((tRes[4], tRes[3], tRes[5]))
+                elif tRes[2]=='Function':
+                    if tG not in dGf:
+                        dGf[tG] = set()
+                    dGf[tG].add((tRes[4], tRes[3], tRes[5]))
+
+            aP = []
+            for k,v in dGp.items():
+                aT = list(v)
+                aT.sort()
+                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+            aF = []
+            for k,v in dGf.items():
+                aT = list(v)
+                aT.sort()
+                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+
+
+            request.session['mirnas'][mid]['goprocess'] = aP
+            request.session['mirnas'][mid]['gofunction'] = aF
+            request.session.modified = True
+
+        context['go_p'] = aP
+        context['go_f'] = aF
+        return render(request, 'irndb2/rna_go.html', context)
+
+    elif sTYPE=="p":
+        ## fetch pathways from session cache if exists or create new
+        if 'wikipath_exp' in request.session['mirnas'][mid]:
+            aW  = request.session['mirnas'][mid]['wikipath']
+            aK  = request.session['mirnas'][mid]['kegg']
+        else:
+            ## create new
+            # target ids
+            aIDs = list(set([a[0] for a in aImmStrictExp+aImmExp+aImm+aImmStrict]))
+           
+            # wikipath exp
+            aWtemp = T2W.objects.filter(target__in=aIDs).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list(v)
+                aT.sort()
+                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+            aW = aWtemp[:]
+
+            aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list(v)
+                aT.sort()
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+            aK = aWtemp[:]
+
+            ## push to session cash
+            request.session['mirnas'][mid]['wikipath'] = aW
+            request.session['mirnas'][mid]['kegg'] = aK
+            request.session.modified = True
+
+        context['wikipath'] = aW
+        context['kegg'] = aK
+        context['type'] = sTYPE
+        return render(request, 'irndb2/rna_pathways.html', context)
+
+    ## elif sTYPE == "r":
+    ##     aFINAL = []
+    ##     bTFBS = 0
+    ##     # fetch primary for mirna
+    ##     aPrimaries = MPRIMARY.objects.filter(mirna=mirna_obj).distinct()
+    ##     # Fetch TFBS for primaries
+    ##     aTFBS = MPRIMARY2TFBS.objects.filter(Q(mprimary__in=aPrimaries), Q(fdr__gt=-1) | Q(pvalue__gt=-1)).distinct()
+
+    ##     for primary_obj in aPrimaries:
+    ##         aTEMP = aTFBS.filter(mprimary=primary_obj).distinct()
+    ##         for oMTFBS in aTEMP:  # hChIP was the wrong name for the source
+    ##             if oMTFBS.experiment_source == 'hChIP':
+    ##                 oMTFBS.experiment_source = 'htChIP'
+    ##         if len(aTEMP)>0:
+    ##             aFINAL.append(aTEMP)
+
+    ##     if len(aFINAL) > 0:
+    ##         bTFBS = 1
+    ##     context = {'m':mirna_obj,
+    ##                'aTFBS':aFINAL,
+    ##                'bTFBS':bTFBS,
+    ##                'type':sTYPE}
+
+    ##     return render(request, 'irndb2/m_tfbs.html', context)
+
+    elif sTYPE == "t": # target view
+        # experiemtnal targets
+        aTargetsExp = aImmStrictExp + aImmExp
+        # predicted mouse targets
+        aTargets = aImmStrict + aImm
+        context['targets_imm'] = aTargets
+        context['targets_imm_exp'] = aTargetsExp
+        context['enrichr_exp'] = '\\n'.join([t[1] for t in aTargetsExp])
+        context['enrichr_pred'] = '\\n'.join([t[1] for t in aTargets])
+        context['bM'] = bM
+        context['type'] = sTYPE
+
+        return render(request, 'irndb2/mirna_targets.html', context)
+
+
 def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     """"""
     context = {}
@@ -88,6 +301,8 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     if sTYPE == "t":
         context['l'] = lncrna_obj
         context['targets'] = aTargets
+        context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
+        context['enrichr_name'] = lncrna_obj.lsymbol
         context['bL'] = bL
         context['existed'] = iExisted
         return render(request, 'irndb2/rna_targets.html', context)
@@ -280,6 +495,8 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     if sTYPE == "t":
         context['p'] = pirna_obj
         context['targets'] = aTargets
+        context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
+        context['enrichr_name'] = pirna_obj.pname
         context['bL'] = bL
         context['existed'] = iExisted
         return render(request, 'irndb2/rna_targets.html', context)
@@ -485,19 +702,7 @@ def target_method(request, sym):
     return render(request, "irndb2/target.html", context)
 
 
-def mirna_method(request, name):
-    context = {}
-    a = Mirna.objects.filter(mname__regex=r'^%s$'%name) # exact match, kind of a hack as the __exact did not work
-    if len(a)>1:
-        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%name
-        return render(request, "irndb2/404.html", context)
-    elif len(a)==0:
-        context["error"] = 'Query "%s" resulted in 0 entities.'%name
-        return render(request, "irndb2/404.html", context)
-    else:
-        obj = a[0]
-    
-    return render(request, "irndb2/mirna.html", context)
+
 
 
 def doc_method(request):

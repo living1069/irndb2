@@ -2,9 +2,11 @@
 
 {% if targets %}
 
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Targets ({{targets|length}})</b>
+    <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr|safe }}'], popup: true, description: 'Targets of {{ name }}'});"><button type="button" class="btn btn-default btn-xs">Run enrichment analysis (Enrichr)</button></a></div>
   </div>
   <div class="panel-body">
     {% comment %}
@@ -31,9 +33,9 @@
         <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}" title="Link to NCBI gene">{{ t.2 }}</a></td>
         <td>
          {% if t.3 == 1 %}
-            mmu
+          mouse
          {% else %}
-           hsa
+          human
          {% endif %}
         </td>
         <td>
@@ -42,7 +44,7 @@
                <tbody>
                  {% for isource in t.4 %}
                  <tr>
-                    <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">{{ isource }}</a></td>
+                    <td>{{ isource }}</td>
                  </tr>
                  {% endfor %}
                </tbody>
@@ -50,9 +52,9 @@
 
          </td>
          {% if entity_type == 'lncrna' %}
-         <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">{{ t.6 }}</a></td>
+         <td>{{ t.6 }}</td>
          {% elif entity_type == 'pirna' %}
-         <td><a class="g" href="{% url 'irndb2:doc_url_name' %}">piRBase</a></td>
+         <td>piRBase</td>
          {% endif %}
          <td>
           <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ t.5 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></a>
@@ -68,7 +70,7 @@
          "columns": [
            {"width":"120px"},
            null, 
-           {"width":"30px", "className": "text-center"},
+           {"width":"50px", "className": "text-center"},
            {"width":"120px", "bSortable": false},
            {"width":"120px", "className": "text-center"},
            {"width":"20px", "className": "text-center", "bSortable": false},
