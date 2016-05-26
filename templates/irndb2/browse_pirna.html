@@ -19,8 +19,8 @@
            <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
            </a>
            {% endcomment %}
-           <div class="dataTable_wrapper">
-             <table class="table table-condensed" id="sebio1">
+           <div class="dataTable_wrapper" width="100%">
+             <table class="table table-condensed" id="sebio1" width="100%">
                <thead>
                  <tr>
                    <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Name</th>
@@ -51,7 +51,7 @@
                     responsive: true,
                     lengthChange: false,
                     "pageLength": 20,
-                    buttons: [ 'copy', 'excel' ]
+                    buttons: [ 'copy', 'excel', 'csv' ]
                   });
              
                   table.buttons().container()

@@ -44,7 +44,7 @@ $(function() {
 {% if t %}
 <div class="row">
 <div class="col-lg-9">
-  <div class="panel panel-default">
+  <div class="panel panel-default" style="min-height: 220px; max-height:220px">
     <div class="panel-heading">
       <b>{{ t.symbol }}</b>
     </div>
@@ -84,7 +84,10 @@ $(function() {
 </div> <!-- div panel-body -->
 
 <div class="col-lg-3" >
- <div class="panel panel-default">
+  <div class="panel panel-default" style="min-height: 220px; max-height:220px">
+    <div class="panel-heading">
+      RNAs
+    </div>
     <div class="panel-body" >
       <div style="min-height: 180px; max-height:180px" id="morris-bar-chart"></div>
     </div>

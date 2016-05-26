@@ -14,8 +14,8 @@
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
     </a>
     {% endcomment %}
-    <div class="dataTable_wrapper">
-    <table id="sebio1" class="table table-condensed">
+    <div class="dataTable_wrapper" width="100%">
+    <table id="sebio1" class="table table-condensed" width="100%">
       <thead>
       <tr>
           <th><img title="Target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Symbol</th>
@@ -80,7 +80,7 @@
           responsive: true,
           lengthChange: false,
           "pageLength": 15,
-          buttons: [ 'copy', 'excel' ]
+          buttons: [ 'copy', 'excel', 'csv' ]
         });
         table.buttons().container()
                      .appendTo( '#sebio1_wrapper .col-sm-6:eq(0)' );

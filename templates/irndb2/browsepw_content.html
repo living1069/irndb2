@@ -7,11 +7,13 @@
 <div class="panel panel-default">
   <div class="panel-body">
     <a href="{{ browse_url }}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      {% comment %}
       <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+      {% endcomment %}
     </a>
     
-    <div class="dataTable_wrapper">
-      <table class="table table-condensed" id="sebio{{ pwt }}">
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebio{{ pwt }}" width="100%">
         <thead>
           <tr>
             <th title="Pathway name"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway name</th>
@@ -20,12 +22,12 @@
         </thead>       
       </table> 
       <!-- DataTables JavaScript -->
-
+      
       <script>
         var dataSet = {{ data|safe }};
-      
+        
         $(document).ready( function () {
-          $('#sebio{{ pwt }}').DataTable( {
+        var tablePW{{ pwt }} = $('#sebio{{ pwt }}').DataTable( {
                     "data": dataSet,   
                     "columns": [
                         {"width":"300px"},
@@ -33,12 +35,19 @@
                        ],
                     "order": [[ 0, "asc" ]],
                     "deferRender": true,
-                    responsive: true
-                    });
+                    responsive: true, 
+                   lengthChange: false,
+        {% if entity_type = 'pirna' %}
+              "pageLength": 10,
+        {% else %}
+             "pageLength": 5,
+        {% endif %}
+                    buttons: [ 'copy', 'excel', 'csv' ]
+               });
+                 tablePW{{ pwt }}.buttons().container()
+                     .appendTo( ' #sebio{{ pwt }}_wrapper .col-sm-6:eq(0)' );
                } );
       </script>
-
- 
     </div>
   </div>
 </div>

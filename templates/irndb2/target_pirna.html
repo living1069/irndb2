@@ -6,8 +6,8 @@
   </div>
   <div class="panel-body">
     {% if list %}
-    <div class="dataTable_wrapper">
-      <table id="sebioPirna1" class="table table-condensed">
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioPirna1" class="table table-condensed" width="100%">
         <thead>
           <tr>
             <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
@@ -49,7 +49,7 @@
           responsive: true,
           lengthChange: false,
           "pageLength": 15,
-          buttons: [ 'copy', 'excel' ]
+          buttons: [ 'copy', 'excel', 'csv' ]
         });
         tablePirna1.buttons().container()
                      .appendTo( '#sebioPirna1_wrapper .col-sm-6:eq(0)' );
