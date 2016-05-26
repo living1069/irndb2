@@ -1,0 +1,92 @@
+{% extends "irndb2/base.html" %}
+{% block title %}{{t.symbol}}{% endblock %}
+{% load staticfiles %}
+{% block content %}
+
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+
+ $( "#accordionInfo" ).accordion({
+    heightStyle: "content",
+    collapsible: true
+   });
+});
+</script>
+
+<h3><img src="{% static 'irndb2/images/target.png' %}" style="vertical-align: middle;" alt="" / > Target view</h3>
+
+{% if t %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>{{ t.symbol }}</b>
+  </div>
+  <div class="panel-body">
+    <p>
+      <table id="tableinfo">
+        <tr>
+          <td><b>Symbol:</b></td>
+          <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.symbol }}</td>
+          <td><b>Immune-sources:</b></td>
+          <td>{{ t.immusources }}</td>
+        </tr>
+        <tr>
+          <td><b>Name:</b></td>
+          <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.tname }}</a></td>
+          <td>
+            <b>Immune-relevance inferred from:&nbsp;&nbsp;&nbsp;<b>
+          </td>
+          <td>
+            {% if t.strict == 1 %}
+            <img title="Immune-relevant in mouse" src="{% static 'irndb2/images/mouse.png' %}" style="vertical-align: middle;" alt="Mouse" / >
+            {% else %}
+            <img title="Immune-relevant in human" src="{% static 'irndb2/images/man.png' %}" style="vertical-align: middle;" alt="Human" / >
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td><b>GeneID:</b></td>
+          <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.id }}</a></td>
+          <td><b>Expression:<b></td>
+          <td><a class="t1" href="http://fantom.gsc.riken.jp/5/sstar/EntrezGene:{{ t.id }}">SSTAR</a> | <a class="t1" href="http://compbio.massey.ac.nz/apps/tbvis/gene/{{ t.symbol }}">TBvis</a></td>
+        </tr>
+      </table>
+    </p>
+  </div>
+</div>
+
+<div id="tabsInfo">
+  <ul>
+    <li><a href="{{ target_url }}?type=mirna">microRNAs</a></li>
+    <li><a href="{{ target_url }}?type=pirna">piRNAs</a></li>
+    <li><a href="{{ target_url }}?type=lncrna">lncRNAs</a></li>
+    <li><a href="{{ target_url }}?type=pathway">Pathways</a></li>
+    <li><a href="{{ target_url }}?type=go">GO</a></li>
+    <li><a href="{{ target_url }}?type=experiment">Experiments</a></li>
+  </ul>
+</div>
+  
+{% else %}
+ <p>Target not found.</p>
+{% endif %}
+
+{% endblock %}

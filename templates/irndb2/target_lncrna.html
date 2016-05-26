@@ -1,0 +1,67 @@
+{% load staticfiles %}
+
+{% if list %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>lncRNAs targeting the gene ({{ list|length }})</b>
+  </div>
+  <div class="panel-body">
+    <div class="dataTable_wrapper">
+      <table id="sebioLncrna1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img title="lncRNA" src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Symbol</th>
+            <th><img title="lncRNA" src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Name</th>
+            <th><img title="lncRNA" src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Alias</th>
+            <th><img title="target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Source</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" title="Link to Pubmed" / ></th>
+          </tr>
+        </thead>
+        <tbody class="dt-nowrap">
+          {% for l in list %}
+          <tr>
+            <td><a class="m1" href="{% url 'irndb2:lncrna_url_name' l.1 %}" title="IRN lncRNA details">{{ l.1 }}</a></td>
+            <td><a class="m1" href="{{ l.4 }}" title="Open lncRNA externally">{{ l.2 }}</a></td>
+            <td><a class="m1" href="{{ l.4 }}" title="Open lncRNA externally">{{ l.3 }}</a></td>
+            <td>{{ l.6 }}</td>
+            <td>
+              {% if l.5 == "" %}
+              {% else %}
+              <a title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ l.5 }}"><img src="{% static 'irn/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid" / ></a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+
+    <script>
+    $(document).ready( function () {
+      var tableL1 = $('#sebioLncrna1').DataTable( {
+        "columns": [
+         {"width":"120px"},
+         null,
+         {"width":"200px"},
+         {"width":"130px", "className": "text-center"},
+         {"width": "20px", "bSortable": false, "className": "text-center"}],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 15,
+          buttons: [ 'copy', 'excel' ]
+        });
+        tableL1.buttons().container()
+                     .appendTo( '#sebioLncrna1_wrapper .col-sm-6:eq(0)' );
+      } );
+    </script>
+    
+    </div>
+    {% else %}
+    <p>No lncRNA available.</p>
+    {% endif %}
+  </div>
+</div>
+
+    
+
