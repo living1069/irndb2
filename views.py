@@ -129,7 +129,7 @@ def target_method(request, sym):
         context = {'t':target_obj, 'wikipath':aW, 'kegg':aK2}
         return render(request, 'irndb2/target_pathway.html', context)
 
-    elif url_type == "g":
+    elif url_type == "go":
         aG = T2G.objects.filter(target=target_obj.id).select_related('go').values_list('go__id',
                                                                                        'go__goid',
                                                                                        'go__goname',
@@ -137,28 +137,25 @@ def target_method(request, sym):
                                                                                        'pmid').distinct()
         aGp = []
         aGf = []
+        aTemp = []
         for t in aG:
-
             ## Build HTML link
             ##http://www.ncbi.nlm.nih.gov/pubmed/?term=8751592[uid]+OR+16204232[uid]+OR+23931754[uid]
-
-            aPMID = [s.strip() for s in t[4].split(',')]
-            sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term='
-            for i in xrange(len(aPMID)):
-                if i+1 < len(aPMID):
-                    sLink += '%s[uid]+OR+'%(aPMID[i])
-                else:
-                    sLink += '%s[uid]'%(aPMID[i])
-
+            aPMID = [str(s).strip() for s in t[4].split(',')]
+            sLink = 0
+            if len(aPMID[0]) != 0:
+                sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term=' + \
+                '[uid]+OR+'.join(aPMID) + \
+                '[uid]'
+                    
             if t[3]=='Process':
                 aGp.append((t[0], t[1], t[2], sLink))
             elif t[3]=='Function':
                 aGf.append((t[0], t[1], t[2], sLink))
 
-
-
-        context = {'t':target_obj, 'go_p':aGp, 'go_f':aGf}
-        return render(request, 'irndb2/t_go.html', context)
+        context['go_p'] = aGp
+        context['go_f'] = aGf
+        return render(request, 'irndb2/target_go.html', context)
 
     elif url_type == 'experiment':
         """"""

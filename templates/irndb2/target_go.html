@@ -1,0 +1,117 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>GO-process terms associated to target ({{ go_p|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if go_p %}
+    <div class="dataTable_wrapper">
+      <table id="sebioG1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" / > Pubmed</th>
+          </tr>
+        </thead>
+        
+        <tbody class="dt-nowrap">
+          {% for tuple in go_p %}
+          <tr>
+            <td>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
+            </td>
+            <td>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.2 }}</a>
+            </td>
+            
+            <td>
+              {% if tuple.3 == 0 %}
+              {% else %}
+              <a title="Link to PubMed" href="{{ tuple.3 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="PMID" / ></a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      <script>
+        $(document).ready( function () {
+        var tableG1 = $('#sebioG1').DataTable( {
+        "columns": [ { "width": "150px" },  null, {"width": "80px", "bSortable": false, "className": "text-center"} ], 
+        "order": [[ 1, "asc" ]],
+        "deferRender": true,
+        responsive: true,
+        lengthChange: false,
+        "pageLength": 10,
+        buttons: [ 'copy', 'excel' ]
+        });
+        tableG1.buttons().container()
+          .appendTo( '#sebioG1_wrapper .col-sm-6:eq(0)' );
+        } );
+      </script>
+      {% else %}
+      <p>No GO-terms available.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>GO-function terms associated to target ({{ go_f|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if go_f %}
+    <div class="dataTable_wrapper">
+      <table id="sebioG2" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / > Pubmed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tuple in go_f %}
+          <tr>
+            <td>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
+            </td>
+            <td>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.2 }}</a>
+            </td>
+            <td>
+              {% if tuple.3 == 0 %}
+              {% else %}
+              <a title="Link to PubMed" href="{{ tuple.3 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid" / ></a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+        var tableG2 = $('#sebioG2').DataTable( {
+        "columns": [ { "width": "150px" },  null, {"width": "80px", "bSortable": false, "className": "text-center"} ], 
+          "order": [[ 1, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel' ]
+        });
+        tableG2.buttons().container()
+                     .appendTo( '#sebioG2_wrapper .col-sm-6:eq(0)' );
+        } );
+      </script>
+    </div>
+    {% else %}
+    <p>No GO-terms available.</p>
+    {% endif %}
+  </div>
+</div>
+

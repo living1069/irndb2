@@ -1,11 +1,11 @@
 {% load staticfiles %}
 
-{% if list %}
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>piRNAs targeting the gene ({{ list|length }})</b>
   </div>
   <div class="panel-body">
+    {% if list %}
     <div class="dataTable_wrapper">
       <table id="sebioPirna1" class="table table-condensed">
         <thead>
