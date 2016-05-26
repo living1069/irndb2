@@ -37,7 +37,7 @@
 
     <script>
     $(document).ready( function () {
-      var tableP1 = $('#sebioPirna1').DataTable( {
+      var tablePirna1 = $('#sebioPirna1').DataTable( {
         "columns": [
          {"width":"120px"},
          null, 
@@ -51,7 +51,7 @@
           "pageLength": 15,
           buttons: [ 'copy', 'excel' ]
         });
-        tableP1.buttons().container()
+        tablePirna1.buttons().container()
                      .appendTo( '#sebioPirna1_wrapper .col-sm-6:eq(0)' );
       } );
     </script>
