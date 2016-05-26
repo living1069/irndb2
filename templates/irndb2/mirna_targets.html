@@ -1,18 +1,11 @@
 {% load staticfiles %}
 
-
-
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Experimentally supported immune targets ({{ targets_imm_exp|length }})</b>
     <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr_exp|safe }}'], popup: true, description: 'Targets (exp) of {{ m.mname }}'});"><button type="button" class="btn btn-default btn-xs">Run geneset enrichment analysis</button></a></div>
   </div>
   <div class="panel-body">
-    <p>
-      <!-- Enrichment analysis for gene sets with Enrichr js defined in app.js-->
-      
-      
-    </p>
     {% if targets_imm_exp %}
     <div class="dataTable_wrapper">
       <table id="sebioT1" class="table table-condensed">

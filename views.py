@@ -12,6 +12,172 @@ _APP_LINK_PREFIX = '/apps/irndb'
 #----------------------------------------------------------------
 # VIEW methods
 #----------------------------------------------------------------
+def target_method(request, sym):
+    context = {}
+    context["entity_type"] = "target"
+    a = Target.objects.filter(symbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
+    if len(a)>1:
+        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
+        return render(request, "irndb2/404.html", context)
+    elif len(a)==0:
+        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
+        return render(request, "irndb2/404.html", context)
+    else:
+        target_obj = a[0]
+        tid = target_obj.id
+
+    context["t"] = target_obj
+
+    url_type = request.GET.get('type', 'a')
+    if url_type not in ["mirna","experiment","pirna","go","lncrna","pathway"]:
+        context['m_exp'] = []
+        context['m_pred'] = []
+        return render_to_response("irndb2/target_base.html", context)
+
+    elif url_type == "pirna":
+        aQS = P2T.objects.filter(target=target_obj.id).select_related('pirna',
+                                                                     'target').values_list('pirna__id',
+                                                                                           'pirna__pname',
+                                                                                           'pirna__palias',
+                                                                                           'pirna__paccession',
+                                                                                           'pmid').distinct()
+        aRes = []
+        for t in aQS:
+            a = list(t)
+
+            paccession_link = 'http://www.ncbi.nlm.nih.gov/nuccore/'+'%2C'.join(a[3].split(','))
+            a.append(paccession_link)
+            a[3] = ', '.join(a[3].split(','))
+            #http://www.ncbi.nlm.nih.gov/pubmed/?term=8751592[uid]+OR+16204232[uid]+OR+23931754[uid]
+            aPMID = [s.strip() for s in a[4].split(',')]
+            sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term='
+            for i in xrange(len(aPMID)):
+                if i+1 < len(aPMID):
+                    sLink += '%s[uid]+OR+'%(aPMID[i])
+                else:
+                    sLink += '%s[uid]'%(aPMID[i]) # last one
+            a.append(sLink)
+            a[2] = ', '.join(a[2].split(',')) # alias
+            a.append('piRBase') # add source
+            aRes.append(a)
+
+        #aRes = [ [id, name, alias, accession, pmid, accession_link, sPMIDLink, source] ]
+        context['list']  = aRes
+        return render_to_response("irndb2/target_pirna.html", context)
+
+
+    elif url_type == "lncrna":
+        aQS = L2T.objects.filter(target=target_obj.id).select_related('lncrna',
+                                                                     'target').values_list('lncrna__id',
+                                                                                           'lncrna__lsymbol',
+                                                                                           'lncrna__lname',
+                                                                                           'lncrna__lalias',
+                                                                                           'lncrna__llink',
+                                                                                           'pmid',
+                                                                                           'source').distinct()
+        aRes = []
+        for t in aQS:
+            a = list(t)
+            a[3] = ', '.join(a[3].split(','))
+            aRes.append(a)
+
+        context['list'] = aRes
+        return render_to_response("irndb2/target_lncrna.html", context)
+
+    elif url_type == "mirna":
+        aM = M2T_EXP.objects.filter(target=target_obj.id).select_related('mirna',
+                                                                         'target').values_list('mirna__id',
+                                                                                               'mirna__mname',
+                                                                                               'mirna__mirbase_id',
+                                                                                               'sources').distinct()
+        aMexp = []
+        for t in aM:
+            a = list(t)
+            a[3] = a[3].split(',')
+            a[3].sort()
+            aMexp.append(a)
+
+        aM = M2T_PRED.objects.filter(target=target_obj.id).select_related('mirna',
+                                                                          'target').values_list('mirna__id',
+                                                                                                'mirna__mname',
+                                                                                                'mirna__mirbase_id',
+                                                                                                'sources').distinct()
+        aMpred = []
+        for t in aM:
+            a = list(t)
+            a[3] = a[3].split(',')
+            a[3].sort()
+            aMpred.append(a)
+
+        context['m_exp'] = aMexp
+        context['m_pred'] = aMpred
+        return render(request, 'irndb2/target_mirna.html', context)
+
+    elif url_type == "pathway":
+        aW = T2W.objects.filter(target=target_obj.id).select_related('wikipath').values_list('wikipath__id',
+                                                                                             'wikipath__wikipathid',
+                                                                                             'wikipath__wikipathname').distinct()
+        aK = T2K.objects.filter(target=target_obj.id).select_related('kegg').values_list('kegg__id',
+                                                                                        'kegg__keggid',
+                                                                                        'kegg__keggname').distinct()
+        aK2 = []
+        for t in aK:
+            a = list(t)
+            a[1] = a[1].split(':')[1]
+            aK2.append(tuple(a))
+
+        context = {'t':target_obj, 'wikipath':aW, 'kegg':aK2}
+        return render(request, 'irndb2/target_pathway.html', context)
+
+    elif url_type == "go":
+        aG = T2G.objects.filter(target=target_obj.id).select_related('go').values_list('go__id',
+                                                                                       'go__goid',
+                                                                                       'go__goname',
+                                                                                       'go__gocat',
+                                                                                       'pmid').distinct()
+        aGp = []
+        aGf = []
+        aTemp = []
+        for t in aG:
+            ## Build HTML link
+            ##http://www.ncbi.nlm.nih.gov/pubmed/?term=8751592[uid]+OR+16204232[uid]+OR+23931754[uid]
+            aPMID = [str(s).strip() for s in t[4].split(',')]
+            sLink = 0
+            if len(aPMID[0]) != 0:
+                sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term=' + \
+                '[uid]+OR+'.join(aPMID) + \
+                '[uid]'
+                    
+            if t[3]=='Process':
+                aGp.append((t[0], t[1], t[2], sLink))
+            elif t[3]=='Function':
+                aGf.append((t[0], t[1], t[2], sLink))
+
+        context['go_p'] = aGp
+        context['go_f'] = aGf
+        return render(request, 'irndb2/target_go.html', context)
+
+    elif url_type == 'experiment':
+        """"""
+        aE = T2C7.objects.filter(target=target_obj.id).select_related('msigdb_c7').values_list('msigdb_c7__geoid',
+                                                                                               'msigdb_c7__c7name',
+                                                                                               'msigdb_c7__c7expr',
+                                                                                               'msigdb_c7__c7url',
+                                                                                               'msigdb_c7__c7organism',
+                                                                                               'msigdb_c7__c7pmid',
+                                                                                               'msigdb_c7__c7author',
+                                                                                               'msigdb_c7__c7desc').distinct()
+        aExp_up = []
+        aExp_dn = []
+        for t in aE:
+            if t[2] == 'UP':
+                aExp_up.append((t[0], t[1], t[3], t[4], t[5], t[6], t[7]))
+            elif t[2] == 'DN':
+                aExp_dn.append((t[0], t[1], t[3], t[4], t[5], t[6], t[7]))
+        context = {'t':target_obj, 'exp_up':aExp_up, 'exp_dn':aExp_dn}
+        return render(request, 'irndb2/t_experiments.html', context)
+
+
 def mirna_method(request, name, flush=True):
     context = {}
     context["entity_type"] = "mirna"
@@ -86,12 +252,12 @@ def mirna_method(request, name, flush=True):
         request.session.modified = True
 
      ## type of context to return
-    sTYPE = request.GET.get('type', 'a')
-    if sTYPE not in ['p','g','r','t']:
+    url_type = request.GET.get('type', 'a')
+    if url_type not in ['p','g','r','t']:
         context = {'m':mirna_obj}
         return render(request, 'irndb2/mirna_base.html', context)
     
-    elif sTYPE=='g':
+    elif url_type=='g':
         ## fetch pathways from session cache if exists or create new
         if 'goprocess' in request.session['mirnas'][mid]:
             aP  = request.session['mirnas'][mid]['goprocess']
@@ -136,7 +302,7 @@ def mirna_method(request, name, flush=True):
         context['go_f'] = aF
         return render(request, 'irndb2/rna_go.html', context)
 
-    elif sTYPE=="p":
+    elif url_type=="p":
         ## fetch pathways from session cache if exists or create new
         if 'wikipath_exp' in request.session['mirnas'][mid]:
             aW  = request.session['mirnas'][mid]['wikipath']
@@ -182,10 +348,10 @@ def mirna_method(request, name, flush=True):
 
         context['wikipath'] = aW
         context['kegg'] = aK
-        context['type'] = sTYPE
+        context['type'] = url_type
         return render(request, 'irndb2/rna_pathways.html', context)
 
-    ## elif sTYPE == "r":
+    ## elif url_type == "r":
     ##     aFINAL = []
     ##     bTFBS = 0
     ##     # fetch primary for mirna
@@ -206,11 +372,11 @@ def mirna_method(request, name, flush=True):
     ##     context = {'m':mirna_obj,
     ##                'aTFBS':aFINAL,
     ##                'bTFBS':bTFBS,
-    ##                'type':sTYPE}
+    ##                'type':url_type}
 
     ##     return render(request, 'irndb2/m_tfbs.html', context)
 
-    elif sTYPE == "t": # target view
+    elif url_type == "t": # target view
         # experiemtnal targets
         aTargetsExp = aImmStrictExp + aImmExp
         # predicted mouse targets
@@ -220,7 +386,7 @@ def mirna_method(request, name, flush=True):
         context['enrichr_exp'] = '\\n'.join([t[1] for t in aTargetsExp])
         context['enrichr_pred'] = '\\n'.join([t[1] for t in aTargets])
         context['bM'] = bM
-        context['type'] = sTYPE
+        context['type'] = url_type
 
         return render(request, 'irndb2/mirna_targets.html', context)
 
@@ -263,8 +429,8 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     lncrna_obj.lalias = ', '.join(lncrna_obj.lalias.split(','))
     
     # fetch type via GET method
-    sTYPE = request.GET.get('type', 'x') # some char not in use
-    if sTYPE not in ["p","g","t"]: # add possible tabs here
+    url_type = request.GET.get('type', 'x') # some char not in use
+    if url_type not in ["p","g","t"]: # add possible tabs here
         context['l'] = lncrna_obj
         context['aImmStrict'] = []
         context['aImm'] = []
@@ -298,7 +464,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         request.session.modified = True
 
     #-- target tab --
-    if sTYPE == "t":
+    if url_type == "t":
         context['l'] = lncrna_obj
         context['targets'] = aTargets
         context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
@@ -308,7 +474,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         return render(request, 'irndb2/rna_targets.html', context)
 
     #-- GO tab --
-    if sTYPE == 'g':
+    if url_type == 'g':
         ## fetch pathways from session cache if exists or create new
         if 'goprocess' in request.session['lncrnas'][lid]:
             aP  = request.session['lncrnas'][lid]['goprocess']
@@ -357,7 +523,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         return render(request, 'irndb2/rna_go.html', context)
 
     #-- pathway tab --
-    elif sTYPE=="p":
+    elif url_type=="p":
         ## fetch pathways from session cache if exists or create new
         if 'wikipath' in request.session['lncrnas'][lid]:
             aW  = request.session['lncrnas'][lid]['wikipath']
@@ -404,7 +570,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
 
         context['wikipath'] = aW
         context['kegg'] = aK
-        context['type'] = sTYPE
+        context['type'] = url_type
         context['existed'] = iPexisted
         return render(request, 'irndb2/rna_pathways.html', context)
 
@@ -455,8 +621,8 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     pirna_obj.psource = 'piRBase'
 
     # fetch type via GET method
-    sTYPE = request.GET.get('type', 'x') # some char not in use
-    if sTYPE not in ["p","g","t"]: # add possible tabs here
+    url_type = request.GET.get('type', 'x') # some char not in use
+    if url_type not in ["p","g","t"]: # add possible tabs here
         context['p'] = pirna_obj
         context['aImmStrict'] = []
         context['aImm'] = []
@@ -492,7 +658,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         ##return HttpResponse(aTargets)
 
     #-- target tab --
-    if sTYPE == "t":
+    if url_type == "t":
         context['p'] = pirna_obj
         context['targets'] = aTargets
         context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
@@ -502,7 +668,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         return render(request, 'irndb2/rna_targets.html', context)
 
     #-- GO tab --
-    if sTYPE == 'g':
+    if url_type == 'g':
         ## fetch pathways from session cache if exists or create new
         if 'goprocess' in request.session['pirnas'][pid]:
             aP  = request.session['pirnas'][pid]['goprocess']
@@ -551,7 +717,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         return render(request, 'irndb2/rna_go.html', context)
 
     #-- pathway tab --
-    elif sTYPE=="p":
+    elif url_type=="p":
         ## fetch pathways from session cache if exists or create new
         if 'wikipath' in request.session['pirnas'][pid]:
             aW  = request.session['pirnas'][pid]['wikipath']
@@ -598,7 +764,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
 
         context['wikipath'] = aW
         context['kegg'] = aK
-        context['type'] = sTYPE
+        context['type'] = url_type
         context['existed'] = iPexisted
         return render(request, 'irndb2/rna_pathways.html', context)
 
@@ -685,24 +851,6 @@ def home_method(request):
 def contact_method(request):
     context = {}
     return render(request, "irndb2/contact.html", context)
-
-
-def target_method(request, sym):
-    context = {}
-    a = Target.objects.filter(symbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
-    if len(a)>1:
-        context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
-        return render(request, "irndb2/404.html", context)
-    elif len(a)==0:
-        context["error"] = 'Query "%s" resulted in 0 entities.'%sym
-        return render(request, "irndb2/404.html", context)
-    else:
-        obj = a[0]
-    
-    return render(request, "irndb2/target.html", context)
-
-
-
 
 
 def doc_method(request):

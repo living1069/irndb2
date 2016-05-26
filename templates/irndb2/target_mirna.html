@@ -1,0 +1,124 @@
+{% load staticfiles %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Experimentally supported microRNAs ({{ m_exp|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if m_exp %}
+    <div class="dataTable_wrapper">
+      <table id="sebioM1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > mirBase</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Target source</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > # Sources</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          {% for list in m_exp %}
+          <tr>
+            <td>
+              <a class="m1" href="{% url 'irndb2:mirna_url_name' list.1 %}" title="IRN miRNA details">{{ list.1 }}</a>
+            </td>
+            <td>
+              <a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ list.2 }}" title="Open miRNA in mirBase">{{ list.2 }}</a>
+            </td>
+            <td>
+              {% for source in list.3 %}
+              {{ source }}, 
+              {% endfor %}
+            </td>
+            <td>
+              {{ list.3|length }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+        var tableM1 = $('#sebioM1').DataTable( {
+          "columns": [ { "width": "200px" },  { "width": "200px" },  { "bSortable": false }, {"width": "120px", "className": "text-right"}],
+          "order": [[ 3, "desc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel' ]
+        });
+        tableM1.buttons().container()
+                     .appendTo( '#sebioM1_wrapper .col-sm-6:eq(0)' );
+        } );
+      </script>
+      {% else %}
+      <p>No miRNAs available.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Predicted microRNAs ({{ m_pred|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if m_pred %}
+    <div class="dataTable_wrapper">
+      <table id="sebioM2" class="table table-condensed">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > mirBase</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Target source</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > # Sources</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for list in m_pred %}
+          <tr>
+            <td>
+              <a class="m1" href="{% url 'irndb2:mirna_url_name' list.1 %}" title="IRN miRNA details">{{ list.1 }}</a>
+            </td>
+            <td>
+              <a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ list.2 }}" title="Open miRNA in mirBase">{{ list.2 }}</a>
+            </td>
+            <td>
+              {% for source in list.3 %}
+              {{ source }},
+              {% endfor %}
+            </td>
+            <td>
+              {{ list.3|length }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+        var tableM2 = $('#sebioM2').DataTable( {
+          "columns": [ { "width": "200px" },  { "width": "200px" },  { "bSortable": false }, {"width": "120px", "className": "text-right"}],
+          "order": [[ 3, "desc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel' ]
+        });
+        tableM2.buttons().container()
+                     .appendTo( '#sebioM2_wrapper .col-sm-6:eq(0)' );
+        } );
+      </script>
+    </div>
+    {% else %}
+    <p>No miRNAs available.</p>
+    {% endif %}
+  </div>
+</div>
+    
+    
+

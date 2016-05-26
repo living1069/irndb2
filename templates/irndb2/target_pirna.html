@@ -1,0 +1,67 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>piRNAs targeting the gene ({{ list|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if list %}
+    <div class="dataTable_wrapper">
+      <table id="sebioPirna1" class="table table-condensed">
+        <thead>
+          <tr>
+            <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th title="piRNA alias"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > Alias</th>
+            <th title="piRNA accession"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > Accession</th>
+            <th title="piRNA source database"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > Source</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" title="Link to Pubmed" / ></th>
+          </tr>
+        </thead>
+        <tbody class="dt-nowrap">
+          {% for p in list %}
+          <tr>
+            <td><a class="m1" href="{% url 'irndb2:pirna_url_name' p.1 %}" title="IRN piRNA view">{{ p.1 }}</a></td>
+            <td>{{ p.2 }}</td>
+            <td><a class="m1" href="{{ p.5 }}" title="Open piRNA at NCBI">{{ p.3 }}</a></td>
+            <td><a class="g" href="http://regulatoryrna.org/database/piRNA/pirna.php?name={{p.1}}" title="piRNA source link">{{ p.7 }}</a></td>
+            <td>
+              {% if p.pmid_interaction == "" %}
+              {% else %}
+              <a title="Link to PubMed" href="{{ p.6 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid" / ></a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+
+    <script>
+    $(document).ready( function () {
+      var tablePirna1 = $('#sebioPirna1').DataTable( {
+        "columns": [
+         {"width":"120px"},
+         null, 
+         {"width":"150px"},
+         {"width":"90px", "className": "text-center"},
+         {"width": "20px", "bSortable": false , "className": "text-center"}],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 15,
+          buttons: [ 'copy', 'excel' ]
+        });
+        tablePirna1.buttons().container()
+                     .appendTo( '#sebioPirna1_wrapper .col-sm-6:eq(0)' );
+      } );
+    </script>
+    
+    </div>
+    {% else %}
+    <p>No piRNA available.</p>
+    {% endif %}
+  </div>
+</div>
+
+    
+
