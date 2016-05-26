@@ -82,9 +82,9 @@ class T2G(models.Model):
     
 class Msigdb_c7(models.Model):
     geoid      = models.CharField(max_length=12)
-    c7name     = models.CharField(max_length=64)
+    c7name     = models.CharField(max_length=90)
     c7expr     = models.CharField(max_length=2)
-    c7url      = models.CharField(max_length=120)
+    c7url      = models.CharField(max_length=150)
     c7organism = models.CharField(max_length=16)
     c7pmid     = models.CharField(max_length=12)
     c7author   = models.CharField(max_length=30)
@@ -93,10 +93,6 @@ class Msigdb_c7(models.Model):
 class T2C7(models.Model):
     target    = models.ForeignKey(Target) # Target gene id
     msigdb_c7 = models.ForeignKey(Msigdb_c7)
-    mirna_exp = models.CharField(max_length=700, db_index=True)
-    mirna_pred = models.CharField(max_length=5100, db_index=True)
-    lncrna = models.CharField(max_length=320, db_index=True)
-    pirna = models.CharField(max_length=100, db_index=True)
     
 # OTHER NCRNAs
 class Lncrna(models.Model):
