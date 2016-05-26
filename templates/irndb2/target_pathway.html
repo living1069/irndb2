@@ -2,7 +2,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>Wikipathways associated to target ({{ wikipath|length }})</b>
+    <b>Wikipathways associated to target gene ({{ wikipath|length }})</b>
   </div>
   <div class="panel-body">
     {% if wikipath %}
@@ -10,18 +10,18 @@
       <table id="sebioPath1" class="table table-condensed">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
           </tr>
         </thead>
         <tbody>
           {% for list in wikipath %}
           <tr>
             <td>
-              <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' list.1 %}">{{ list.1  }}</a>
+              <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' list.1 %}">{{ list.2  }}</a>
             </td>
             <td>
-              <a class="g" title="Link to WikiPathways" href="http://www.wikipathways.org/index.php/Pathway:{{ list.1 }}" title="Wikipathway link">{{ list.2 }}</a>
+              <a class="g" title="Link to WikiPathways" href="http://www.wikipathways.org/index.php/Pathway:{{ list.1 }}" title="Wikipathway link">{{ list.1 }}</a>
             </td>
           </tr>
           {% endfor %}
@@ -30,8 +30,8 @@
       <script>
       $(document).ready( function () {
       var tablePath1 = $('#sebioPath1').DataTable( {
-        "columns": [ { "width": "150px" },  null  ],
-          "order": [[ 1, "asc" ]],
+        "columns": [ null,  { "width": "150px" } ],
+          "order": [[ 0, "asc" ]],
           "deferRender": true,
           responsive: true,
           lengthChange: false,
@@ -52,7 +52,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>KEGG pathways associated to target ({{ kegg|length }})</b>
+    <b>KEGG pathways associated to target gene ({{ kegg|length }})</b>
   </div>
   <div class="panel-body">
     {% if kegg %}
@@ -60,8 +60,8 @@
       <table id="sebioPath2" class="table table-condensed">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
           </tr>
         </thead>
         
@@ -69,10 +69,10 @@
           {% for list in kegg %}
           <tr>
             <td>
-              <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:kegg_url_name' list.1 %}">{{ list.1  }}</a>
+              <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:kegg_url_name' list.1 %}">{{ list.2 }}</a>
             </td>
             <td>
-              <a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:{{ list.1 }}" title="KEGG link">{{ list.2 }}</a>
+              <a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:{{ list.1 }}" title="KEGG link">{{ list.1 }}</a>
             </td>
           </tr>
           {% endfor %}
@@ -82,8 +82,8 @@
       <script>
       $(document).ready( function () {
       var tablePath2 = $('#sebioPath2').DataTable( {
-        "columns": [ { "width": "150px" },  null  ],
-          "order": [[ 1, "asc" ]],
+        "columns": [  null, { "width": "150px" }  ],
+          "order": [[ 0, "asc" ]],
           "deferRender": true,
           responsive: true,
           lengthChange: false,

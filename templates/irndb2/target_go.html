@@ -2,7 +2,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>GO-process terms associated to target ({{ go_p|length }})</b>
+    <b>GO-process terms associated to target gene ({{ go_p|length }})</b>
   </div>
   <div class="panel-body">
     {% if go_p %}
@@ -10,8 +10,8 @@
       <table id="sebioG1" class="table table-condensed">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" / > Pubmed</th>
           </tr>
         </thead>
@@ -20,12 +20,11 @@
           {% for tuple in go_p %}
           <tr>
             <td>
-              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
-            </td>
-            <td>
               <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.2 }}</a>
             </td>
-            
+            <td>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
+            </td>
             <td>
               {% if tuple.3 == 0 %}
               {% else %}
@@ -39,8 +38,8 @@
       <script>
         $(document).ready( function () {
         var tableG1 = $('#sebioG1').DataTable( {
-        "columns": [ { "width": "150px" },  null, {"width": "80px", "bSortable": false, "className": "text-center"} ], 
-        "order": [[ 1, "asc" ]],
+        "columns": [null,  { "width": "150px" },  {"width": "80px", "bSortable": false, "className": "text-center"} ], 
+        "order": [[ 0, "asc" ]],
         "deferRender": true,
         responsive: true,
         lengthChange: false,
@@ -60,7 +59,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>GO-function terms associated to target ({{ go_f|length }})</b>
+    <b>GO-function terms associated to target gene ({{ go_f|length }})</b>
   </div>
   <div class="panel-body">
     {% if go_f %}
@@ -68,8 +67,8 @@
       <table id="sebioG2" class="table table-condensed">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
             <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / > Pubmed</th>
           </tr>
         </thead>
@@ -77,10 +76,10 @@
           {% for tuple in go_f %}
           <tr>
             <td>
-              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.2 }}</a>
             </td>
             <td>
-              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.2 }}</a>
+              <a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ tuple.1 }}">{{ tuple.1 }}</a>
             </td>
             <td>
               {% if tuple.3 == 0 %}
@@ -96,8 +95,8 @@
       <script>
         $(document).ready( function () {
         var tableG2 = $('#sebioG2').DataTable( {
-        "columns": [ { "width": "150px" },  null, {"width": "80px", "bSortable": false, "className": "text-center"} ], 
-          "order": [[ 1, "asc" ]],
+        "columns": [ null, { "width": "150px" },  {"width": "80px", "bSortable": false, "className": "text-center"} ], 
+          "order": [[ 0, "asc" ]],
           "deferRender": true,
           responsive: true,
           lengthChange: false,

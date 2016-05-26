@@ -175,7 +175,7 @@ def target_method(request, sym):
             elif t[2] == 'DN':
                 aExp_dn.append((t[0], t[1], t[3], t[4], t[5], t[6], t[7]))
         context = {'t':target_obj, 'exp_up':aExp_up, 'exp_dn':aExp_dn}
-        return render(request, 'irndb2/t_experiments.html', context)
+        return render(request, 'irndb2/target_experiments.html', context)
 
 
 def mirna_method(request, name, flush=True):
