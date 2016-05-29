@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="panel-heading">
+      <b></b>
+    </div>
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebioPIR" width="100%">
+        <thead>
+          <tr>
+            <th title="piRNAs targeting genes in pathway"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > piRNAs</th>
+            <th title="Targets in pathway"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbols</th>
+          </tr>
+        </thead>
+      </table> 
+      <!-- DataTables JavaScript -->
+             
+      <script>
+        var dataSet = {{ data|safe }};
+                 
+        $(document).ready( function () {
+                  var tablePIR = $('#sebioPIR').DataTable( {
+                      "data": dataSet,
+                      "columns": [
+                        {"width":"220px"},
+                        {"bSortable": false}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 10,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+                  });
+                 tablePIR.buttons().container()
+                     .appendTo( '#sebioPIR_wrapper .col-sm-6:eq(0)' );
+               } );
+      </script>
+      
+    </div>
+    <!-- /.table-responsive -->
+    
+  </div>
+</div>         

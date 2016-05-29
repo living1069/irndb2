@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="panel-heading">
+      <b></b>
+    </div>
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebio1" width="100%">
+        <thead>
+          <tr>
+            <th title="Target symbol"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbol</th>
+            <th title="miRNAs experimental"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > miRNAs exp</th>
+            <th title="miRNAs predicted"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > miRNAs pred</th>
+            <th title="lncRNAs"><img src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / > lncRNAs</th>
+            <th title="piRNAs"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > piRNAs</th>
+          </tr>
+        </thead>
+      </table> 
+      <!-- DataTables JavaScript -->
+             
+      <script>
+        var dataSet = {{ data|safe }};
+                 
+        $(document).ready( function () {
+                  var table = $('#sebio1').DataTable( {
+                      "data": dataSet,
+                      "columns": [
+                        null,
+                        {"width":"150px", "bSortable": false},
+                        {"width":"150px", "bSortable": false},
+                        {"width":"150px", "bSortable": false},
+                        {"width":"150px", "bSortable": false }
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 5,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+                  });
+                 table.buttons().container()
+                     .appendTo( '#sebio1_wrapper .col-sm-6:eq(0)' );
+               } );
+      </script>
+      
+    </div>
+    <!-- /.table-responsive -->
+    
+  </div>
+</div>         

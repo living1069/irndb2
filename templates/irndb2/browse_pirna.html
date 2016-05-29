@@ -5,38 +5,34 @@
 {% block content %}
 
 <div class="row">
- <div class="col-lg-12">
-   <h3 class="page-header">Browse/search piRNAs</h3>
-
-   <style>
-     #sebio1 { table-layout: fixed; }
-   </style>
-   
-       <div class="panel panel-default">
-       <div class="panel-body">
-           {% comment %} 
-           <a href="{{ browse_url }}?type=pirna&dnl=1">
-           <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
-           </a>
-           {% endcomment %}
-           <div class="dataTable_wrapper" width="100%">
-             <table class="table table-condensed" id="sebio1" width="100%">
-               <thead>
-                 <tr>
-                   <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Name</th>
-                   <th title="piRNA alias"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Alias</th>
-                   <th title="piRNA accession"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Accession</th>
-                   <th title="# targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / ></th>
-                   <th title="# targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / ></th>
-                 </tr>
-               </thead>
-             </table> 
-             <!-- DataTables JavaScript -->
-             
-             <script>
-               var dataSet = {{ data|safe }};
-                 
-                  $(document).ready( function () {
+  <div class="col-lg-12">
+    <h3 class="page-header">Browse/search piRNAs</h3>
+    
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {% comment %} 
+        <a href="{{ browse_url }}?type=pirna&dnl=1">
+          <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+        </a>
+        {% endcomment %}
+        <div class="dataTable_wrapper" width="100%">
+          <table class="table table-condensed" id="sebio1" width="100%">
+            <thead>
+              <tr>
+                <th title="piRNA name"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Name</th>
+                <th title="piRNA alias"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Alias</th>
+                <th title="piRNA accession"><img src="{% static 'irndb2/images/pirna-small.png' %}" alt="" / > Accession</th>
+                <th title="# targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / ></th>
+                <th title="# targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / ></th>
+              </tr>
+            </thead>
+          </table> 
+          <!-- DataTables JavaScript -->
+          
+          <script>
+            var dataSet = {{ data|safe }};
+            
+            $(document).ready( function () {
                   var table = $('#sebio1').DataTable( {
                       "data": dataSet,
                       "columns": [
@@ -58,17 +54,17 @@
                      .appendTo( '.col-sm-6:eq(0)' );
              
                } );
-             </script>
-             
-           </div>
-           <!-- /.table-responsive -->
-             
-         </div>
-       </div>
-       
-       
- </div>
- <!-- /.col-lg-12 -->
+          </script>
+          
+        </div>
+        <!-- /.table-responsive -->
+        
+      </div>
+    </div>
+    
+    
+  </div>
+  <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 
