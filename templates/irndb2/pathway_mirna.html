@@ -1,0 +1,89 @@
+{% load staticfiles %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Experimentally support ({{ data1|length }})</b>
+  </div>
+  <div class="panel-body">
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebioMIR1" width="100%">
+        <thead>
+          <tr>
+            <th title="miRNAs targeting genes in pathway"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > lncRNAs</th>
+            <th title="Targets in pathway"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbols</th>
+          </tr>
+        </thead>
+      </table> 
+      <!-- DataTables JavaScript -->
+             
+      <script>
+        var dataSet1 = {{ data1|safe }};
+                 
+        $(document).ready( function () {
+                  var tableMIR1 = $('#sebioMIR1').DataTable( {
+                      "data": dataSet1,
+                      "columns": [
+                        {"width":"220px"},
+                        {"bSortable": false}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 5,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+                  });
+                 tableMIR1.buttons().container()
+                     .appendTo( '#sebioMIR1_wrapper .col-sm-6:eq(0)' );
+               } );
+      </script>
+      
+    </div>
+    <!-- /.table-responsive -->
+    
+  </div>
+</div>    
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Predicted ({{ data2|length }})</b>
+  </div>
+  <div class="panel-body">
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebioMIR2" width="100%">
+        <thead>
+          <tr>
+            <th title="miRNAs targeting genes in pathway"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / > lncRNAs</th>
+            <th title="Targets in pathway"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbols</th>
+          </tr>
+        </thead>
+      </table> 
+      <!-- DataTables JavaScript -->
+             
+      <script>
+        var dataSet2 = {{ data2|safe }};
+                 
+        $(document).ready( function () {
+                  var tableMIR2 = $('#sebioMIR2').DataTable( {
+                      "data": dataSet2,
+                      "columns": [
+                        {"width":"220px"},
+                        {"bSortable": false}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 5,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+                  });
+                 tableMIR2.buttons().container()
+                     .appendTo( '#sebioMIR2_wrapper .col-sm-6:eq(0)' );
+               } );
+      </script>
+      
+    </div>
+    <!-- /.table-responsive -->
+    
+  </div>
+</div>         
+  

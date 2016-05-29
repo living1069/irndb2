@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>Experimentally supported microRNAs ({{ m_exp|length }})</b>
+    <b>Experimentally supported ({{ m_exp|length }})</b>
   </div>
   <div class="panel-body">
     {% if m_exp %}
@@ -62,7 +62,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <b>Predicted microRNAs ({{ m_pred|length }})</b>
+    <b>Predicted ({{ m_pred|length }})</b>
   </div>
   <div class="panel-body">
     {% if m_pred %}

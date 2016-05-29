@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.db.models import Q, F, Count
-import csv
+import csv, re
 
 from irndb2.models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
 
@@ -12,6 +12,189 @@ _APP_LINK_PREFIX = '/apps/irndb'
 #----------------------------------------------------------------
 # VIEW methods
 #----------------------------------------------------------------
+def pw_method(request, id):
+    """ Pathway method """
+    context = {}
+    ## get pw type
+    res = re.search('^WP', id)
+    if res:
+        pathwaytype = 'Wikipathways'        
+    else:
+        pathwaytype = 'KEGG'
+
+    context["pwt"] = pathwaytype
+
+    if pathwaytype == 'KEGG':
+        p = Kegg.objects.filter(keggid=id)
+    else:
+        p = Wikipath.objects.filter(wikipathid=id)
+        
+    if not p: ## empty list, pathway not found
+        context["error"] = 'Query "%s" resulted in no %s pathway.' % (id, pathwaytype)
+        return render(request, "irndb2/404.html", context)
+    elif len(p) > 1:
+        context["error"] = 'Query "%s" resulted in more than one %s pathway.' % (id, pathwaytype)
+        return render(request, "irndb2/404.html", context)
+    else:
+        pw_obj = p[0]
+        context['p'] = pw_obj
+        if pathwaytype == 'KEGG':
+            context['pathid'] = pw_obj.keggid.split(':')[1].strip()
+        else:
+            context['pathid'] = pw_obj.wikipathid
+
+    target_url_str = '<a class="t1" href="%s/target/%s" title="Link to IRNdb target entry">%s</a>'
+    pirna_url_str = '<a class="m1" href="%s/pirna/%s" title="Link to IRNdb piRNA entry">%s</a>' 
+    lncrna_url_str = '<a class="m1" href="%s/lncrna/%s" title="Link to IRNdb lncRNA entry">%s</a>'
+    mirna_url_str = '<a class="m1" href="%s/mirna/%s" title="IRN miRNA details">%s</a>'
+        
+    url_type = request.GET.get('type', 'x')
+    if url_type == "target":
+
+        if pathwaytype == 'KEGG':
+            t2p_list = T2K.objects.filter(kegg=pw_obj).select_related('target').distinct()
+        else:
+            t2p_list = T2W.objects.filter(wikipath=pw_obj).select_related('target').distinct()
+
+        results_list = []
+        for t2p in t2p_list:
+            mexp_list = []
+            mirna_str1 = ''
+            if t2p.mirna_exp != '0':
+                mirna_str1 = ',<br>'.join([mirna_url_str % (_APP_LINK_PREFIX, s, s) for s in str(t2p.mirna_exp).split(',')])
+            mirna_str2 = ''
+            if t2p.mirna_pred != '0':
+                mirna_str2 = ',<br>'.join([mirna_url_str % (_APP_LINK_PREFIX, s, s) for s in str(t2p.mirna_pred).split(',')])
+            lncrna_str = ''
+            if t2p.lncrna != '0':
+                lncrna_str = ',<br>'.join([lncrna_url_str % (_APP_LINK_PREFIX, s, s) for s in str(t2p.lncrna).split(',')])
+            pirna_str = ''
+            if t2p.pirna != '0':
+                pirna_str = ',<br>'.join([pirna_url_str % (_APP_LINK_PREFIX, s, s) for s in str(t2p.pirna).split(',')])
+
+            symbol = str(t2p.target.symbol)
+            symbol_str = target_url_str % (_APP_LINK_PREFIX, symbol, symbol)
+            results_list.append([symbol_str, mirna_str1, mirna_str2, lncrna_str, pirna_str])
+        
+        context['data'] = results_list
+        return render_to_response("irndb2/pathway_target.html", context)
+    
+    elif url_type == 'lncrna':
+        if pathwaytype == 'KEGG':
+            t2p_list = T2K.objects.filter(Q(kegg = pw_obj) & ~Q(lncrna = '0')).select_related('target').distinct()
+        else:
+            t2p_list = T2W.objects.filter(Q(wikipath = pw_obj) & ~Q(lncrna = '0')).select_related('target').distinct()
+            
+        dict_l2t = {}
+        for t2p in t2p_list:
+            for lncrna in t2p.lncrna.split(','):
+                dict_l2t[lncrna] = dict_l2t.get(lncrna, []) + [str(t2p.target.symbol)]
+                
+        results_list = []
+        for lncrna, target_list in dict_l2t.items():
+            target_list = list(set(target_list))
+            target_list.sort()
+            target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, s, s) for s in target_list])
+
+            lncrna_str = lncrna_url_str % (_APP_LINK_PREFIX, str(lncrna), str(lncrna))
+            results_list.append([lncrna_str, target_str])
+  
+        context['data'] = results_list
+        return render_to_response("irndb2/pathway_lncrna.html", context)
+    
+    elif url_type == 'pirna':
+        if pathwaytype == 'KEGG':
+            t2p_list = T2K.objects.filter(Q(kegg = pw_obj) & ~Q(pirna = '0')).select_related('target').distinct()
+        else:
+            t2p_list = T2W.objects.filter(Q(wikipath = pw_obj) & ~Q(pirna = '0')).select_related('target').distinct()
+            
+        dict_l2t = {}
+        for t2p in t2p_list:
+            for pirna in t2p.pirna.split(','):
+                dict_l2t[pirna] = dict_l2t.get(pirna, []) + [str(t2p.target.symbol)]
+                
+        results_list = []
+        for pirna, target_list in dict_l2t.items():
+            target_list = list(set(target_list))
+            target_list.sort()
+            target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, s, s) for s in target_list])
+
+            pirna_str = pirna_url_str % (_APP_LINK_PREFIX, str(pirna), str(pirna))
+            results_list.append([pirna_str, target_str])
+
+        context['data'] = results_list
+        return render_to_response("irndb2/pathway_pirna.html", context)
+
+    elif url_type == 'mirna':
+        if pathwaytype == 'KEGG':
+            t2p_list = T2K.objects.filter(kegg = pw_obj).select_related('target').distinct()
+        else:
+            t2p_list = T2W.objects.filter(wikipath = pw_obj).select_related('target').distinct()
+
+        # exp miRNA
+        t2p_list1 = t2p_list.filter(~Q(mirna_exp = '0')).select_related('target').distinct()
+        dict_l2t1 = {}
+        for t2p in t2p_list1:
+            for mirna in t2p.mirna_exp.split(','):
+                dict_l2t1[mirna] = dict_l2t1.get(mirna, []) + [str(t2p.target.symbol)]
+                
+        results_list1 = []
+        for mirna, target_list in dict_l2t1.items():
+            target_list = list(set(target_list))
+            target_list.sort()
+            target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, str(s), str(s)) for s in target_list])
+
+            mirna_str = mirna_url_str % (_APP_LINK_PREFIX, str(mirna), str(mirna))
+            results_list1.append([mirna_str, target_str])
+            
+        context['data1'] = results_list1
+        
+        # predicted miRNA
+        t2p_list2 = t2p_list.filter(~Q(mirna_pred = '0')).select_related('target').distinct()
+        dict_l2t2 = {}
+        for t2p in t2p_list2:
+            for mirna in t2p.mirna_pred.split(','):
+                dict_l2t2[mirna] = dict_l2t2.get(mirna, []) + [str(t2p.target.symbol)]
+                
+        results_list2 = []
+        for mirna, target_list in dict_l2t2.items():
+            target_list = list(set(target_list))
+            target_list.sort()
+            target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, str(s), str(s)) for s in target_list])
+
+            mirna_str = mirna_url_str % (_APP_LINK_PREFIX, str(mirna), str(mirna))
+            results_list2.append([mirna_str, target_str])
+            
+        context['data2'] = results_list2
+        return render_to_response("irndb2/pathway_mirna.html", context)
+
+    else:
+        if pathwaytype == 'KEGG':
+            t2p_list = T2K.objects.filter(kegg = pw_obj).select_related('target').distinct()
+        else:
+            t2p_list = T2W.objects.filter(wikipath = pw_obj).select_related('target').distinct()
+            
+        target_list = t2p_list.values_list('target')
+        num_lncrnas = L2T.objects.filter(target__in = target_list).values('lncrna').distinct().count()
+        num_pirnas = P2T.objects.filter(target__in = target_list).values('pirna').distinct().count()
+        num_mirnas_exp = M2T_EXP.objects.filter(target__in = target_list).values('mirna').distinct().count()
+        num_mirnas_pred = M2T_PRED.objects.filter(target__in = target_list).values('mirna').distinct().count()
+        num_targets = len(t2p_list)
+
+        context["target_str"] = '+'.join([str(t2p.target.id) for t2p in t2p_list])
+        context['num_lncrnas'] = num_lncrnas
+        context['num_pirnas'] = num_pirnas
+        context['num_mirnas_exp'] = num_mirnas_exp
+        context['num_mirnas_pred'] = num_mirnas_pred
+        context['num_targets'] = num_targets
+        return render_to_response("irndb2/pathway_base.html", context)
+
+    
+def wp_method(request, id):
+    context = {}
+    return render(request, "irndb2/contact.html", context)
+
+
 def target_method(request, sym):
     context = {}
     context["entity_type"] = "target"
@@ -123,6 +306,7 @@ def target_method(request, sym):
         aK2 = []
         for t in aK:
             a = list(t)
+            a.append(a[1])  # original pathid
             a[1] = a[1].split(':')[1]
             aK2.append(tuple(a))
 
@@ -338,7 +522,7 @@ def mirna_method(request, name, flush=True):
             for k,v in dW.items():
                 aT = list(v)
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
             aK = aWtemp[:]
 
             ## push to session cash
@@ -560,7 +744,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
             for k,v in dW.items():
                 aT = list(v)
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
             aK = aWtemp[:]
 
             ## puch to session cash
@@ -754,7 +938,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
             for k,v in dW.items():
                 aT = list(v)
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT}) ## fixed kegg_id as the link requires without "path:" at the beginning
+                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
             aK = aWtemp[:]
 
             ## puch to session cash
@@ -768,17 +952,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         context['existed'] = iPexisted
         return render(request, 'irndb2/rna_pathways.html', context)
 
-
-def kegg_method(request, id):
-    context = {}
-    return render(request, "irndb2/contact.html", context)
-
-
-def wp_method(request, id):
-    context = {}
-    return render(request, "irndb2/contact.html", context)
-
-
+    
 def search_method(request):
     context = {}
     if request.method == 'GET':
