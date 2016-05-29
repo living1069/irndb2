@@ -64,28 +64,28 @@ $(function() {
         <table id="tableinfo">
           {% if pwt = 'KEGG' %}
           <tr>
-            <td>Pathway name:</td>
+            <td><b>Pathway name:</b></td>
             <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ p.keggname }}</a></td>
           </tr>
           <tr>
-            <td>Pathway source:</td>
+            <td><b>Pathway source:</b></td>
             <td><a title="Link to KEGG" class="g" href="http://www.kegg.jp/">{{ pwt }}</a></td>
           </tr>
           <tr>
-            <td>Pathway id:</td>
+            <td><b>Pathway id:</b></td>
             <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ pathid }}</a></td>
           </tr>
           {% else %}
           <tr>
-            <td>Pathway name:</td>
+            <td><b>Pathway name:</b></td>
             <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathname }}</a></td>
           </tr>
           <tr>
-            <td>Pathway source:</td>
+            <td><b>Pathway source:</b></td>
             <td><a title="Link to Wikipathway" class="g" href="http://www.wikipathways.org">{{ pwt }}</a></td>
           </tr>
           <tr>
-            <td>Pathway id:</td>
+            <td><b>Pathway id:</b></td>
             <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathid }}</a></td>
           </tr>
           {% endif %}
@@ -120,7 +120,7 @@ $(function() {
   labels: ['#'],
   resize: true,
   xLabelAngle: 45,
-  barColors: ['#0B62A4'],
+  barColors: ["#993333"],
   hideHover: 'auto',
   gridLineColor: '#c3c3c3'
  });

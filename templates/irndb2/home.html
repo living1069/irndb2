@@ -19,7 +19,7 @@
 <div class="row">
  <div class="col-lg-8">
     <div class="panel panel-default">
-     <div class="panel-heading">Information</div>
+     <div class="panel-heading"><b>Information</b></div>
      <div class="panel-body" style="min-height: 180px;">
      <p>
       IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for mouse as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
@@ -33,7 +33,7 @@
  
  <div class="col-lg-4">
    <div class="panel panel-default">
-     <div class="panel-heading">Quick links</div>
+     <div class="panel-heading"><b>Quick links</b></div>
      <div class="panel-body" style="min-height: 180px;">
        <p>
        <b>Browse/search</b>:<br><a class="m1" href="{{browse_url}}?type=mirna"  title="Search microRNAs">miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{{browse_url}}?type=lncrna" title="Search lncRNAs">lncRNAs</a>, <a class="t1" href="{{browse_url}}?type=target" title="Search targets">target genes</a>.
@@ -51,7 +51,7 @@
  <div class="col-lg-8">
   
   <div class="panel panel-default">
-   <div class="panel-heading">Search IRNdb</div>
+    <div class="panel-heading"><b>Search IRNdb</b></div>
    <div class="panel-body">
      <!-- search bar -->
      <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
@@ -69,9 +69,9 @@
  </div>  <!-- /.col-lg-8 --> 
  <div class="col-lg-4">
   <div class="panel panel-default">
-   <div class="panel-heading">IRNdb RNAs</div>
-   <div class="panel-body" style="min-height: 350px; max-height:350px">
-    <div id="morris-donut-chart"></div>
+    <div class="panel-heading"><b>IRNdb ncRNAs</b></div>
+   <div class="panel-body" style="min-height: 250px; max-height:250px">
+    <div style="min-height: 220px; max-height:220px" id="morris-donut-chart"></div>
    </div>
    <!-- /.panel-body -->
   </div>
@@ -102,7 +102,8 @@ $(function() {
       label: "piRNAs",
       value: {{ num_pirna }}
      }],
-     resize: true
+     resize: true,
+     colors: ["#993333","#ad5b5b","#c18484"]
  });
 
 });

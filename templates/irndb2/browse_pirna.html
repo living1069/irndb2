@@ -9,6 +9,7 @@
     <h3 class="page-header"><img src="{% static 'irndb2/images/pirna.png' %}" alt="" / > Browse/search piRNAs</h3>
     
     <div class="panel panel-default">
+      <div class="panel-heading"><b>piRNAs targeting immune relevant genes ({{data|length}})</b></div>
       <div class="panel-body">
         {% comment %} 
         <a href="{{ browse_url }}?type=pirna&dnl=1">
