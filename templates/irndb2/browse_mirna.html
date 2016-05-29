@@ -1,0 +1,68 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Browse:miRNAs{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <h3 class="page-header"><img src="{% static 'irndb2/images/mirna.png' %}" alt="" / > Browse/search microRNAs</h3>
+    <div class="panel panel-default">
+      <div class="panel-heading"><b>microRNAs targeting immune relevant genes ({{data|length}})</b></div>
+      <div class="panel-body">
+        {% comment %}
+        <a href="{{ browse_url }}?type=mirna&dnl=1">
+          <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+        </a>
+        {% endcomment %}
+        <div class="dataTable_wrapper" width="100%">
+          <table class="table table-condensed" id="sebio1" width="100%">
+            <thead>
+              <tr>
+                <th title="microRNA name"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > ID</th>
+                <th title="microRNA id"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > mirBase</th>
+                <th title="# experimentally supported targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / > (exp)</th>
+                <th title="# predicted targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / > (pred)</th>
+                <th title="# experimentally supported targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / > (exp)</th>
+                <th title="# predicted targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / > (pred)</th>
+                 </tr>
+            </thead>
+          </table> 
+          <!-- DataTables JavaScript -->
+          
+          <script>
+               var dataSet = {{ data|safe }};
+               
+               $(document).ready( function () {
+                  var table = $('#sebio1').DataTable( {
+                      "data": dataSet,
+                      "columns": [
+                        {"width":"160px"},
+                        {"width":"110px"}, 
+                        {"className": "text-right"},
+                        {"className": "text-right"},
+                        {"className": "text-right"},
+                        {"className": "text-right"}
+                       ],
+                    "order": [[ 2, "desc" ]],
+                    "deferRender": true,
+                    responsive: true,
+                    lengthChange: false,
+                    "pageLength": 20,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+                  });
+                 table.buttons().container()
+                     .appendTo( '.col-sm-6:eq(0)' );
+               } );
+          </script>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+    </div>
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+         

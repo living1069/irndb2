@@ -1,0 +1,122 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>GO-PROCESS: Immune targets ({{go_p|length}})</b>
+  </div>
+  <div class="panel-body">
+    {% comment %}
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    {% endcomment %}
+    {% if go_p %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioG1" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO-Process Term</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Genes</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in go_p %}
+           <tr>
+             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
+             <td>
+               {% for target in w.targets %}
+               <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
+               {% endfor %}
+             </td>
+             <td>{{ w.targets|length }}</td>
+           </tr>
+           {% endfor %}
+        </tbody>
+      </table> 
+      
+      <script>
+        $(document).ready( function () {
+          var tableG1 = $('#sebioG1').DataTable( {
+              "columns": [ 
+                    { "width": "450px" },
+                    { "bSortable": false },
+                    { "width": "75px", "className": "text-right"} ],
+              "order": [[ 2, "desc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 5,
+              buttons: [ 'copy', 'excel', 'csv' ]
+        });
+         tableG1.buttons().container()
+                     .appendTo( '#sebioG1_wrapper .col-sm-6:eq(0)' );
+       });
+      </script>
+      {% else %}
+      <p>No GO-process terms found for immune targets.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>GO-FUNCTION: Immune targets ({{ go_f|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% comment %}
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    {% endcomment %}
+    {% if go_f %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioG2" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > GO-Function Term</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in go_f %}
+          <tr>
+            <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
+            <td>
+              {% for target in w.targets %}
+              <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
+              {% endfor %}
+            </td>
+            <td>{{ w.targets|length }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+       </table> 
+      
+      <script>
+         $(document).ready( function () {
+          var tableG2 = $('#sebioG2').DataTable( {
+              "columns": [ 
+                    { "width": "450px" },
+                    { "bSortable": false },
+                    { "width": "75px", "className": "text-right"} ],
+              "order": [[ 2, "desc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 5,
+              buttons: [ 'copy', 'excel', 'csv' ]
+        });
+         tableG2.buttons().container()
+                     .appendTo( '#sebioG2_wrapper .col-sm-6:eq(0)' );
+       });
+      </script>
+      {% else %}
+      <p>No GO-function terms found for immune targets.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+

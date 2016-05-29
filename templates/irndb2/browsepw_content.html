@@ -1,0 +1,46 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading"><b>Pathways targeted by ncRNA ({{data|length}})</b></div>
+  <div class="panel-body">
+    <div class="dataTable_wrapper" width="100%">
+      <table class="table table-condensed" id="sebio{{ pwt }}" width="100%">
+        <thead>
+          <tr>
+            <th title="Pathway name"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway name</th>
+            <th title="ncRNAs regulating targets in pathway">Targets / ncRNAs</th>
+          </tr>
+        </thead>       
+      </table> 
+      <!-- DataTables JavaScript -->
+      
+      <script>
+        var dataSet = {{ data|safe }};
+        
+        $(document).ready( function () {
+        var tablePW{{ pwt }} = $('#sebio{{ pwt }}').DataTable( {
+                    "data": dataSet,   
+                    "columns": [
+                        {"width":"300px"},
+                        {"className": "text-left", "bSortable": false}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true, 
+                   lengthChange: false,
+        {% if entity_type = 'pirna' %}
+              "pageLength": 10,
+        {% else %}
+             "pageLength": 5,
+        {% endif %}
+                    buttons: [ 'copy', 'excel', 'csv' ]
+               });
+                 tablePW{{ pwt }}.buttons().container()
+                     .appendTo( ' #sebio{{ pwt }}_wrapper .col-sm-6:eq(0)' );
+               } );
+      </script>
+    </div>
+  </div>
+</div>
+
+

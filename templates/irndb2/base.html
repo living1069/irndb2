@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% comment %}
+All js and css component should be in the DJANGO app 'static/irndb2' folder
+{% endcomment %}
+
+{% load staticfiles %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<meta name="keywords" content="">
+
+    <!-- FAVICON -->
+    <link rel="shortcut icon" href="{% static 'irndb2/images/favicon.ico' %}">
+
+    <title>{% block title %}Home{% endblock %} - IRNdb</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'irndb2/bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'irndb2/bower_components/metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- DataTables CSS -->
+    <link href="{% static 'irndb2/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css' %}" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+    <!--<link href="{% static 'irndb2/bower_components/datatables-responsive/css/responsive.dataTables.scss' %}" rel="stylesheet">-->
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'irndb2/bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script type="text/javascript" src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery -->
+    <script src="{% static 'irndb2/bower_components/jquery/dist/jquery.min.js' %}"></script>
+
+    <!--JQUERY ui interface -->
+    <link rel="stylesheet" type="text/css" href="{% static 'irndb2/dist/js/jquery-ui-1.11.2/jquery-ui.css' %}">
+    <script type="text/javascript" charset="utf8" src="{% static 'irndb2/dist/js/jquery-ui-1.11.2/jquery-ui.min.js' %}"></script>
+ 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'irndb2/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'irndb2/bower_components/metisMenu/dist/metisMenu.min.js' %}"></script>
+   
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'irndb2/bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'irndb2/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js' %}"></script>
+
+    <!-- Datatables data download -->
+    <script src="{% static 'irndb2/dist/js/dataTables-additions/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'irndb2/dist/js/dataTables-additions/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'irndb2/dist/js/dataTables-additions/jszip.min.js' %}"></script>
+    <script src="{% static 'irndb2/dist/js/dataTables-additions/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'irndb2/dist/js/dataTables-additions/buttons.print.min.js' %}"></script>
+    <link href="{% static 'irndb2/dist/js/dataTables-additions/buttons.bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'irndb2/dist/js/app.js' %}"></script>
+
+    <!-- Custom CSS -->
+    <link href="{% static 'irndb2/dist/css/app.css' %}" rel="stylesheet" type="text/css">
+ 
+</head>
+
+{% comment "Set app namespace" %}
+   namepace 'irndb2' needs declaration in main 'urls.py' not in apps local urls.py:
+     urlpatterns = patterns('',
+       url(r'^apps/irndb2/', include('irndb2.urls', namespace="irndb2")),
+     )
+{% endcomment %}
+
+{% url 'irndb2:home_url_name' as home_url %}
+{% url 'irndb2:target_url_name' as target_url %}
+{% url 'irndb2:mirna_url_name' as mirna_url %}
+{% url 'irndb2:lncrna_url_name' as lncrna_url %}
+{% url 'irndb2:pirna_url_name' as pirna_url %}
+{% url 'irndb2:kegg_url_name' as kegg_url %}
+{% url 'irndb2:wp_url_name' as wp_url %}
+{% url 'irndb2:contact_url_name' as contact_url %}
+{% url 'irndb2:doc_url_name' as doc_url %}
+{% url 'irndb2:tables_url_name' as tables_url %}
+{% url 'irndb2:charts_url_name' as charts_url %}
+{% url 'irndb2:search_url_name' as search_url %}
+{% url 'irndb2:browse_url_name' as browse_url %}
+{% url 'static' as static_url %}
+
+<body>
+  <div id="wrapper">
+      
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top navbar-custom" role="navigation" style="margin-bottom: 0">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ home_url }}"><img src="{% static 'irndb2/images/logo.png' %}" style="height: 100%; width: auto;"></a>
+      </div>
+      <!-- /.navbar-header -->
+
+      {% comment "Add search bar to the right in the navbar" %}
+      <!-- navbar-top-right -->
+      <div class="col-lg-2 pull-right">
+        <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.navbar-top-right -->
+      {% endcomment %}
+
+      <!-- NAVIGATION SIDEBAR -->
+      <!-- Highlighting of the active class is handled by metisMenu -->
+      <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+          <!-- search bar -->
+          <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+          <!-- ./serach bar -->
+
+          <ul class="nav" id="side-menu">
+            <li>
+              <a href="{{ home_url }}"><i class="fa fa-home fa-fw"></i> Home</a>
+            </li>
+            <li>
+              <a href="{{ doc_url }}"><i class="fa fa-info-circle fa-fw"></i> Documentation</a>
+            </li>
+            <li>
+              <a href="{{ contact_url }}"><i class="fa fa-envelope fa-fw"></i> Contact</a>
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=mirna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=mirna&pw=1">Targeted pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> piRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=pirna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=pirna&pw=1">Targeted pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> lncRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=lncrna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=lncrna&pw=1">Targeted pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></i> Target genes<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=target">Browse/search</a>
+                </li>
+		{% comment %}
+                <li>
+                  <a href="{{ browse_url }}?type=target&pw=1">Targeted pathways</a>
+                </li>
+		{% endcomment %}
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+        {% comment %}
+            <li>
+              <a href="{{ tables_url }}"><i class="fa fa-table fa-fw"></i> Tables</a>
+            </li>
+            <li>
+              <a href="{{ charts_url }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
+            </li>
+	    {% endcomment %}
+          </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
+      </div>
+      <!-- /.navbar-static-side -->
+    </nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+      <div class="container-fluid">
+
+        {% comment %}
+        BELOW GOES THE MAIN CONTENT FOR EACH INDIVIDUAL PAGE
+        THE "block content" tag needs to be replaced in other templates.
+        {% endcomment %}
+
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer row -->
+        <div class="row">
+          <div class="col-lg-12 text-right">
+            <hr>
+            <p><a href="http://sschmeier.com"><i class="fa fa-home fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.4</p>
+          </div>
+        </div>
+        <!-- ./Footer row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+</body>
+</html>
+

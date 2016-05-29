@@ -1,0 +1,175 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Experimentally supported immune targets ({{ targets_imm_exp|length }})</b>
+    <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr_exp|safe }}'], popup: true, description: 'Targets (exp) of {{ m.mname }}'});"><button type="button" class="btn btn-default btn-xs">Run geneset enrichment analysis</button></a></div>
+  </div>
+  <div class="panel-body">
+    {% if targets_imm_exp %}
+    <div class="dataTable_wrapper"  width="100%">
+      <table id="sebioT1" class="table table-condensed"  width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Symbol</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > GeneID</th>
+            <th title="Immune-relevance inferred from"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></th>
+            <th title="Immune-relevance source">Immune source</th>
+            <th title="Source of the interaction">Target Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in targets_imm_exp %}
+          <tr>
+            <td><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' t.1 %}">{{ t.1 }}</a></td>
+            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.2 }}</a></td>
+            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.0 }}</a></td>
+            <td>
+              {% if t.4 == 1 %}
+              mouse
+              {% else %}
+              human
+              {% endif %}
+            </td>
+            <td>
+              <table id="res">
+                 <tbody>
+                   {% for isource in t.3 %}
+                   <tr>
+                     <td>{{ isource }}</td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+            </td>
+            <td>
+              <table id="res">
+                 <tbody>
+                   {% for source in t.5 %}
+                   <tr>
+                     <td>{{ source }}</td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script>
+      $(document).ready( function () {
+        var tableT1 = $('#sebioT1').DataTable( {
+          "columns": [ { "width": "130px" },
+                   null,
+                   { "width": "100px"},
+                   { "width": "50px"},
+                   { "width": "120px", "bSortable": false },
+                   { "width": "110px", "bSortable": false} ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 5,
+          buttons: [ 'copy', 'excel', 'csv' ]
+        });
+        tableT1.buttons().container()
+                     .appendTo( '#sebioT1_wrapper .col-sm-6:eq(0)' );
+      } );
+      </script>
+    </div>
+    {% else %}
+    <p>No experimentally supported immune targets.</p>
+    {% endif %}
+    
+  </div>
+</div>
+  
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Predicted immune targets ({{ targets_imm|length }})</b>
+    <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr_pred|safe }}'], popup: true, description: 'Targets (pred) of {{ m.mname }}'});"><button type="button" class="btn btn-default btn-xs">Run geneset enrichment analysis</button></a></div>
+  </div>
+  <div class="panel-body">
+    
+    {% if targets_imm %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioT2" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Symbol</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > GeneID</th>
+            <th title="Immune-relevance inferred from"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></th>
+            <th title="Immune-relevance source">Immune source</th>
+            <th title="Source of the interaction">Target Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in targets_imm %}
+          <tr>
+            <td><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' t.1 %}">{{ t.1 }}</a></td>
+            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.2 }}</a></td>
+            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.0 }}</a></td>
+            <td>
+              {% if t.4 == 1 %}
+              mouse
+              {% else %}
+              human
+              {% endif %}
+            </td>
+            <td>
+              <table id="res">
+                 <tbody>
+                   {% for isource in t.3 %}
+                   <tr>
+                     <td>{{ isource }}</td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+            </td>
+            <td>
+              <table id="res">
+                 <tbody>
+                   {% for source in t.5 %}
+                   <tr>
+                     <td>{{ source }}</td>
+                   </tr>
+                   {% endfor %}
+                 </tbody>
+               </table>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script>
+      $(document).ready( function () {
+        var tableT2 = $('#sebioT2').DataTable( {
+          "columns": [ { "width": "130px" },
+                   null,
+                   { "width": "100px"},
+                   { "width": "50px"},
+                   { "width": "120px", "bSortable": false },
+                   { "width": "110px", "bSortable": false} ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 5,
+          buttons: [ 'copy', 'excel', 'csv' ]
+        });
+        tableT2.buttons().container()
+                     .appendTo( '#sebioT2_wrapper .col-sm-6:eq(0)' );
+      } );
+      </script>
+    </div>
+    {% else %}
+    <p>No predicted immune targets.</p>
+    {% endif %}
+    
+  </div>
+</div>
+   

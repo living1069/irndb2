@@ -1,0 +1,375 @@
+{% load staticfiles %}
+<style>
+
+#table-5 {
+    background-color: #f5f5f5;
+    /*background-color: #fff;*/
+	padding: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #ebebeb;
+    width: 100%;
+}
+
+#table-5 td, #table-5 th {
+	padding: 1px 5px;
+}
+#table-5 thead {
+	font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+	text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+#table-5 th {
+	text-align: left;
+	border-bottom: 1px solid #fff;
+}
+#table-5 td {
+	font-size: 14px;
+}
+
+#table-5 td.disk {
+   text-align: left;
+}
+
+#table-5 td.h {
+    font: normal 15px Helvetica Neue,Helvetica,sans-serif;
+    text-shadow: 0 1px 0 white;
+	color: #898989;
+}
+
+#table-5 td:hover {
+	background-color: #f5f5f5;
+}
+
+</style>
+
+<p>
+<h4>Experimentally supported microRNA -:- target gene interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>microRNA-target interactions</b></td>
+          <td>{{ num_m2t_exp_mmu }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/m2t_exp_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+          
+          <td>{{ num_m2t_exp_mmuhsa }}</td>
+          <td>
+             {% comment %}
+             <a href="{% static 'irn/data/m2t_exp_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+             {% endcomment %}
+          </td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;microRNAs</b></td>
+          <td>{{ num_m_exp_mmu }}</td>
+          <td></td>
+          <td>{{ num_m_exp_mmuhsa }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>{{ num_t_exp_mmu }}</td>
+          <td></td>
+          <td>{{ num_t_exp_mmuhsa }}</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>Predicted microRNA -:- target gene interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>microRNA-target interactions</b></td>
+          <td>{{ num_m2t_pred_mmu }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/m2t_pred_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+          
+          <td>{{ num_m2t_pred_mmuhsa }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/m2t_pred_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;microRNAs</b></td>
+          <td>{{ num_m_pred_mmu }}</td>
+          <td></td>
+          <td>{{ num_m_pred_mmuhsa }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>{{ num_t_pred_mmu }}</td>
+          <td></td>
+          <td>{{ num_t_pred_mmuhsa }}</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>Long non-coding RNA -:- target interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+       <tr>
+          <td class="h"><b>lncRNA-target interactions</b></td>
+          <td>{{ num_l2t_mmu }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/l2t_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+          
+          <td>{{ num_l2t_mmuhsa }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/l2t_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;lncRNAs</b></td>
+          <td>{{ num_l2t_pirna_mmu }}</td>
+          <td></td>
+          <td>{{ num_l2t_pirna_mmuhsa }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>{{ num_l2t_target_mmu }}</td>
+          <td></td>
+          <td>{{ num_l2t_target_mmuhsa }}</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>PIWI-interacting RNA -:- target interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>piRNA-target interactions</b></td>
+          <td>{{ num_p2t_mmu }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/p2t_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+          
+          <td>{{ num_p2t_mmuhsa }}</td>
+          <td>
+            {% comment %}
+            <a href="{% static 'irn/data/p2t_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a>
+            {% endcomment %}
+          </td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;piRNAs</b></td>
+          <td>{{ num_p2t_pirna_mmu }}</td>
+          <td></td>
+          <td>{{ num_p2t_pirna_mmuhsa }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>{{ num_p2t_target_mmu }}</td>
+          <td></td>
+          <td>{{ num_p2t_target_mmuhsa }}</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<!--
+<p>
+<h4>Experimentally supported microRNA -:- target gene interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>microRNA-target interactions</b></td>
+          <td>1350</td>
+          <td><a href="{% static 'irn/data/m2t_exp_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+          
+          <td>3799</td>
+          <td><a href="{% static 'irn/data/m2t_exp_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;microRNAs</b></td>
+          <td>170</td>
+          <td></td>
+          <td>265</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>576</td>
+          <td></td>
+          <td>1633</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>Predicted microRNA -:- target gene interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>microRNA-target interactions</b></td>
+          <td>386409</td>
+          <td><a href="{% static 'irn/data/m2t_pred_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+          
+          <td>1188681</td>
+          <td><a href="{% static 'irn/data/m2t_pred_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;microRNAs</b></td>
+          <td>1798</td>
+          <td></td>
+          <td>1802</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>1752</td>
+          <td></td>
+          <td>5487</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>Long non-coding RNA -:- target interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>lncRNA-target interactions</b></td>
+          <td>7771</td>
+          <td><a href="{% static 'irn/data/l2t_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+          
+          <td>22453</td>
+          <td><a href="{% static 'irn/data/l2t_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;lncRNAs</b></td>
+          <td>138</td>
+          <td></td>
+          <td>163</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>1501</td>
+          <td></td>
+          <td>4521</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+
+<p>
+<h4>PIWI-interacting RNA -:- target interactions</h4>
+<table id="table-5">
+	<tbody>
+        <thead>
+          <th width="450px">immune-relevance inferred from:</th>
+          <th width="50px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / ></th>
+          <th width="100px"></th>
+          <th width="100px"><img src="{% static 'irn/mouse.png' %}" title="Mouse" style="vertical-align: middle;" alt="mouse" / >+<img src="{% static 'irn/man.png' %}" title="Human" style="vertical-align: middle;" alt="human" / ></th>
+          <th></th>
+         </thead>
+        <tr>
+          <td class="h"><b>piRNA-target interactions</b></td>
+          <td>141</td>
+          <td><a href="{% static 'irn/data/p2t_mmu.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+          
+          <td>377</td>
+          <td><a href="{% static 'irn/data/p2t_mmuhsa.tsv.gz' %}"><span class="ui-icon ui-icon-disk"></span></a></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;piRNAs</b></td>
+          <td>134</td>
+          <td></td>
+          <td>319</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="h"><b>&nbsp;&nbsp;&nbsp;&nbsp;targets</b></td>
+          <td>32</td>
+          <td></td>
+          <td>84</td>
+          <td></td>
+        </tr>
+	</tbody>
+</table>
+</p>
+-->

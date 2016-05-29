@@ -1,0 +1,148 @@
+{% extends "irndb2/base.html" %}
+
+{% block title %}
+{% if pwt = 'KEGG' %}
+{{ p.keggid }}
+{% else %}
+{{ p.wikipathid }}
+{% endif %}
+{% endblock %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<!-- Morris Charts CSS -->
+<link href="{% static 'irndb2/bower_components/morrisjs/morris.css' %}" rel="stylesheet">
+<!-- Morris Charts JavaScript -->
+<script src="{% static 'irndb2/bower_components/raphael/raphael-min.js' %}"></script>
+<script src="{% static 'irndb2/bower_components/morrisjs/morris.min.js' %}"></script>
+
+<script>
+$(function() {
+  $( "#tabsInfo" ).tabs({
+      heightStyle: "content",
+      beforeLoad: function( event, ui ) {
+        if ( ui.tab.data( "loaded" ) ) {
+          event.preventDefault();
+          return;
+        }
+
+        ui.panel.html('<img src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" style="vertical-align:middle;"> Loading...'),
+
+        ui.jqXHR.success(function() {
+          ui.tab.data( "loaded", true );
+        });
+
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Could not load tab. We will try to fix this asap.");
+        });
+      }
+   });
+});
+</script>
+
+<h3><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway view</h3>
+
+{% if p %}
+
+<div class="row">
+<div class="col-lg-9">
+  <div class="panel panel-default" style="min-height: 220px; max-height:220px">
+    <div class="panel-heading">
+      <b>
+      {% if pwt = 'KEGG'  %}
+      {{ p.keggname }}
+      {% else %}
+      {{ p.wikipathname }}
+      {% endif %}
+      </b>
+    </div>
+    <div class="panel-body" >
+      <p>
+        <table id="tableinfo">
+          {% if pwt = 'KEGG' %}
+          <tr>
+            <td><b>Pathway name:</b></td>
+            <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ p.keggname }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway source:</b></td>
+            <td><a title="Link to KEGG" class="g" href="http://www.kegg.jp/">{{ pwt }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway id:</b></td>
+            <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ pathid }}</a></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td><b>Pathway name:</b></td>
+            <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathname }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway source:</b></td>
+            <td><a title="Link to Wikipathway" class="g" href="http://www.wikipathways.org">{{ pwt }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway id:</b></td>
+            <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathid }}</a></td>
+          </tr>
+          {% endif %}
+        </table>
+      </p>
+    </div>
+  </div>
+</div> <!-- div panel-body -->
+
+<div class="col-lg-3" >
+  <div class="panel panel-default" style="min-height: 220px; max-height:220px">
+    <div class="panel-heading">
+      ncRNAs
+    </div>
+    <div class="panel-body" >
+      <div style="min-height: 170px; max-height:170px" id="morris-bar-chart"></div>
+    </div>
+ </div>
+</div>
+<script>
+$(function() {
+ Morris.Bar({
+  element: 'morris-bar-chart',
+   data: [
+    { y: 'miRNAs_e', a: {{ num_mirnas_exp }} },
+    { y: 'miRNAs_p', a: {{ num_mirnas_pred }} },
+    { y: 'lncRNAs', a: {{ num_lncrnas }} },
+    { y: 'piRNAs', a: {{ num_pirnas }} }
+  ],
+  xkey: 'y',
+  ykeys: ['a'],
+  labels: ['#'],
+  resize: true,
+  xLabelAngle: 45,
+  barColors: ["#993333"],
+  hideHover: 'auto',
+  gridLineColor: '#c3c3c3'
+ });
+});
+</script>
+</div>
+
+<div class="row">
+  <div class="col-lg-12" >
+    <div id="tabsInfo">
+      <ul>
+        <li><a title="Target genes part of the pathway" href="{{ kegg_url }}?type=target">Targets</a></li>
+        <li><a title="miRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=mirna">miRNAs</a></li>
+        <li><a title="lncRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=lncrna">lncRNAs</a></li>
+        <li><a title="piRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=pirna">piRNAs</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<p>Target not found.</p>
+{% endif %}
+ 
+{% endblock %}
