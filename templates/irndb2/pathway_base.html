@@ -65,7 +65,7 @@ $(function() {
           {% if pwt = 'KEGG' %}
           <tr>
             <td>Pathway name:</td>
-            <td><a title="Link to KEGG" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ p.keggname }}</a></td>
+            <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ p.keggname }}</a></td>
           </tr>
           <tr>
             <td>Pathway source:</td>
@@ -73,9 +73,21 @@ $(function() {
           </tr>
           <tr>
             <td>Pathway id:</td>
-            <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ p.keggid }}</a></td>
+            <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ pathid }}</a></td>
           </tr>
           {% else %}
+          <tr>
+            <td>Pathway name:</td>
+            <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathname }}</a></td>
+          </tr>
+          <tr>
+            <td>Pathway source:</td>
+            <td><a title="Link to Wikipathway" class="g" href="http://www.wikipathways.org">{{ pwt }}</a></td>
+          </tr>
+          <tr>
+            <td>Pathway id:</td>
+            <td><a title="Link to Wikipathway details" class="g" href="http://www.wikipathways.org/index.php/Pathway:{{ pathid }}">{{ p.wikipathid }}</a></td>
+          </tr>
           {% endif %}
         </table>
       </p>
@@ -86,10 +98,10 @@ $(function() {
 <div class="col-lg-3" >
   <div class="panel panel-default" style="min-height: 220px; max-height:220px">
     <div class="panel-heading">
-      RNAs
+      ncRNAs
     </div>
     <div class="panel-body" >
-      <div style="min-height: 180px; max-height:180px" id="morris-bar-chart"></div>
+      <div style="min-height: 170px; max-height:170px" id="morris-bar-chart"></div>
     </div>
  </div>
 </div>
@@ -98,9 +110,10 @@ $(function() {
  Morris.Bar({
   element: 'morris-bar-chart',
    data: [
-    { y: 'miRNAs', a: {{ t.num_mirnas }} },
-    { y: 'lncRNAs', a: {{ t.num_lncrnas }} },
-    { y: 'piRNAs', a: {{ t.num_pirnas }} }
+    { y: 'miRNAs_e', a: {{ num_mirnas_exp }} },
+    { y: 'miRNAs_p', a: {{ num_mirnas_pred }} },
+    { y: 'lncRNAs', a: {{ num_lncrnas }} },
+    { y: 'piRNAs', a: {{ num_pirnas }} }
   ],
   xkey: 'y',
   ykeys: ['a'],
@@ -119,10 +132,10 @@ $(function() {
   <div class="col-lg-12" >
     <div id="tabsInfo">
       <ul>
-        <li><a href="{{ kegg_url }}?type=target">Targets</a></li>
-        <li><a href="{{ kegg_url }}?type=mirna">miRNAs</a></li>
-        <li><a href="{{ kegg_url }}?type=lncrna">lncRNAs</a></li>
-        <li><a href="{{ kegg_url }}?type=pirna">piRNAs</a></li>
+        <li><a title="Target genes part of the pathway" href="{{ kegg_url }}?type=target">Targets</a></li>
+        <li><a title="miRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=mirna">miRNAs</a></li>
+        <li><a title="lncRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=lncrna">lncRNAs</a></li>
+        <li><a title="piRNAs targeting genes in the pathway" href="{{ kegg_url }}?type=pirna">piRNAs</a></li>
       </ul>
     </div>
   </div>
