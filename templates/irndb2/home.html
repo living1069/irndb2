@@ -20,7 +20,7 @@
  <div class="col-lg-8">
     <div class="panel panel-default">
      <div class="panel-heading"><b>Information</b></div>
-     <div class="panel-body" style="min-height: 180px;">
+     <div class="panel-body" style="min-height: 180px; max-height:180px;">
      <p>
       IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for mouse as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
      </p>
@@ -34,9 +34,12 @@
  <div class="col-lg-4">
    <div class="panel panel-default">
      <div class="panel-heading"><b>Quick links</b></div>
-     <div class="panel-body" style="min-height: 180px;">
+     <div class="panel-body" style="min-height: 180px; max-height:180px;">
        <p>
-       <b>Browse/search</b>:<br><a class="m1" href="{{browse_url}}?type=mirna"  title="Search microRNAs">miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{{browse_url}}?type=lncrna" title="Search lncRNAs">lncRNAs</a>, <a class="t1" href="{{browse_url}}?type=target" title="Search targets">target genes</a>.
+       <b>Browse/search ncRNAs</b>:<br><a class="m1" href="{{browse_url}}?type=mirna"  title="Search microRNAs">miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna" title="Browse piRNAs"> piRNAs</a>, <a class="m1" href="{{browse_url}}?type=lncrna" title="Search lncRNAs">lncRNAs</a>.
+       </p>
+       <p>
+       <b>Browse/search targets</b>:<br><a class="t1" href="{{browse_url}}?type=target" title="Search targets">Target genes</a>.
        </p>
        <p>
        <b>Browse pathways</b> targeted by:<br><a class="m1" href="{{browse_url}}?type=mirna&pw=1" title="Search pathways"> miRNAs</a>, <a class="m1" href="{{browse_url}}?type=pirna&pw=1" title="Search pathways"> piRNAs</a>, or <a class="m1" href="{{browse_url}}?type=lncrna&pw=1" title="Search pathways">lncRNAs</a>.<br/>
