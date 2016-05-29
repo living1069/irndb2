@@ -1392,17 +1392,17 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
 
             if dnl != '1':
                 if entitytype == 'pirna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.pirna.split(',')])
                 elif entitytype == 'lncrna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.lncrna.split(',')])
                 elif entitytype == 'mirna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.mirna_exp.split(',')])
@@ -1453,17 +1453,17 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
 
             if dnl != '1':
                 if entitytype == 'pirna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.pirna.split(',')])
                 elif entitytype == 'lncrna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.lncrna.split(',')])
                 elif entitytype == 'mirna':
-                    rnas = '; '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
                                                               entitytype,
                                                               rna.strip(),
                                                               rna.strip())) for rna in t2pw.mirna_exp.split(',')])
