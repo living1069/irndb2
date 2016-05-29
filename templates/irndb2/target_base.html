@@ -50,12 +50,20 @@ $(function() {
           <tr>
             <td><b>Symbol:</b></td>
             <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.symbol }}</td>
-            <td><b>Immune-sources:</b></td>
-            <td>{{ t.immusources }}</td>
           </tr>
           <tr>
             <td><b>Name:</b></td>
             <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.tname }}</a></td>
+          </tr>
+          <tr>
+            <td><b>GeneID:</b></td>
+            <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.id }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Immune-sources:</b></td>
+            <td>{{ t.immusources }}</td>
+          </tr>
+          <tr>
             <td>
               <b>Immune-relevance inferred from:&nbsp;&nbsp;&nbsp;<b>
             </td>
@@ -68,8 +76,6 @@ $(function() {
             </td>
           </tr>
           <tr>
-            <td><b>GeneID:</b></td>
-            <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.id }}" title="Link to NCBI:GENE">{{ t.id }}</a></td>
             <td><b>Expression:<b></td>
             <td><a class="t1" href="http://fantom.gsc.riken.jp/5/sstar/EntrezGene:{{ t.id }}">SSTAR</a> | <a class="t1" href="http://compbio.massey.ac.nz/apps/tbvis/gene/{{ t.symbol }}">TBvis</a></td>
           </tr>
@@ -85,7 +91,7 @@ $(function() {
       <b>ncRNAs</b>
     </div>
     <div class="panel-body" >
-      <div style="min-height: 180px; max-height:180px" id="morris-bar-chart"></div>
+      <div style="min-height: 165px; max-height:165px" id="morris-bar-chart"></div>
     </div>
  </div>
 </div>
