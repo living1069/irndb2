@@ -5,11 +5,11 @@ from fabric.colors import yellow, red
 import os.path
 
 #-- EDIT
-HOST = 'seb@vm010944'
+HOST = 'seb@vm010944'  # production server
 REMOTE_BASE_DIR = '/webapps/seb_django/sebio/'  # DJANGO BASE
-REMOTE_ERR_FILE = '/webapps/seb_django/logs/00update_irndb_git.err'
-REMOTE_LOG_FILE = '/webapps/seb_django/logs/00update_irndb_git.log'
-REPO_NAME = 'irndb'
+REMOTE_ERR_FILE = '/webapps/seb_django/logs/00update_irndb2_git.err'
+REMOTE_LOG_FILE = '/webapps/seb_django/logs/00update_irndb2_git.log'
+REPO_NAME = 'irndb2'
 REPO_URL = 'git@gitlab.com:s-schmeier/irndb2.git'
 
 
@@ -46,5 +46,5 @@ def deploy():
             (REMOTE_LOG_FILE, REMOTE_ERR_FILE))
 
     # reminder new static files
-    puts(yellow('Remember to collect staticfiles on DJANGO server.\n\tRun on server: "python manage.py collectstatic"'))
+    puts(yellow('Do not forget to run collect staticfiles on DJANGO server.'))
 
