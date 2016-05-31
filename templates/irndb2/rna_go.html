@@ -21,25 +21,14 @@
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
-        <tbody>
-          {% for w in go_p %}
-           <tr>
-             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
-             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goid }}</a></td>
-             <td>
-               {% for target in w.targets %}
-               <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
-               {% endfor %}
-             </td>
-             <td>{{ w.targets|length }}</td>
-           </tr>
-           {% endfor %}
-        </tbody>
       </table> 
       
       <script>
+        var dataSet1 = {{ go_p|safe }};
+        
         $(document).ready( function () {
-          var tableG1 = $('#sebioG1').DataTable( {
+        var tableG1 = $('#sebioG1').DataTable( {
+              "data":dataSet1,
               "columns": [ 
                     { "width": "450px" },
                     { "width": "80px" },
@@ -84,25 +73,14 @@
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
-        <tbody>
-          {% for w in go_f %}
-          <tr>
-            <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
-            <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goid }}</a></td>
-            <td>
-              {% for target in w.targets %}
-              <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
-              {% endfor %}
-            </td>
-            <td>{{ w.targets|length }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
        </table> 
       
       <script>
+        var dataSet2 = {{go_f|safe}};
+        
          $(document).ready( function () {
-          var tableG2 = $('#sebioG2').DataTable( {
+        var tableG2 = $('#sebioG2').DataTable( {
+              "data":dataSet2,
               "columns": [ 
                     { "width": "450px" },
                     { "width": "80px" },

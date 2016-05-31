@@ -24,25 +24,14 @@
             <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
-        <tbody>
-          {% for w in wikipath %}
-          <tr>
-            <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' w.pathid %}">{{ w.pathname }}</a></td>
-            <td><a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:{{ w.pathid }}">{{ w.pathid }}</a></td>
-            <td>
-              {% for target in w.targets %}
-              <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
-              {% endfor %}
-            </td>
-            <td>{{ w.targets|length }}</td>
-          </tr>
-           {% endfor %}
-        </tbody>
       </table> 
       
-    <script>
+      <script>
+        var dataSet = {{ wikipath|safe }};
+        
     $(document).ready( function () {
-      var table1 = $('#sebioWikipath1').DataTable( {
+        var table1 = $('#sebioWikipath1').DataTable( {
+        "data":dataSet,
          "columns": [
              { "width": "450px" },
              { "width": "80px" },
@@ -93,25 +82,14 @@
             <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
-        <tbody>
-          {% for w in kegg %}
-          <tr>
-            <td><a class="g" title="IRNdb pathway view" href="{% url 'irndb2:kegg_url_name' w.pathid_orig %}">{{ w.pathname }}</a></td>
-            <td><a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:{{ w.pathid }}">{{ w.pathid }}</a></td>
-             <td>
-                   {% for target in w.targets %}
-                  <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>, 
-                   {% endfor %}
-             </td>
-            <td>{{ w.targets|length }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
       </table> 
       
       <script>
+        var dataSet = {{ kegg|safe }};
+        
         $(document).ready( function () {
-         var table2 = $('#sebioKegg1').DataTable( {
+        var table2 = $('#sebioKegg1').DataTable( {
+        "data": dataSet,
          "columns": [
              { "width": "450px" },
              { "width": "80px" },

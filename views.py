@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q, F, Count
 import csv, re
 
-from irndb2.models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
+from .models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
@@ -435,7 +435,16 @@ def mirna_method(request, name, flush=True):
                                            'targets_imm_exp':aImmExp }
         request.session.modified = True
 
-     ## type of context to return
+
+    target_url = '<a class="t1" title="Link to IRNdb target page" href="%s/target/%s">%s</a>'
+    irndb_kegg_url = '<a class="g" title="IRNdb pathway view" href="%s/kegg/%s">%s</a>'
+    irndb_wikipath_url = '<a class="g" title="IRNdb pathway view" href="%s/wikipathway/%s">%s</a>'
+    kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
+    wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
+    go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
+    
+    
+    ## type of context to return
     url_type = request.GET.get('type', 'a')
     if url_type not in ['p','g','r','t']:
         context = {'m':mirna_obj}
@@ -468,14 +477,32 @@ def mirna_method(request, name, flush=True):
 
             aP = []
             for k,v in dGp.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                goid_orig = str(k[0])
+                goid = str(k[0].split(':')[1])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aP.append([ goname_url, goid_url, gene_symbols, str(len(aT))]) 
             aF = []
             for k,v in dGf.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                goid_orig = str(k[0])
+                goid = str(k[0].split(':')[1])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aF.append([ goname_url, goid_url, gene_symbols, str(len(aT))]) 
 
 
             request.session['mirnas'][mid]['goprocess'] = aP
@@ -506,9 +533,17 @@ def mirna_method(request, name, flush=True):
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_wikipath_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = wikipath_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aW = aWtemp[:]
 
             aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
@@ -520,9 +555,18 @@ def mirna_method(request, name, flush=True):
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in  aT]))
+
+                pathid_orig = str(k[0])
+                pathid = str(k[0].split(':')[1])
+                pathname = str(k[1])
+
+                pathname_url = irndb_kegg_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = kegg_url % (pathid, pathid)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aK = aWtemp[:]
 
             ## push to session cash
@@ -579,7 +623,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     """"""
     context = {}
     context["entity_type"] = "lncrna"
-    
+
     ## flush the session store of pirna
     if flush:
         try:
@@ -611,6 +655,13 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     
     # adjust alias
     lncrna_obj.lalias = ', '.join(lncrna_obj.lalias.split(','))
+
+    target_url = '<a class="t1" title="Link to IRNdb target page" href="%s/target/%s">%s</a>'
+    irndb_kegg_url = '<a class="g" title="IRNdb pathway view" href="%s/kegg/%s">%s</a>'
+    irndb_wikipath_url = '<a class="g" title="IRNdb pathway view" href="%s/wikipathway/%s">%s</a>'
+    kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
+    wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
+    go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
     
     # fetch type via GET method
     url_type = request.GET.get('type', 'x') # some char not in use
@@ -687,15 +738,32 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
 
             aP = []
             for k,v in dGp.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                goid = str(k[0])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aP.append([ goname_url, goid_url, gene_symbols, str(len(aT))]) 
+               
             aF = []
             for k,v in dGf.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
+                goid_orig = str(k[0])
+                goid = str(k[0].split(':')[1])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aF.append([ goname_url, goid_url, gene_symbols, str(len(aT))])
 
             request.session['lncrnas'][lid]['goprocess'] = aP
             request.session['lncrnas'][lid]['gofunction'] = aF
@@ -728,9 +796,17 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_wikipath_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = wikipath_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aW = aWtemp[:]
 
             aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
@@ -742,11 +818,21 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
-            aK = aWtemp[:]
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in  aT]))
 
+                pathid_orig = str(k[0])
+                pathid = str(k[0].split(':')[1])
+                pathname = str(k[1])
+
+                pathname_url = irndb_kegg_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = kegg_url % (pathid, pathid)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
+                
+            aK = aWtemp[:]
+            
             ## puch to session cash
             request.session['lncrnas'][lid]['wikipath'] = aW
             request.session['lncrnas'][lid]['kegg'] = aK
@@ -840,6 +926,15 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         request.session.modified = True
         ##return HttpResponse(aTargets)
 
+
+    target_url = '<a class="t1" title="Link to IRNdb target page" href="%s/target/%s">%s</a>'
+    irndb_kegg_url = '<a class="g" title="IRNdb pathway view" href="%s/kegg/%s">%s</a>'
+    irndb_wikipath_url = '<a class="g" title="IRNdb pathway view" href="%s/wikipathway/%s">%s</a>'
+    kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
+    wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
+    go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
+    
+        
     #-- target tab --
     if url_type == "t":
         context['p'] = pirna_obj
@@ -880,14 +975,33 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
 
             aP = []
             for k,v in dGp.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aP.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                goid_orig = str(k[0])
+                goid = str(k[0].split(':')[1])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aP.append([ goname_url, goid_url, gene_symbols, str(len(aT))])
+                
             aF = []
             for k,v in dGf.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aF.append({'goid':k[0], 'goname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                goid_orig = str(k[0])
+                goid = str(k[0].split(':')[1])
+                goname = str(k[1])
+
+                goname_url = go_url % (goid, goname)
+                goid_url = go_url % (goid, goid)
+
+                aF.append([ goname_url, goid_url, gene_symbols, str(len(aT))]) 
 
 
             request.session['pirnas'][pid]['goprocess'] = aP
@@ -921,9 +1035,17 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0], 'pathname':k[1], 'targets':aT})
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_wikipath_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = wikipath_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aW = aWtemp[:]
 
             aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
@@ -935,9 +1057,18 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
                 dW[tW].add((tRes[3], tRes[2], tRes[4]))
             aWtemp = []
             for k,v in dW.items():
-                aT = list(v)
+                aT = list([str(t[0]) for t in v])
                 aT.sort()
-                aWtemp.append({'pathid':k[0].split(':')[1], 'pathname':k[1], 'targets':aT, 'pathid_orig': k[0]}) ## fixed kegg_id as the link requires without "path:" at the beginning
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in  aT]))
+
+                pathid_orig = str(k[0])
+                pathid = str(k[0].split(':')[1])
+                pathname = str(k[1])
+
+                pathname_url = irndb_kegg_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = kegg_url % (pathid, pathid)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aK = aWtemp[:]
 
             ## puch to session cash
