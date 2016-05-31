@@ -482,8 +482,7 @@ def mirna_method(request, name, flush=True):
                 aT.sort()
                 gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
-                goid_orig = str(k[0])
-                goid = str(k[0].split(':')[1])
+                goid = str(k[0])
                 goname = str(k[1])
 
                 goname_url = go_url % (goid, goname)
@@ -496,8 +495,7 @@ def mirna_method(request, name, flush=True):
                 aT.sort()
                 gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
-                goid_orig = str(k[0])
-                goid = str(k[0].split(':')[1])
+                goid = str(k[0])
                 goname = str(k[1])
 
                 goname_url = go_url % (goid, goname)
@@ -828,8 +826,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
                 aT.sort()
                 gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
-                goid_orig = str(k[0])
-                goid = str(k[0].split(':')[1])
+                goid = str(k[0])
                 goname = str(k[1])
 
                 goname_url = go_url % (goid, goname)
@@ -1067,8 +1064,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
                 aT.sort()
                 gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
-                goid_orig = str(k[0])
-                goid = str(k[0].split(':')[1])
+                goid = str(k[0])
                 goname = str(k[1])
 
                 goname_url = go_url % (goid, goname)
@@ -1082,8 +1078,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
                 aT.sort()
                 gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
 
-                goid_orig = str(k[0])
-                goid = str(k[0].split(':')[1])
+                goid = str(k[0])
                 goname = str(k[1])
 
                 goname_url = go_url % (goid, goname)
