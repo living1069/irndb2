@@ -1,19 +1,12 @@
 {% load staticfiles %}
 
 {% if targets %}
-
-
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Targets ({{targets|length}})</b>
     <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr|safe }}'], popup: true, description: 'Targets of {{ name }}'});"><button type="button" class="btn btn-default btn-xs">Run geneset enrichment analysis</button></a></div>
   </div>
   <div class="panel-body">
-    {% comment %}
-    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
-      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
-    </a>
-    {% endcomment %}
     <div class="dataTable_wrapper" width="100%">
       <table id="sebio1" class="table table-condensed" width="100%">
         <thead>
@@ -26,47 +19,14 @@
             <th title="Link to PubMed"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></th>
           </tr>
         </thead>      
-        <tbody>
-          {% for t in targets %}
-          <tr>
-            <td><a class="t1" href="{% url 'irndb2:target_url_name' t.1 %}" title="IRNdb target view">{{ t.1 }}</a></td>
-            <td><a class="t1" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}" title="Link to NCBI gene">{{ t.2 }}</a></td>
-            <td>
-              {% if t.3 == 1 %}
-              mouse
-              {% else %}
-              human
-              {% endif %}
-            </td>
-            <td>
-              
-              <table id="res">
-               <tbody>
-                 {% for isource in t.4 %}
-                 <tr>
-                   <td>{{ isource }}</td>
-                 </tr>
-                 {% endfor %}
-               </tbody>
-              </table>
-              
-            </td>
-            {% if entity_type == 'lncrna' %}
-            <td>{{ t.6 }}</td>
-            {% elif entity_type == 'pirna' %}
-            <td>piRBase</td>
-            {% endif %}
-            <td>
-              <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ t.5 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
       </table> 
 
       <script>
+        var dataSetT = {{ targets|safe }};
+        
     $(document).ready( function () {
-      var table = $('#sebio1').DataTable( {
+        var table = $('#sebio1').DataTable( {
+         "data":dataSetT,
          "columns": [
            {"width":"120px"},
            null, 

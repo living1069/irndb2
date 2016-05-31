@@ -442,6 +442,7 @@ def mirna_method(request, name, flush=True):
     kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
+    ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
     
     
     ## type of context to return
@@ -609,8 +610,53 @@ def mirna_method(request, name, flush=True):
         aTargetsExp = aImmStrictExp + aImmExp
         # predicted mouse targets
         aTargets = aImmStrict + aImm
-        context['targets_imm'] = aTargets
-        context['targets_imm_exp'] = aTargetsExp
+
+        ## speed up prepare data for js load
+        list_targets_exp = []
+        # 'target__id', 'target__symbol','target__tname','target__immusources','target__strict','sources'
+        for t in aTargetsExp:
+            symbol = str(t[1])
+            name = str(t[2])
+            geneid = str(t[0])
+            symbol_url_str = target_url % (_APP_LINK_PREFIX, symbol, symbol)
+            name_url_str = ncbi_url % (geneid, name)
+            geneid_url_str = ncbi_url % (geneid, geneid)
+            sources = t[3]
+            sources.sort()
+            immusources = ',<br> '.join([str(s).strip() for s in sources])
+            if t[4] == 1:
+                species = 'mouse'
+            else:
+                species = 'human'
+            sources = t[5]
+            sources.sort()
+            targetsource = ',<br> '.join([str(s).strip() for s in sources])
+            
+            list_targets_exp.append([symbol_url_str, name_url_str, geneid_url_str, species, immusources, targetsource])
+        
+        list_targets = []
+        for t in aTargets:
+            symbol = str(t[1])
+            name = str(t[2])
+            geneid = str(t[0])
+            symbol_url_str = target_url % (_APP_LINK_PREFIX, symbol, symbol)
+            name_url_str = ncbi_url % (geneid, name)
+            geneid_url_str = ncbi_url % (geneid, geneid)
+            sources = t[3]
+            sources.sort()
+            immusources = ',<br> '.join([str(s).strip() for s in sources])
+            if t[4] == 1:
+                species = 'mouse'
+            else:
+                species = 'human'
+            sources = t[5]
+            sources.sort()
+            targetsource = ',<br> '.join([str(s).strip() for s in sources])
+            
+            list_targets.append([symbol_url_str, name_url_str, geneid_url_str, species, immusources, targetsource])
+        
+        context['targets_imm'] = list_targets
+        context['targets_imm_exp'] = list_targets_exp
         context['enrichr_exp'] = '\\n'.join([t[1] for t in aTargetsExp])
         context['enrichr_pred'] = '\\n'.join([t[1] for t in aTargets])
         context['bM'] = bM
@@ -662,6 +708,8 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
+    pmid_url = '<a class="g" title="Link to NCBI" href="https://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>'
+    ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
     
     # fetch type via GET method
     url_type = request.GET.get('type', 'x') # some char not in use
@@ -692,7 +740,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
             t = list(t)
             t[4] = [s.strip() for s in t[4].split(',')]
             aTargetsFinal.append(t)
-            t[6] = ', '.join(t[6].split(','))
+            #t[6] = ', '.join(t[6].split(','))
         aTargets = aTargetsFinal
 
         request.session['lncrnas'][lid] = {'targets':aTargets}
@@ -700,8 +748,32 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
 
     #-- target tab --
     if url_type == "t":
+        list_targets = []
+        for t in aTargets:
+            symbol = str(t[1])
+            name = str(t[2])
+            geneid = str(t[0])
+            symbol_url_str = target_url % (_APP_LINK_PREFIX, symbol, symbol)
+            name_url_str = ncbi_url % (geneid, name)
+            sources = t[4]
+            sources.sort()
+            immusources = ',<br>'.join([str(s).strip() for s in sources])
+            if t[3] == 1:
+                species = 'mouse'
+            else:
+                species = 'human'
+            sources = [str(s).strip() for s in t[6].split(',')]
+            sources.sort()
+            targetsource = ',<br>'.join([str(s).strip() for s in sources])
+
+
+            pmid_list = [str(s).strip() for s in t[5].split(',')]
+            pmid_url_str = ',<br>'.join([pmid_url % (s,s) for s in pmid_list])
+            
+            list_targets.append([symbol_url_str, name_url_str, species, immusources, targetsource, pmid_url_str])
+        
         context['l'] = lncrna_obj
-        context['targets'] = aTargets
+        context['targets'] = list_targets
         context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
         context['enrichr_name'] = lncrna_obj.lsymbol
         context['bL'] = bL
@@ -876,13 +948,8 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     pirna_obj.paccession = ', '.join(pirna_obj.paccession.split(','))
     #http://www.ncbi.nlm.nih.gov/pubmed/?term=8751592[uid]+OR+16204232[uid]+OR+23931754[uid]
     aPMID = [s.strip() for s in pirna_obj.ppmid.split(',')]
-    sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term='
-    for i in xrange(len(aPMID)):
-        if i+1 < len(aPMID):
-            sLink += '%s[uid]+OR+'%(aPMID[i])
-        else:
-            sLink += '%s[uid]'%(aPMID[i]) # last one
-    pirna_obj.ppmid_link = sLink
+    pirna_obj.ppmid_link = 'http://www.ncbi.nlm.nih.gov/pubmed/' + ','.join(aPMID)
+    
     pirna_obj.ppmid = ', '.join(pirna_obj.ppmid.split(','))
     pirna_obj.palias = ', '.join(pirna_obj.palias.split(','))
     # currently only one source
@@ -933,12 +1000,33 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
+    ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
+    pmid_url = '<a class="g" title="Link to NCBI" href="https://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>'
     
-        
     #-- target tab --
     if url_type == "t":
+        list_targets = []
+        for t in aTargets:
+            symbol = str(t[1])
+            name = str(t[2])
+            geneid = str(t[0])
+            symbol_url_str = target_url % (_APP_LINK_PREFIX, symbol, symbol)
+            name_url_str = ncbi_url % (geneid, name)
+            sources = t[4]
+            sources.sort()
+            immusources = ',<br>'.join([str(s).strip() for s in sources])
+            if t[3] == 1:
+                species = 'mouse'
+            else:
+                species = 'human'
+            pmid_list = [str(s).strip() for s in t[5].split(',')]
+            pmid_url_str = ',<br>'.join([pmid_url % (s,s) for s in pmid_list])
+            
+            list_targets.append([symbol_url_str, name_url_str, species, immusources, 'piRBase', pmid_url_str])
+
+        
         context['p'] = pirna_obj
-        context['targets'] = aTargets
+        context['targets'] = list_targets
         context['enrichr'] = '\\n'.join([t[1] for t in aTargets])
         context['enrichr_name'] = pirna_obj.pname
         context['bL'] = bL

@@ -19,48 +19,13 @@
             <th title="Source of the interaction">Target Source</th>
           </tr>
         </thead>
-        <tbody>
-          {% for t in targets_imm_exp %}
-          <tr>
-            <td><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' t.1 %}">{{ t.1 }}</a></td>
-            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.2 }}</a></td>
-            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.0 }}</a></td>
-            <td>
-              {% if t.4 == 1 %}
-              mouse
-              {% else %}
-              human
-              {% endif %}
-            </td>
-            <td>
-              <table id="res">
-                 <tbody>
-                   {% for isource in t.3 %}
-                   <tr>
-                     <td>{{ isource }}</td>
-                   </tr>
-                   {% endfor %}
-                 </tbody>
-               </table>
-            </td>
-            <td>
-              <table id="res">
-                 <tbody>
-                   {% for source in t.5 %}
-                   <tr>
-                     <td>{{ source }}</td>
-                   </tr>
-                   {% endfor %}
-                 </tbody>
-               </table>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
       </table>
       <script>
+      var dataSetT1 = {{ targets_imm_exp|safe }};
+      
       $(document).ready( function () {
-        var tableT1 = $('#sebioT1').DataTable( {
+      var tableT1 = $('#sebioT1').DataTable( {
+          "data":dataSetT1,
           "columns": [ { "width": "130px" },
                    null,
                    { "width": "100px"},
@@ -85,7 +50,7 @@
     
   </div>
 </div>
-  
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Predicted immune targets ({{ targets_imm|length }})</b>
@@ -106,48 +71,13 @@
             <th title="Source of the interaction">Target Source</th>
           </tr>
         </thead>
-        <tbody>
-          {% for t in targets_imm %}
-          <tr>
-            <td><a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' t.1 %}">{{ t.1 }}</a></td>
-            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.2 }}</a></td>
-            <td><a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/{{ t.0 }}">{{ t.0 }}</a></td>
-            <td>
-              {% if t.4 == 1 %}
-              mouse
-              {% else %}
-              human
-              {% endif %}
-            </td>
-            <td>
-              <table id="res">
-                 <tbody>
-                   {% for isource in t.3 %}
-                   <tr>
-                     <td>{{ isource }}</td>
-                   </tr>
-                   {% endfor %}
-                 </tbody>
-               </table>
-            </td>
-            <td>
-              <table id="res">
-                 <tbody>
-                   {% for source in t.5 %}
-                   <tr>
-                     <td>{{ source }}</td>
-                   </tr>
-                   {% endfor %}
-                 </tbody>
-               </table>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
       </table>
       <script>
+        var dataSetT2 = {{ targets_imm|safe }};
+        
       $(document).ready( function () {
         var tableT2 = $('#sebioT2').DataTable( {
+          "data":dataSetT2,
           "columns": [ { "width": "130px" },
                    null,
                    { "width": "100px"},
@@ -169,7 +99,7 @@
     {% else %}
     <p>No predicted immune targets.</p>
     {% endif %}
-    
+
   </div>
 </div>
    
