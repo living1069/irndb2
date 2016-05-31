@@ -755,7 +755,6 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         context['wikipath'] = aW
         context['kegg'] = aK
         context['type'] = url_type
-        context['existed'] = iPexisted
         return render(request, 'irndb2/rna_pathways.html', context)
 
 

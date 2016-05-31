@@ -16,6 +16,7 @@
         <thead>
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO-Process Term</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO Id</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Genes</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
@@ -24,6 +25,7 @@
           {% for w in go_p %}
            <tr>
              <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
+             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goid }}</a></td>
              <td>
                {% for target in w.targets %}
                <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
@@ -40,9 +42,10 @@
           var tableG1 = $('#sebioG1').DataTable( {
               "columns": [ 
                     { "width": "450px" },
+                    { "width": "80px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
-              "order": [[ 2, "desc" ]],
+              "order": [[ 3, "desc" ]],
               "deferRender": true,
               responsive: true,
               lengthChange: false,
@@ -76,6 +79,7 @@
         <thead>
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > GO-Function Term</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO Id</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
@@ -84,6 +88,7 @@
           {% for w in go_f %}
           <tr>
             <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goname }}</a></td>
+            <td><a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/{{ w.goid }}">{{ w.goid }}</a></td>
             <td>
               {% for target in w.targets %}
               <a class="t1" title="Link to IRNdb target page" href="{% url 'irndb2:target_url_name' target.0 %}">{{ target.0 }}</a>,
@@ -100,9 +105,10 @@
           var tableG2 = $('#sebioG2').DataTable( {
               "columns": [ 
                     { "width": "450px" },
+                    { "width": "80px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
-              "order": [[ 2, "desc" ]],
+              "order": [[ 3, "desc" ]],
               "deferRender": true,
               responsive: true,
               lengthChange: false,
