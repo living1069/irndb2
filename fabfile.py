@@ -10,7 +10,7 @@ REMOTE_BASE_DIR = '/webapps/seb_django/sebio/'  # DJANGO BASE
 REMOTE_ERR_FILE = '/webapps/seb_django/logs/00update_irndb2_git.err'
 REMOTE_LOG_FILE = '/webapps/seb_django/logs/00update_irndb2_git.log'
 REPO_NAME = 'irndb2'
-REPO_URL = 'git@gitlab.com:s-schmeier/irndb2.git'
+REPO_URL = 'git@github.com:sschmeier/irndb2.git'
 
 
 @hosts('%s' % HOST) # only for deploy to production
