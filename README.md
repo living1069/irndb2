@@ -1,10 +1,10 @@
-# README
+# IRNdb source ([irndb.org](http://irndb.org))
 
 ## Installation
 - Clone the repo:
 
 ```bash
-git clone git@gitlab.com:s-schmeier/irndb2.git irndb2
+git clone git@github.com:sschmeier/irndb2.git irndb2
 ```
 
 - Add `irndb2` in the main project `settings.py `:
