@@ -8,13 +8,11 @@
   <div class="col-lg-12">
     <h3 class="page-header"><img src="{% static 'irndb2/images/target.png' %}" alt="" / > Browse/search Targets</h3>
     <div class="panel panel-default">
-      <div class="panel-heading"><b>Target genes ({{data|length}})</b></div>
+      <div class="panel-heading">
+        <b>Target genes ({{data|length}})</b>
+        <div style="float: right"><button title="Geneset enrichment analysis: Select genes by clicking on rows." type="button" id="button1" class="btn btn-default btn-xs">RUN GSEA</button></div>
+      </div>
       <div class="panel-body">
-        {% comment %}
-        <a href="{{ browse_url }}?type=target&dnl=1">
-          <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
-        </a>
-        {% endcomment%}
         <div class="dataTable_wrapper" width="100%">
           <table class="table table-condensed" id="sebio1" width="100%">
             <thead>
@@ -56,8 +54,32 @@
                     buttons: [ 'copy', 'excel', 'csv' ]
                   });
                  table.buttons().container()
-                     .appendTo( '.col-sm-6:eq(0)' );
-               } );
+                      .appendTo( '.col-sm-6:eq(0)' );
+               
+                 $('#sebio1 tbody').on( 'click', 'tr', function () {
+                   $(this).toggleClass('selected');
+                 } );
+
+           $('#button1').click( function () {
+             var rows = table.rows('.selected').data();
+             if (rows.length == 0) {
+                 alert( "You need to select some genes to run GSEA by clicking table rows." );
+             } else {
+                var genes = "";
+                parser = new DOMParser();
+                for (i = 0; i < rows.length; i++) {
+                       // parse the gene out of the link
+                       doc = parser.parseFromString(rows[i][0], "text/xml");
+                       gene = doc.getElementsByTagName('a')[0].innerHTML
+                       genes += gene + '\n';
+               }
+               enrich({list: [genes], popup: true, description: 'GSEA run with selected genes'});
+
+              //alert( genes );
+             }
+           } );
+
+         } ); // document ready
           </script>
           
         </div>
