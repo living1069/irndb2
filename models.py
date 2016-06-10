@@ -135,3 +135,8 @@ class P2T(models.Model):
     verified =  models.CharField(max_length=1, db_index=True)
     pmid = models.CharField(max_length=12)
 
+class M2EXPR(models.Model):
+    mirbase_id  = models.CharField(max_length=14,
+                                   db_index=True)
+    celltype = models.CharField(max_length=64)
+    exprfreq = models.FloatField()

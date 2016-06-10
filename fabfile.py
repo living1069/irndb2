@@ -42,7 +42,7 @@ def deploy():
 
     puts(yellow("[Update repo: %s]" % REPO_NAME))
     with cd(remote_dir):
-        run("git pull >> %s 2>> %s" %
+        run("git pull origin master >> %s 2>> %s" %
             (REMOTE_LOG_FILE, REMOTE_ERR_FILE))
 
     # reminder new static files

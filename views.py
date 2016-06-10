@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q, F, Count
 import csv, re
 
-from .models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T # use db of irn2 needs changing to .models
+from .models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
@@ -443,14 +443,18 @@ def mirna_method(request, name, flush=True):
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/index.php/Pathway:%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
     ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
-    
-    
+
     ## type of context to return
     url_type = request.GET.get('type', 'a')
-    if url_type not in ['p','g','r','t']:
-        context = {'m':mirna_obj}
+    if url_type not in ['p','g','r','t', 'e']:
         return render(request, 'irndb2/mirna_base.html', context)
-    
+    elif url_type == 'e':
+        a_expr = M2EXPR.objects.filter(mirbase_id = mirna_obj.mirbase_id).distinct().order_by('exprfreq').annotate(exprfreq100=F('exprfreq')*100).values('celltype', 'exprfreq', 'exprfreq100')
+        a_expr = a_expr.reverse()
+        
+        context["ct_expr"] = a_expr 
+        return render(request, 'irndb2/mirna_expr.html', context)
+
     elif url_type=='g':
         ## fetch pathways from session cache if exists or create new
         if 'goprocess' in request.session['mirnas'][mid]:

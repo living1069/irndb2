@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Expressed in {{ ct_expr|length }} cell-type(s)</b>
+    <div title="Cell-type expression accumulated from PMID:XXX" onclick="" style="float: right"><i class="fa fa-question-circle"></i></div>
+  </div>
+  <div class="panel-body">
+    {% if ct_expr|length > 0 %}
+    <div class="table-responsive">
+      <table class="table table-striped table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th title="Percentage of all microRNA expression in cell-type">Expression [%]</th>
+          </tr>
+        </thead>
+	<tbody>
+	  {% for obj in ct_expr %}
+	  <tr>
+	    <td>{{ obj.celltype }}</td>
+	    <td title="{{ obj.exprfreq100|floatformat:2 }}% of all miRNA expression in {{obj.celltype}} through this miRNA">{{ obj.exprfreq100|floatformat:2 }}</td>
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No cell-type expression information available for microRNA.</p>
+    {% endif %}
+  </div>
+</div>
