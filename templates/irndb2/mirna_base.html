@@ -60,6 +60,14 @@ $(function() {
               <td><a class="m1" title="Search miRBase" href="http://mirbase.org/cgi-bin/query.pl?terms={{ m.mname }}">Search</a></td>
               {% endif %}
             </tr>
+	    <tr>
+	      <td>
+		<b>Expression:</b>
+	      </td>
+	      <td>
+		<a class="g" title="Search EBI Expression Atlas" href="http://www.ebi.ac.uk/gxa/query?geneQuery={{ m.mirbase_id }}&exactMatch=true&_exactMatch=on&organism=Mus+musculus">EBI:GXA</a>
+	      </td>
+	    </tr>
 	  </table>
 	</p>
       </div>

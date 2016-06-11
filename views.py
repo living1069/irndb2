@@ -1375,18 +1375,25 @@ def browse_method(request):
             for obj in list_mirnaobj:
                 dict_mirna[obj.mirbase_id] = obj.mname
             list_ct = M2EXPR.objects.all().order_by('exprfreq')
+            list_ct = list_ct.reverse()
+
             dict_ct = {}
-            
-            mirna_url_str = '<a class="m1" href="%s/mirna/%s" title="IRN miRNA details">%s</a>'
+            mirna_url_str = '<a class="m1" href="%s/mirna/%s" title="IRN miRNA details"><span style="white-space: nowrap;">%s (%.2f)</span></a>'
             for obj_m2expr in list_ct:
                 try:
                     mirna_name = dict_mirna[obj_m2expr.mirbase_id] 
                 except:
                     continue
-                #exprfreq = float(obj_m2expr.exprfreq)
-                dict_ct[obj_m2expr.celltype] = dict_ct.get(obj_m2expr.celltype, []) + [mirna_name]
+                exprfreq = float(obj_m2expr.exprfreq) * 100
+                dict_ct[obj_m2expr.celltype] = dict_ct.get(obj_m2expr.celltype, []) + [(mirna_name, exprfreq)]
+
+            data = []
+            for k,v in dict_ct.items():
                 
-            context["data"] = dict_ct
+                mirna_str = ', '.join([mirna_url_str % (_APP_LINK_PREFIX, mirna[0], mirna[0], mirna[1]) for mirna in v])
+                data.append([str(k), str(mirna_str), '%i' % (len(v))])
+            
+            context["data"] = data
             return render(request, "irndb2/browse_celltype.html", context)
 
         # no download --> browse mirnas
@@ -1612,9 +1619,9 @@ def create_dnl_response(filename, data, header):
 
 
 def get_pathways(entitytype, pathwaytype, dnl='0'):
-    rnalink_template = '<a class="m1" href="%s/%s/%s">%s</a>' # _APP_LINK_PREFIX, rnatype, rnasymbol/name, symbol/name
+    rnalink_template = '<a class="m1" href="%s/%s/%s"><span style="white-space: nowrap;">%s</span></a>' # _APP_LINK_PREFIX, rnatype, rnasymbol/name, symbol/name
     pwlink_template = '<a title="Open in IRNdb" class="g" href="%s/%s/%s">%s</a>' # _APP_LINK_PREFIX, pathwaytype, pwid, pwname
-    targetlink_template = '<a title="Open in IRNdb" class="t1" href="%s/target/%s">%s</a>' # _APP_LINK_PREFIX, symbol, symbol 
+    targetlink_template = '<a title="Open in IRNdb" class="t1" href="%s/target/%s"><span style="white-space: nowrap;">%s</span></a>' # _APP_LINK_PREFIX, symbol, symbol 
   
     dPW = {}
     res_list = []

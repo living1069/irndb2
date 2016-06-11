@@ -77,7 +77,7 @@ $(function() {
           </tr>
           <tr>
             <td><b>Expression:<b></td>
-            <td><a class="t1" href="http://fantom.gsc.riken.jp/5/sstar/EntrezGene:{{ t.id }}">SSTAR</a> | <a class="t1" href="http://compbio.massey.ac.nz/apps/tbvis/gene/{{ t.symbol }}">TBvis</a></td>
+            <td><a title="Search EBI Expression Atlas" class="g" href="http://www.ebi.ac.uk/gxa/query?geneQuery={{ t.symbol }}&exactMatch=true&_exactMatch=on&organism=Mus+musculus">EBI:GXA</a> | <a class="g" href="http://fantom.gsc.riken.jp/5/sstar/EntrezGene:{{ t.id }}">F5:SSTAR</a> | <a class="g" href="http://compbio.massey.ac.nz/apps/tbvis/gene/{{ t.symbol }}">TBvis</a></td>
           </tr>
         </table>
       </p>

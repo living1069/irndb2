@@ -61,8 +61,15 @@ $(function() {
         <tr>
           <td><b>piRNA PMID source(s):&nbsp;</b></td><td><a class="g" href="{{ p.ppmid_link  }}" title="piRNA source link">{{ p.ppmid }}</a></td>
         </tr> 
+	<tr>
+	  <td>
+            <b>Expression:</b>
+          </td>
+          <td>
+            <a class="g" title="Search EBI Expression Atlas" href="http://www.ebi.ac.uk/gxa/query?geneQuery={{ p.pname }}&exactMatch=true&_exactMatch=on&organism=Mus+musculus">EBI:GXA</a>
+          </td>
+        </tr>  
       </table>
-  
     </p>
   </div>
 </div>
