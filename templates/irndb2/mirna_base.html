@@ -73,20 +73,6 @@ $(function() {
       </div>
     </div>
   </div> <!-- col -->
-  {% comment %}
-  <div class="col-lg-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-	<b>Expressed in</b>
-      </div>
-      <div class="panel-body">
-	{% for obj in ct_expr %}
-	{{ obj.celltype }}, {{ obj.exprfreq}}</br>
-	{% endfor %}
-      </div>
-    </div>
-  </div>
-  {% endcomment %}
 </div>
 
 <div id="tabsInfo">
@@ -95,7 +81,7 @@ $(function() {
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=p">Pathways</a></li>
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=g">GO</a></li>
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=r">TFBS</a></li>
-    <li><a href="{{ mirna_url }}{{ m.mname }}?type=e">Expression</a></li>
+    <li><a href="{{ mirna_url }}{{ m.mname }}?type=e">Cell-types</a></li>
   </ul>
 </div>
   

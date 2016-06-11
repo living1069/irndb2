@@ -1,9 +1,15 @@
 {% load staticfiles %}
 
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Cell-types expressing miRNA ({{ ct_expr|length }})</b>
-    <div title="Cell-type expression compiled from PMID:17604727 (see Documentation)" onclick="" style="float: right"><i class="fa fa-question-circle"></i></div>
+    <div style="float: right"><a href="#" data-toggle="tooltip" title="MicroRNA is expressing in all listed cell-types. The percentage shows the miRNA contribution in expression on the total expression of all miRNAs in the cell-type.  Cell-type specific expression compiled from PMID:17604727 (see Documentation)"><i class="fa fa-question-circle"></i></a></div>
   </div>
   <div class="panel-body">
     {% if ct_expr|length > 0 %}
