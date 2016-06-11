@@ -1,0 +1,57 @@
+{% load staticfiles %}
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Cell-types expressing miRNA ({{ ct_expr|length }})</b>
+    <div style="float: right"><a href="#" data-toggle="tooltip" title="MicroRNA is expressing in all listed cell-types. The percentage shows the miRNA contribution in expression on the total expression of all miRNAs in the cell-type.  Cell-type specific expression compiled from PMID:17604727 (see Documentation)"><i class="fa fa-question-circle"></i></a></div>
+  </div>
+  <div class="panel-body">
+    {% if ct_expr|length > 0 %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioCT1" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th title="Percentage of all microRNA expression in cell-type">Expression [%]&nbsp;&nbsp;</th>
+          </tr>
+        </thead>
+	<tbody>
+	  {% for obj in ct_expr %}
+	  <tr>
+	    <td>{{ obj.celltype }}</td>
+	    <td title="{{ obj.exprfreq100|floatformat:2 }}% of all miRNA expression in {{obj.celltype}} attributed to this miRNA">{{ obj.exprfreq100|floatformat:2 }}</td>
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
+            
+      <script>
+        $(document).ready( function () {
+        var tableCT1 = $('#sebioCT1').DataTable( {
+              "columns": [ 
+                    { "width": "250px" },
+                    { "className": "text-right"} ],
+              "order": [[ 0, "asc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 10,
+              buttons: [ 'copy', 'excel', 'csv' ]
+        });
+         tableCT1.buttons().container()
+                     .appendTo( '#sebioCT1_wrapper .col-sm-6:eq(0)' );
+       });
+      </script>
+
+    </div>
+    {% else %}
+    <p>No cell-type expression information available for microRNA.</p>
+    {% endif %}
+  </div>
+</div>

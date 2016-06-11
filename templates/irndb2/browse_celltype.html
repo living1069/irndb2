@@ -1,0 +1,55 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Browse:Cell-types{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <h3 class="page-header">Browse/search cell-types expressing microRNAs</h3>
+    <div class="panel panel-default">
+      <div class="panel-heading"><b>Cell-types expressing miRNAs ({{data|length}})</b></div>
+      <div class="panel-body">
+	<div class="dataTable_wrapper" width="100%">
+	  <table class="table table-condensed" id="sebio1" width="100%">
+            <thead>
+              <tr>
+		<th title="Cell-type">Cell-type</th>
+		<th title="microRNAs expressed in cell-type">miRNAs (% of all miRNA exression in cell-type)</th>
+		<th title="# microRNAs">#&nbsp;&nbsp;</th>
+              </tr>
+            </thead>       
+	  </table> 
+	  <!-- DataTables JavaScript -->
+	  
+	  <script>
+	    var dataSet = {{ data|safe }};
+
+            $(document).ready( function () {
+            var table1 = $('#sebio1').DataTable( {
+	            "data": dataSet,
+                    "columns": [
+                        {"width":"300px"},
+                        {"className": "text-left", "bSortable": false},
+                        {"width":"30px", "className": "text-right"}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true, 
+                    lengthChange: false,
+                    "pageLength": 5,
+                    buttons: [ 'copy', 'excel', 'csv' ]
+               });
+                 table1.buttons().container()
+                     .appendTo( ' #sebio1_wrapper .col-sm-6:eq(0)' );
+               } );
+	  </script>
+	</div>
+      </div>
+    </div>
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

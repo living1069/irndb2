@@ -25,6 +25,8 @@
 
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/pirna.json
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/p2t.json
+
+    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2expr.json
     
     #-- IF YOU CHANGE DB TABLES IN THE models.py RUN:
     python ../manage.py makemigrations

@@ -35,33 +35,44 @@ $(function() {
 
 {% if m %}
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <b>{{ m.mname }}</b>
-  </div>
-  <div class="panel-body">
-    <p>
-      <table id="tableinfo">
-        <tr>
-          <td><b>miRNA id:</b></td>
-          {% if m.mirbase_id %}
-          <td><a class="m1" title="Link to miRBase" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ m.mirbase_id }}">{{ m.mname }}</a></td>
-          {% else %}
-          <td><a class="m1" title="Search miRBase" href="http://mirbase.org/cgi-bin/query.pl?terms={{ m.mname }}">{{ m.mname }}</a></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <td><b>miRBase-Acc:</b></td>
-          {% if m.mirbase_id %}
-          <td><a class="m1" title="Link to miRBase" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ m.mirbase_id }}">{{ m.mirbase_id }}</a></td>
-          {% else %}
-          <td><a class="m1" title="Search miRBase" href="http://mirbase.org/cgi-bin/query.pl?terms={{ m.mname }}">Search</a></td>
-          {% endif %}
-        </tr>
-      </table>
-        
-    </p>
-  </div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+	<b>{{ m.mname }}</b>
+      </div>
+      <div class="panel-body">
+	<p>
+	  <table id="tableinfo">
+            <tr>
+              <td><b>miRNA id:</b></td>
+              {% if m.mirbase_id %}
+              <td><a class="m1" title="Link to miRBase" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ m.mirbase_id }}">{{ m.mname }}</a></td>
+              {% else %}
+              <td><a class="m1" title="Search miRBase" href="http://mirbase.org/cgi-bin/query.pl?terms={{ m.mname }}">{{ m.mname }}</a></td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td><b>miRBase-Acc:</b></td>
+              {% if m.mirbase_id %}
+              <td><a class="m1" title="Link to miRBase" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ m.mirbase_id }}">{{ m.mirbase_id }}</a></td>
+              {% else %}
+              <td><a class="m1" title="Search miRBase" href="http://mirbase.org/cgi-bin/query.pl?terms={{ m.mname }}">Search</a></td>
+              {% endif %}
+            </tr>
+	    <tr>
+	      <td>
+		<b>Expression:</b>
+	      </td>
+	      <td>
+		<a class="g" title="Search EBI Expression Atlas" href="http://www.ebi.ac.uk/gxa/query?geneQuery={{ m.mirbase_id }}&exactMatch=true&_exactMatch=on&organism=Mus+musculus">EBI:GXA</a>
+	      </td>
+	    </tr>
+	  </table>
+	</p>
+      </div>
+    </div>
+  </div> <!-- col -->
 </div>
 
 <div id="tabsInfo">
@@ -70,6 +81,7 @@ $(function() {
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=p">Pathways</a></li>
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=g">GO</a></li>
     <li><a href="{{ mirna_url }}{{ m.mname }}?type=r">TFBS</a></li>
+    <li><a href="{{ mirna_url }}{{ m.mname }}?type=e">Cell-types</a></li>
   </ul>
 </div>
   

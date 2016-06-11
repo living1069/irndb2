@@ -159,10 +159,13 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse_url }}?type=mirna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=rna&etype=mirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_url }}?type=mirna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=pathway&etype=mirna">Targeted pathways</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=celltype&etype=mirna">Cell-types</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -171,10 +174,10 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> piRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse_url }}?type=pirna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=rna&etype=pirna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_url }}?type=pirna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=pathway&etype=pirna">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -183,10 +186,10 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> lncRNAs<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse_url }}?type=lncrna">Browse/search</a>
+                  <a href="{{ browse_url }}?type=rna&etype=lncrna">Browse/search</a>
                 </li>
                 <li>
-                  <a href="{{ browse_url }}?type=lncrna&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=pathway&etype=lncrna">Targeted pathways</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -195,11 +198,11 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
               <a href="#"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></i> Target genes<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
                 <li>
-                  <a href="{{ browse_url }}?type=target">Browse/search</a>
+                  <a href="{{ browse_url }}?type=gene&etype=target">Browse/search</a>
                 </li>
 		{% comment %}
                 <li>
-                  <a href="{{ browse_url }}?type=target&pw=1">Targeted pathways</a>
+                  <a href="{{ browse_url }}?type=pathway&etype=target">Targeted pathways</a>
                 </li>
 		{% endcomment %}
               </ul>
@@ -236,7 +239,7 @@ All js and css component should be in the DJANGO app 'static/irndb2' folder
         <div class="row">
           <div class="col-lg-12 text-right">
             <hr>
-            <p><a href="http://sschmeier.com"><i class="fa fa-home fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.4.4</p>
+            <p><a href="http://sschmeier.com"><i class="fa fa-home fa-fw"></i></a> | &copy; <a href="http://inms.massey.ac.nz">Massey University</a> 2014-2016 | v1.4.5</p>
           </div>
         </div>
         <!-- ./Footer row -->
