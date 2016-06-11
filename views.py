@@ -1330,28 +1330,29 @@ def doc_method(request):
 
     
 def browse_method(request):
+    # get url params
+    type = request.GET.get('type', '0')
+    entitytype = request.GET.get('etype', '0')
+    pathwaytype = request.GET.get('pwt', 'x')
     dnl = request.GET.get('dnl', '0')
     filename = request.GET.get('f','data.csv')
-    entitytype = request.GET.get('type', '0')
-    pathway = request.GET.get('pw', '0')
-    pathwaytype = request.GET.get('pwt', 'x')
-    celltype = request.GET.get('ct', '0')
 
     context = {}
     context["entity_type"] = entitytype
     context["pwt"] = pathwaytype
+
     if entitytype == 'mirna':
         context["rna_title"] = "miRNA"
 
         # download instead of display
-        if dnl == '1' and pathway != '1':  
+        if dnl == '1' and type != 'pathway' and type != 'celltype':  
             query_set = Mirna.objects.filter(num_immune__gt=0).distinct()
             data = create_data_mirna(query_set, 0)
             response = create_dnl_response(filename, data, ['Name','ID','NumExperimentalMouseImmuneTargets','NumPredictedMouseImmuneTargets','NumExperimentalHumanInferredImmuneTargets','NumPredictedHumanInferredImmuneTargets'])
             return response
         
         # browse pathways instead --> return pathway list
-        elif pathway == '1':
+        elif type == 'pathway':
             if pathwaytype not in ["wikipathway","kegg"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
@@ -1367,7 +1368,7 @@ def browse_method(request):
                     context["data"] = res_list
                     return render(request, "irndb2/browsepw_content.html", context)
                     
-        elif celltype == '1':
+        elif type == 'celltype':
             list_mirna = [str(t[0]) for t in M2EXPR.objects.all().values_list('mirbase_id').distinct()]
             list_mirnaobj = Mirna.objects.filter(mirbase_id__in = list_mirna).distinct()
             dict_mirna = {}
@@ -1395,7 +1396,7 @@ def browse_method(request):
             return render(request, "irndb2/browse_mirna.html", context)
     
     elif entitytype == 'target':
-        if dnl == '1' and pathway != '1':  # download instead of display
+        if dnl == '1' and type != 'pathway':  # download instead of display
             query_set = Target.objects.all().distinct()
             data = create_data_targets(query_set, 0)
             response = create_dnl_response(filename, data,['symbol', 'name', 'geneid', 'ImmuneRelevanceInferredFrom', 'num_exp_miRNA', 'num_pred_miRNA', 'num_lncRNA', 'num_piRNA'])
@@ -1414,7 +1415,7 @@ def browse_method(request):
             return response
         
         # browse pathways instead --> return pathway list
-        elif pathway == '1':
+        elif type == 'pathway':
             if pathwaytype not in ["wikipathway","kegg"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
@@ -1439,7 +1440,7 @@ def browse_method(request):
     elif entitytype == 'pirna':
         context["rna_title"] = "piRNA"
         aQS = P2T.objects.all().select_related('pirna', 'target')
-        if dnl == '1' and pathway != '1':  # download instead of display
+        if dnl == '1' and type != 'pathway':  # download instead of display
             query_set = Pirna.objects.all().distinct()
             data = create_data_pirna(query_set, 0)
             response = create_dnl_response(filename, data, ['name', 'alias', 'accession',  'NumMouseInferredImmuneTargets',
@@ -1447,7 +1448,7 @@ def browse_method(request):
             return response
         
         # browse pathways instead --> return pathway list
-        elif pathway == '1':
+        elif type == 'pathway':
             if pathwaytype not in ["wikipathway","kegg"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:

@@ -33,8 +33,8 @@ $(function() {
    <h3 class="page-header"><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / >  Browse pathways ({{rna_title}})</h3>
     <div id="tabsInfo">
       <ul>
-        <li><a href="{{ browse_url }}?type={{entity_type}}&pw=1&pwt=kegg">KEGG</a></li>
-        <li><a href="{{ browse_url }}?type={{entity_type}}&pw=1&pwt=wikipathway">Wikipathway</a></li>
+        <li><a href="{{ browse_url }}?type=pathway&etype={{entity_type}}&pwt=kegg">KEGG</a></li>
+        <li><a href="{{ browse_url }}?type=pathway&etype={{entity_type}}&pwt=wikipathway">Wikipathway</a></li>
       </ul>
     </div> <!-- end tabs-->
  </div>
