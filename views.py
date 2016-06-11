@@ -449,9 +449,8 @@ def mirna_method(request, name, flush=True):
     if url_type not in ['p','g','r','t', 'e']:
         return render(request, 'irndb2/mirna_base.html', context)
     elif url_type == 'e':
-        a_expr = M2EXPR.objects.filter(mirbase_id = mirna_obj.mirbase_id).distinct().order_by('exprfreq').annotate(exprfreq100=F('exprfreq')*100).values('celltype', 'exprfreq', 'exprfreq100')
-        a_expr = a_expr.reverse()
-        
+        a_expr = M2EXPR.objects.filter(mirbase_id = mirna_obj.mirbase_id).distinct().order_by('celltype').annotate(exprfreq100=F('exprfreq')*100).values('celltype', 'exprfreq', 'exprfreq100')
+        #a_expr = a_expr.reverse()
         context["ct_expr"] = a_expr 
         return render(request, 'irndb2/mirna_expr.html', context)
 
@@ -1336,7 +1335,8 @@ def browse_method(request):
     entitytype = request.GET.get('type', '0')
     pathway = request.GET.get('pw', '0')
     pathwaytype = request.GET.get('pwt', 'x')
-    
+    celltype = request.GET.get('ct', '0')
+
     context = {}
     context["entity_type"] = entitytype
     context["pwt"] = pathwaytype
@@ -1366,7 +1366,28 @@ def browse_method(request):
                     res_list = get_pathways(entitytype, pathwaytype, '0')
                     context["data"] = res_list
                     return render(request, "irndb2/browsepw_content.html", context)
+                    
+        elif celltype == '1':
+            list_mirna = [str(t[0]) for t in M2EXPR.objects.all().values_list('mirbase_id').distinct()]
+            list_mirnaobj = Mirna.objects.filter(mirbase_id__in = list_mirna).distinct()
+            dict_mirna = {}
+            for obj in list_mirnaobj:
+                dict_mirna[obj.mirbase_id] = obj.mname
+            list_ct = M2EXPR.objects.all().order_by('exprfreq')
+            dict_ct = {}
+            
+            mirna_url_str = '<a class="m1" href="%s/mirna/%s" title="IRN miRNA details">%s</a>'
+            for obj_m2expr in list_ct:
+                try:
+                    mirna_name = dict_mirna[obj_m2expr.mirbase_id] 
+                except:
+                    continue
+                #exprfreq = float(obj_m2expr.exprfreq)
+                dict_ct[obj_m2expr.celltype] = dict_ct.get(obj_m2expr.celltype, []) + [mirna_name]
                 
+            context["data"] = dict_ct
+            return render(request, "irndb2/browse_celltype.html", context)
+
         # no download --> browse mirnas
         else:  
             query_set = Mirna.objects.filter(num_immune__gt=0).distinct()

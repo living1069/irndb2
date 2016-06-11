@@ -8,14 +8,18 @@
    <h3 class="page-header"><i class="fa fa-search"></i> Search results</h3>
    {% if search_results == 0 %}
    <div class="alert alert-danger">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      The search term "<b>{{ search_term }}</b>" returned <b>no</b> results.
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     The search term "<b>{{ search_term }}</b>" returned <b>no</b> results.
    </div>
    {% else %}
-    <div class="alert alert-success alert-dismissable">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      The search term "<b>{{ search_term }}</b>" returned <b>{{ search_results }}</b> results in {{search_cat }} categories.
-    </div>
+   <div class="alert alert-success alert-dismissable">
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     {% if search_cat > 1 %}
+     The search term "<b>{{ search_term }}</b>" returned <b>{{ search_results }}</b> result(s) in {{search_cat }} categories.
+     {% else %}
+     The search term "<b>{{ search_term }}</b>" returned <b>{{ search_results }}</b> result(s) in {{search_cat }} category.
+     {% endif %}
+   </div>
    {% endif %}
 
     {% if search_target %}
