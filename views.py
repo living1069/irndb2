@@ -452,7 +452,7 @@ def mirna_method(request, name, flush=True):
         a_expr = M2EXPR.objects.filter(mirbase_id = mirna_obj.mirbase_id).distinct().order_by('celltype').annotate(exprfreq100=F('exprfreq')*100).values('celltype', 'exprfreq', 'exprfreq100')
         #a_expr = a_expr.reverse()
         context["ct_expr"] = a_expr 
-        return render(request, 'irndb2/mirna_expr.html', context)
+        return render(request, 'irndb2/mirna_celltype.html', context)
 
     elif url_type=='g':
         ## fetch pathways from session cache if exists or create new
