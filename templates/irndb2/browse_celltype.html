@@ -4,11 +4,20 @@
 {% load staticfiles %}
 {% block content %}
 
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
 <div class="row">
   <div class="col-lg-12">
     <h3 class="page-header">Browse/search cell-types expressing microRNAs</h3>
     <div class="panel panel-default">
-      <div class="panel-heading"><b>Cell-types expressing miRNAs ({{data|length}})</b></div>
+      <div class="panel-heading">
+	<b>Cell-types expressing miRNAs ({{data|length}})</b>
+	<div style="float: right"><a href="#" data-toggle="tooltip" data-placement="left" title="MicroRNAs expressing in cell-types according to PMID:17604727 (see Documentation). The percentage in brackets shows the miRNA contribution in expression on the total expression of all miRNAs in the cell-type."><i class="fa fa-question-circle"></i></a></div>
+      </div>
       <div class="panel-body">
 	<div class="dataTable_wrapper" width="100%">
 	  <table class="table table-condensed" id="sebio1" width="100%">

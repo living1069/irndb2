@@ -43,7 +43,7 @@ class M2T_PRED(models.Model):
 
 ## TARGET ANNOTATION
 class Wikipath(models.Model):
-    wikipathid   = models.CharField(max_length=8, db_index=True)
+    wikipathid   = models.CharField(max_length=15, db_index=True)
     wikipathname = models.CharField(max_length=80)
 
 class T2W(models.Model):
