@@ -22,10 +22,10 @@
      <div class="panel-heading"><b>Information</b></div>
      <div class="panel-body" style="min-height: 190px;">
      <p>
-      IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for mouse as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
+      IRNdb is a database that combines <i>microRNA</i>, <i>PIWI-interacting RNAs</i>, and <i>long non-coding RNA</i> information with immunologically relevant target genes. The database is intended to advance research on the influence of ncRNAs on immunological processes. Currently, IRNdb contains information for <i>mouse</i> as it is often used as a model organism for immunological research purposes. We aim at extending the database in the future to include additional ncRNA classes and mammalian organisms.
      </p>
      <p>
-     IRNdb combines <a class="m1" href="{{ browse_url }}?type=mirna" title="Browse miRNAs">{{ num_mirna }} miRNAs</a>, <a class="m1" href="{{ browse_url }}?type=pirna" title="Browse piRNAs">{{ num_pirna }} piRNAs</a>, <a class="m1" href="{{ browse_url }}?type=lncrna" title="Browse lncRNAs">{{ num_lncrna }} lncRNAs</a> and <a class="t1" href="{{ browse_url }}?type=target" title="Browse immune targets"> {{ num_target }} immunologically relevant murine targets</b></a>.
+     IRNdb combines <a class="m1" href="{{ browse_url }}?type=rna&etype=mirna" title="Browse miRNAs">{{ num_mirna }} miRNAs</a>, <a class="m1" href="{{ browse_url }}?type=rna&etype=pirna" title="Browse piRNAs">{{ num_pirna }} piRNAs</a>, <a class="m1" href="{{ browse_url }}?type=rna&etype=lncrna" title="Browse lncRNAs">{{ num_lncrna }} lncRNAs</a> and <a class="t1" href="{{ browse_url }}?type=gene&etype=target" title="Browse immune targets"> {{ num_target }} immunologically relevant murine targets</b></a>.
        </p>
      </div>
     </div>
@@ -39,19 +39,19 @@
          <b>Browse/search ncRNAs</b>:
        </p>
        <p>
-         <a href="{{browse_url}}?type=mirna"  title="Search microRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">miRNAs</button></a>
-         <a href="{{browse_url}}?type=pirna" title="Browse piRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">piRNAs</button></a>
-         <a href="{{browse_url}}?type=lncrna" title="Search lncRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">lncRNAs</button></a>
-         <a class="t1" href="{{browse_url}}?type=target" title="Search targets"><button type="button" class="btn btn-outline btn-primary btn-sm">Targets</button></a>
+         <a href="{{browse_url}}?type=rna&etype=mirna"  title="Search microRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">miRNAs</button></a>
+         <a href="{{browse_url}}?type=rna&etype=pirna" title="Browse piRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">piRNAs</button></a>
+         <a href="{{browse_url}}?type=rna&etype=lncrna" title="Search lncRNAs"><button type="button" class="btn btn-outline btn-danger btn-sm">lncRNAs</button></a>
+         <a class="t1" href="{{browse_url}}?type=gene&etype=target" title="Search targets"><button type="button" class="btn btn-outline btn-primary btn-sm">Targets</button></a>
        </p>
        <p>
          <b>Browse pathways</b> targeted by:
        </p>
        <p>
        <p>
-         <a href="{{browse_url}}?type=mirna&pw=1"  title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">miRNAs</button></a>
-         <a href="{{browse_url}}?type=pirna&pw=1" title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">piRNAs</button></a>
-         <a href="{{browse_url}}?type=lncrna&pw=1" title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">lncRNAs</button></a>
+         <a href="{{browse_url}}?type=pathway&etype=mirna"  title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">miRNAs</button></a>
+         <a href="{{browse_url}}?type=pathway&etype=pirna" title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">piRNAs</button></a>
+         <a href="{{browse_url}}?type=pathway&etype=lncrna" title="Search pathways"><button type="button" class="btn btn-outline btn-danger btn-sm">lncRNAs</button></a>
        </p>
      </div>
     </div>
@@ -65,6 +65,7 @@
   <div class="panel panel-default" style="min-height: 125px;">
     <div class="panel-heading"><b>Search IRNdb</b></div>
    <div class="panel-body">
+     <center>
      <!-- search bar -->
      <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
       <div class="input-group">
@@ -73,7 +74,8 @@
         <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button> 
        </div>
        </div>
-        &nbsp;&nbsp;symbols, accessions, IDs, ... e.g. miR-703
+       &nbsp;&nbsp;symbols, accessions, IDs, ... e.g. miR-703
+       </center>
     </div>
    <!-- /.panel-body -->
   </div>

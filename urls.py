@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'lncrna/(?P<sym>[A-Za-z0-9\-\.]+)$', views.lncrna_method, name='lncrna_url_name'),
     url(r'pirna/(?P<name>[A-Za-z0-9\-\.]+)$', views.pirna_method, name='pirna_url_name'),
     url(r'kegg/(?P<id>[A-Za-z0-9\-\.\:]+)$', views.pw_method, name='kegg_url_name'),
-    url(r'wikipathway/(?P<id>[A-Za-z0-9\-\.]+)$', views.pw_method, name='wp_url_name'),
+    url(r'wikipathway/(?P<id>[A-Za-z0-9\-\.\_]+)$', views.pw_method, name='wp_url_name'),
     # redirect non-matching urls to home/
     url(r'^.*$', RedirectView.as_view(url='home/', permanent=False), name='index'), 
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),

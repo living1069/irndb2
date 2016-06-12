@@ -21,7 +21,7 @@
               <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:wp_url_name' list.1 %}">{{ list.2  }}</a>
             </td>
             <td>
-              <a class="g" title="Link to WikiPathways" href="http://www.wikipathways.org/index.php/Pathway:{{ list.1 }}" title="Wikipathway link">{{ list.1 }}</a>
+              <a class="g" title="Link to WikiPathways" href="http://www.wikipathways.org/instance/{{ list.1 }}" title="Wikipathway link">{{ list.1 }}</a>
             </td>
           </tr>
           {% endfor %}
