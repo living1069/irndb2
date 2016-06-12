@@ -1,10 +1,18 @@
 {% load staticfiles %}
 
 {% if targets %}
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <b>Targets ({{targets|length}})</b>
-    <div style="float: right"><a href="#" role='button' onclick="enrich({list: ['{{ enrichr|safe }}'], popup: true, description: 'Targets of {{ name }}'});"><button title="Run geneset enrichment analysis with all genes." type="button" class="btn btn-default btn-xs">RUN GSEA</button></a></div>
+    <div style="float: right"><a href="#" role='button' data-toggle="tooltip" title="Run geneset enrichment analysis with all target genes." data-placement="left" onclick="enrich({list: ['{{ enrichr|safe }}'], popup: true, description: 'Targets (exp) of {{ m.mname }}'});"><button type="button" class="btn btn-default btn-xs">RUN GSEA</button></a>
+    </div>
   </div>
   <div class="panel-body">
     <div class="dataTable_wrapper" width="100%">
