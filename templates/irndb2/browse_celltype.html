@@ -1,8 +1,6 @@
-{% extends "irndb2/base.html" %}
-{% block title %}Browse:Cell-types{% endblock %}
 
 {% load staticfiles %}
-{% block content %}
+
 
 <script>
 $(document).ready(function(){
@@ -10,24 +8,21 @@ $(document).ready(function(){
 });
 </script>
 
-<div class="row">
-  <div class="col-lg-12">
-    <h3 class="page-header">Browse/search cell-types expressing microRNAs</h3>
-    <div class="panel panel-default">
-      <div class="panel-heading">
+<div class="panel panel-default">
+  <div class="panel-heading">
 	<b>Cell-types expressing miRNAs ({{data|length}})</b>
 	<div style="float: right"><a href="#" data-toggle="tooltip" data-placement="left" title="MicroRNAs expressing in cell-types according to PMID:17604727 (see Documentation). The percentage in brackets shows the miRNA contribution in expression on the total expression of all miRNAs in the cell-type."><i class="fa fa-question-circle"></i></a></div>
-      </div>
-      <div class="panel-body">
+  </div>
+  <div class="panel-body">
 	<div class="dataTable_wrapper" width="100%">
 	  <table class="table table-condensed" id="sebio1" width="100%">
-            <thead>
-              <tr>
-		<th title="Cell-type">Cell-type</th>
-		<th title="microRNAs expressed in cell-type">miRNAs (% of all miRNA exression in cell-type)</th>
-		<th title="# microRNAs">#&nbsp;&nbsp;</th>
-              </tr>
-            </thead>       
+        <thead>
+          <tr>
+		    <th title="Cell-type">Cell-type</th>
+		    <th title="microRNAs expressed in cell-type">miRNAs (% of all miRNA exression in cell-type)</th>
+		    <th title="# microRNAs">#&nbsp;&nbsp;</th>
+          </tr>
+        </thead>       
 	  </table> 
 	  <!-- DataTables JavaScript -->
 	  
@@ -54,11 +49,5 @@ $(document).ready(function(){
                } );
 	  </script>
 	</div>
-      </div>
-    </div>
   </div>
-  <!-- /.col-lg-12 -->
 </div>
-<!-- /.row -->
-
-{% endblock %}
