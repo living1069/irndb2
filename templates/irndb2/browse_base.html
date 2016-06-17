@@ -1,0 +1,56 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Browse:{{ title }}{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-12">
+    {% if entity_type == 'target' %}
+    <h3 class="page-header"><img src="{% static 'irndb2/images/target.png' %}" alt="" / > Browse/search Targets</h3>
+    {% elif entity_type == 'lncrna' %}
+    <h3 class="page-header"><img src="{% static 'irndb2/images/lncrna.png' %}" alt="" / > Browse/search lncRNAs</h3>
+    {% elif entity_type == 'pirna' %}
+    <h3 class="page-header"><img src="{% static 'irndb2/images/pirna.png' %}" alt="" / > Browse/search piRNAs</h3>
+    {% elif entity_type == 'mirna' %}
+    <h3 class="page-header"><img src="{% static 'irndb2/images/mirna.png' %}" alt="" / > Browse/search miRNAs</h3>
+    {% endif %}
+    <!-- CONTENT -->
+
+    <!-- spinner while loading -->
+    <div id="loadingDiv">
+      <img id="loading-image" src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" alt="Loading..." />
+    </div>
+    <div id="contentDiv"></div>
+    
+    <!-- Load content into contentDiv with ajax-->
+    <script language="javascript" type="text/javascript">
+      var $loading = $('#loadingDiv').hide();
+         $(document)
+           .ajaxStart(function () {
+             $loading.show();
+           })
+           .ajaxStop(function () {
+             $loading.hide();
+           });
+
+      {% if entity_type == 'target' %}
+      $("#contentDiv").load("{{ browse }}?type=gene&etype=target&content=1");
+      {% elif entity_type == 'lncrna' %}
+      $("#contentDiv").load("{{ browse }}?type=rna&etype=lncrna&content=1");
+      {% elif entity_type == 'pirna' %}
+      $("#contentDiv").load("{{ browse }}?type=rna&etype=pirna&content=1");
+      {% elif entity_type == 'mirna' %}
+      $("#contentDiv").load("{{ browse }}?type=rna&etype=mirna&content=1");
+      {% endif %}
+    </script>
+
+    <!-- END OF CONTENT -->
+    
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+         
+{% endblock %}
+         

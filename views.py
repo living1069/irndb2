@@ -1232,11 +1232,15 @@ def search_method(request):
 
 def home_method(request):
     context = {}
-    context['num_target'] = Target.objects.all().count()
-    context['num_mirna'] = Mirna.objects.all().count()
-    context['num_lncrna'] = Lncrna.objects.all().count()
-    context['num_pirna'] = Pirna.objects.all().count()
-    return render(request, "irndb2/home.html", context)
+    content = request.GET.get('content', '0')
+    if content == '0':
+        return render(request, "irndb2/home_base.html", context)
+    else:
+        context['num_target'] = Target.objects.all().count()
+        context['num_mirna'] = Mirna.objects.all().count()
+        context['num_lncrna'] = Lncrna.objects.all().count()
+        context['num_pirna'] = Pirna.objects.all().count()
+        return render(request, "irndb2/home.html", context)
 
 
 def contact_method(request):
@@ -1341,6 +1345,20 @@ def browse_method(request):
     context["entity_type"] = entitytype
     context["pwt"] = pathwaytype
 
+    content = request.GET.get('content', '0')
+    if content == '0' and type in ['gene', 'rna']:
+        if entitytype == 'target':
+            context['title'] = 'Targets'
+        elif entitytype == 'lncrna':
+            context['title'] = 'lncRNAs'
+        elif entitytype == 'pirna':
+            context['title'] = 'piRNAs'
+        elif entitytype == 'mirna':
+            context['title'] = 'miRNAs'
+        return render(request, "irndb2/browse_base.html", context)
+        
+    
+    
     if entitytype == 'mirna':
         context["rna_title"] = "miRNA"
 
