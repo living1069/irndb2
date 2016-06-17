@@ -1342,19 +1342,22 @@ def browse_method(request):
     filename = request.GET.get('f','data.csv')
 
     context = {}
+    context["type"] = type
     context["entity_type"] = entitytype
     context["pwt"] = pathwaytype
 
     content = request.GET.get('content', '0')
-    if content == '0' and type in ['gene', 'rna']:
+    if content == '0' and type in ['gene', 'rna', 'celltype']:
         if entitytype == 'target':
             context['title'] = 'Targets'
-        elif entitytype == 'lncrna':
+        elif entitytype == 'lncrna' and type=='rna':
             context['title'] = 'lncRNAs'
-        elif entitytype == 'pirna':
+        elif entitytype == 'pirna' and type=='rna':
             context['title'] = 'piRNAs'
-        elif entitytype == 'mirna':
+        elif entitytype == 'mirna' and type=='rna':
             context['title'] = 'miRNAs'
+        elif type == 'celltype':
+            context['title'] = 'Cell-types'
         return render(request, "irndb2/browse_base.html", context)
         
     

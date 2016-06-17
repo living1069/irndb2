@@ -12,8 +12,12 @@
     <h3 class="page-header"><img src="{% static 'irndb2/images/lncrna.png' %}" alt="" / > Browse/search lncRNAs</h3>
     {% elif entity_type == 'pirna' %}
     <h3 class="page-header"><img src="{% static 'irndb2/images/pirna.png' %}" alt="" / > Browse/search piRNAs</h3>
-    {% elif entity_type == 'mirna' %}
-    <h3 class="page-header"><img src="{% static 'irndb2/images/mirna.png' %}" alt="" / > Browse/search miRNAs</h3>
+    {% elif entity_type == 'mirna'  %}
+     {% if type == 'rna' %}
+     <h3 class="page-header"><img src="{% static 'irndb2/images/mirna.png' %}" alt="" / > Browse/search miRNAs</h3>
+     {% elif type == 'celltype' %}
+     <h3 class="page-header">Browse/search cell-types expressing microRNAs</h3>
+     {% endif %}
     {% endif %}
     <!-- CONTENT -->
 
@@ -41,7 +45,11 @@
       {% elif entity_type == 'pirna' %}
       $("#contentDiv").load("{{ browse }}?type=rna&etype=pirna&content=1");
       {% elif entity_type == 'mirna' %}
-      $("#contentDiv").load("{{ browse }}?type=rna&etype=mirna&content=1");
+        {% if type == 'rna' %}
+          $("#contentDiv").load("{{ browse }}?type=rna&etype=mirna&content=1");
+        {% elif type == 'celltype' %}
+          $("#contentDiv").load("{{ browse }}?type=celltype&etype=mirna&content=1");
+        {% endif %}
       {% endif %}
     </script>
 
