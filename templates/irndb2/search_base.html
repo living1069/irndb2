@@ -1,0 +1,39 @@
+{% extends "irndb2/base.html" %}
+{% block title %}Search{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+<div class="row">
+ <div class="col-lg-12">
+   <h3 class="page-header"><i class="fa fa-search"></i> Search results</h3>
+    <!-- CONTENT -->
+
+    <!-- spinner while loading -->
+    <div id="loadingDiv">
+      <img id="loading-image" src="{% static 'irndb2/images/loading.gif' %}" width="24px" height="24px" alt="Loading..." />
+    </div>
+    <div id="contentDiv"></div>
+
+    <!-- Load content into contentDiv with ajax-->
+    <script language="javascript" type="text/javascript">
+         var $loading = $('#loadingDiv').hide();
+         $(document)
+           .ajaxStart(function () {
+             $loading.show();
+           })
+           .ajaxStop(function () {
+             $loading.hide();
+           });
+
+         $("#contentDiv").load("{% url 'irndb2:search_url_name' %}?q={{ search_term }}&content=1");
+    </script>
+
+    <!-- END OF CONTENT -->
+   
+ </div>
+ <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+

@@ -1172,8 +1172,14 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
 def search_method(request):
     context = {}
     if request.method == 'GET':
-        query = request.GET.get('q')
-        if query:
+        content = request.GET.get('content', '0')
+        query = request.GET.get('q', None)
+
+        if content == '0' and query:
+            context["search_term"] = query
+            return render(request, "irndb2/search_base.html", context)
+       
+        elif content == '1' and query:
             context["search_term"] = query
             # use "query" to look up things and store in "result"
             
