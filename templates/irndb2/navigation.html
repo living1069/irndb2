@@ -1,0 +1,124 @@
+
+{% load staticfiles %}
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top navbar-custom" role="navigation" style="margin-bottom: 0">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ home_url }}"><img src="{% static 'irndb2/images/logo.png' %}" style="height: 100%; width: auto;"></a>
+      </div>
+      <!-- /.navbar-header -->
+
+      {% comment "Add search bar to the right in the navbar" %}
+      <!-- navbar-top-right -->
+      <div class="col-lg-2 pull-right">
+        <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.navbar-top-right -->
+      {% endcomment %}
+
+      <!-- NAVIGATION SIDEBAR -->
+      <!-- Highlighting of the active class is handled by metisMenu -->
+      <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+          <!-- search bar -->
+          <form class="navbar-form" role="search" action="{{ search_url }}" method="GET">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search..." name="q" id="q" maxlength="50" required/>
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+          <!-- ./serach bar -->
+
+          <ul class="nav" id="side-menu">
+            <li>
+              <a href="{{ home_url }}"><i class="fa fa-home fa-fw"></i> Home</a>
+            </li>
+            <li>
+              <a href="{{ doc_url }}"><i class="fa fa-info-circle fa-fw"></i> Documentation</a>
+            </li>
+            <li>
+              <a href="{{ contact_url }}"><i class="fa fa-envelope fa-fw"></i> Contact</a>
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/mirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> microRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=rna&etype=mirna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=pathway&etype=mirna">by pathways</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=celltype&etype=mirna">by cell-type</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> piRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=rna&etype=pirna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=pathway&etype=pirna">by pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / ></i> lncRNAs<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=rna&etype=lncrna">Browse/search</a>
+                </li>
+                <li>
+                  <a href="{{ browse_url }}?type=pathway&etype=lncrna">by pathways</a>
+                </li>
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+            <li>
+              <a href="#"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></i> Target genes<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{{ browse_url }}?type=gene&etype=target">Browse/search</a>
+                </li>
+		{% comment %}
+                <li>
+                  <a href="{{ browse_url }}?type=pathway&etype=target">by pathways</a>
+                </li>
+		{% endcomment %}
+              </ul>
+              <!-- /.nav-second-level -->
+            </li>
+        {% comment %}
+            <li>
+              <a href="{{ tables_url }}"><i class="fa fa-table fa-fw"></i> Tables</a>
+            </li>
+            <li>
+              <a href="{{ charts_url }}"><i class="fa fa-bar-chart-o  fa-fw"></i> Charts</a>
+            </li>
+	    {% endcomment %}
+          </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
+      </div>
+      <!-- /.navbar-static-side -->
+    </nav>
+
