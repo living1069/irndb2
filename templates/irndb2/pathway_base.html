@@ -3,6 +3,8 @@
 {% block title %}
 {% if pwt = 'KEGG' %}
 {{ p.keggid }}
+{% elif pwt = 'REACTOME' %}
+{{ p.pathid }}
 {% else %}
 {{ p.wikipathid }}
 {% endif %}
@@ -54,6 +56,8 @@ $(function() {
       <b>
       {% if pwt = 'KEGG'  %}
       {{ p.keggname }}
+      {% elif pwt = 'REACTOME' %}
+      {{ p.pathname }}
       {% else %}
       {{ p.wikipathname }}
       {% endif %}
@@ -74,6 +78,19 @@ $(function() {
           <tr>
             <td><b>Pathway id:</b></td>
             <td><a title="Link to KEGG details" class="g" href="http://www.kegg.jp/kegg-bin/show_pathway?{{ pathid }}+{{ target_str }}">{{ pathid }}</a></td>
+          </tr>
+          {% elif pwt = 'REACTOME' %}
+           <tr>
+            <td><b>Pathway name:</b></td>
+            <td><a title="Link to REACTOME details" class="g" href="http://www.reactome.org/PathwayBrowser/#/{{ pathid }}">{{ p.pathname }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway source:</b></td>
+            <td><a title="Link to REACTOME" class="g" href="http://www.reactome.org">{{ pwt }}</a></td>
+          </tr>
+          <tr>
+            <td><b>Pathway id:</b></td>
+            <td><a title="Link to REACTOME details" class="g" href="http://www.reactome.org/PathwayBrowser/#/{{ pathid }}">{{ pathid }}</a></td>
           </tr>
           {% else %}
           <tr>

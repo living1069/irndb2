@@ -18,7 +18,7 @@
       <table id="sebioWikipath1" class="table table-condensed" width="100%">
         <thead>
           <tr>
-            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Wikipathway Name</th>
+            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway Name</th>
             <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Id</th>
             <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
             <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
@@ -50,13 +50,11 @@
        } );
      </script>
       {% else %}
-      <p>No wikipathways found for immune targets.</p>
+      <p>No pathways found for immune targets.</p>
       {% endif %}
     </div>
   </div>
 </div>
-
-
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -108,9 +106,64 @@
        } );
       </script>
       {% else %}
-      <p>No KEGG pathways found for immune targets.</p>
+      <p>No pathways found for immune targets.</p>
       {% endif %}
     </div>
   </div>
 </div>
 
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>REACTOME pathways for immune targets ({{ reatome|length }})</b>
+  </div>
+
+  <div class="panel-body">
+    {% if reactome %}
+
+    {% comment %}
+    <a href="{% url 'irndb2:browse_url_name' %}?type={{ entity_type }}&pw=1&pwt={{ pwt }}&dnl=1">
+      <p class="text-right"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-floppy-o"></i> Export to csv</button></p>
+    </a>
+    {% endcomment %}
+    
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioReactome1" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Pathway Name</th>
+            <th><img src="{% static 'irn/pathway.png' %}" style="vertical-align: middle;" alt="" / > Id</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
+            <th><img src="{% static 'irn/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+          </tr>
+        </thead>
+      </table> 
+      
+      <script>
+        var dataSet = {{ reactome|safe }};
+        
+    $(document).ready( function () {
+        var table3 = $('#sebioReactome1').DataTable( {
+        "data":dataSet,
+         "columns": [
+             { "width": "450px" },
+             { "width": "100px" },
+             {  "bSortable": false },
+             { "width": "75px", "className": "text-right" }
+          ],
+          "order": [[ 3, "desc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 5,
+          buttons: [ 'copy', 'excel', 'csv' ]
+        } );
+        table3.buttons().container()
+                     .appendTo( '#sebioReactome1_wrapper .col-sm-6:eq(0)' );
+       } );
+     </script>
+      {% else %}
+      <p>No pathways found for immune targets.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
