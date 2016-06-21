@@ -206,11 +206,6 @@ def pw_method(request, id):
         context['num_targets'] = num_targets
         return render_to_response("irndb2/pathway_base.html", context)
 
-    
-def wp_method(request, id):
-    context = {}
-    return render(request, "irndb2/contact.html", context)
-
 
 def target_method(request, sym):
     context = {}
@@ -1356,16 +1351,11 @@ def home_method(request):
         return render(request, "irndb2/home.html", context)
 
 
-def contact_method(request):
-    context = {}
-    return render(request, "irndb2/contact.html", context)
-
-
 def doc_method(request):
     context = {}
     tab = request.GET.get('tab', 'x')
     context = {}
-    if tab not in ['1','2','3','4']:
+    if tab not in ['1','2','3','4','5']:
         return render(request, "irndb2/doc.html", context)
     elif tab == '1':
         return render(request, "irndb2/doc_overview.html", context)
@@ -1442,9 +1432,13 @@ def doc_method(request):
                    }
 
         return render(request, "irndb2/doc_stats.html", context)
-    else:
+    elif tab == '5':
+        return render(request, "irndb2/doc_contact.html", context)
+    elif tab == 'x':
         return render(request, "irndb2/doc.html", context)
-
+    else:
+        context["error"] = 'Wrong tab number for documentation.'
+        return render(request, "irndb2/404.html", context)
     
 def browse_method(request):
     # get url params
