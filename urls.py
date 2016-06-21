@@ -9,7 +9,6 @@ from irndb2 import views
 
 urlpatterns = [
     url(r'home/$', views.home_method, name='home_url_name'),
-    url(r'contact/$', views.contact_method, name='contact_url_name'),
     url(r'doc/$', views.doc_method, name='doc_url_name'),
     url(r'search/$', views.search_method, name='search_url_name'),
     url(r'browse/$', views.browse_method, name='browse_url_name'),
