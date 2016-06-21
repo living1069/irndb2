@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q, F, Count
 import csv, re
 
-from .models import Target, T2G, T2K, T2W, T2K, T2C7, Go, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR
+from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
@@ -17,8 +17,11 @@ def pw_method(request, id):
     context = {}
     ## get pw type
     res = re.search('^WP', id)
+    res2 = re.search('^R\-', id)
     if res:
-        pathwaytype = 'Wikipathways'        
+        pathwaytype = 'Wikipathways'
+    elif res2:
+        pathwaytype = 'REACTOME'
     else:
         pathwaytype = 'KEGG'
 
@@ -26,20 +29,24 @@ def pw_method(request, id):
 
     if pathwaytype == 'KEGG':
         p = Kegg.objects.filter(keggid=id)
+    elif pathwaytype == 'REACTOME':
+        p = Reactome.objects.filter(pathid=id)
     else:
         p = Wikipath.objects.filter(wikipathid=id)
         
-    if not p: ## empty list, pathway not found
+    if not p.exists(): ## empty list, pathway not found, exists should be better...
         context["error"] = 'Query "%s" resulted in no %s pathway.' % (id, pathwaytype)
         return render(request, "irndb2/404.html", context)
-    elif len(p) > 1:
+    elif p.count() > 1:
         context["error"] = 'Query "%s" resulted in more than one %s pathway.' % (id, pathwaytype)
         return render(request, "irndb2/404.html", context)
     else:
-        pw_obj = p[0]
+        pw_obj = p[0]  # hits the DB
         context['p'] = pw_obj
         if pathwaytype == 'KEGG':
             context['pathid'] = pw_obj.keggid.split(':')[1].strip()
+        elif pathwaytype == 'REACTOME':
+            context['pathid'] = pw_obj.pathid
         else:
             context['pathid'] = pw_obj.wikipathid
 
@@ -53,6 +60,8 @@ def pw_method(request, id):
 
         if pathwaytype == 'KEGG':
             t2p_list = T2K.objects.filter(kegg=pw_obj).select_related('target').distinct()
+        elif pathwaytype == 'REACTOME':
+            t2p_list = T2R.objects.filter(path=pw_obj).select_related('target').distinct()
         else:
             t2p_list = T2W.objects.filter(wikipath=pw_obj).select_related('target').distinct()
 
@@ -82,6 +91,8 @@ def pw_method(request, id):
     elif url_type == 'lncrna':
         if pathwaytype == 'KEGG':
             t2p_list = T2K.objects.filter(Q(kegg = pw_obj) & ~Q(lncrna = '0')).select_related('target').distinct()
+        elif pathwaytype == 'REACTOME':
+            t2p_list = T2R.objects.filter(Q(path = pw_obj) & ~Q(lncrna = '0')).select_related('target').distinct()
         else:
             t2p_list = T2W.objects.filter(Q(wikipath = pw_obj) & ~Q(lncrna = '0')).select_related('target').distinct()
             
@@ -105,6 +116,8 @@ def pw_method(request, id):
     elif url_type == 'pirna':
         if pathwaytype == 'KEGG':
             t2p_list = T2K.objects.filter(Q(kegg = pw_obj) & ~Q(pirna = '0')).select_related('target').distinct()
+        elif pathwaytype == 'REACTOME':
+            t2p_list = T2R.objects.filter(Q(path = pw_obj) & ~Q(pirna = '0')).select_related('target').distinct()
         else:
             t2p_list = T2W.objects.filter(Q(wikipath = pw_obj) & ~Q(pirna = '0')).select_related('target').distinct()
             
@@ -128,6 +141,8 @@ def pw_method(request, id):
     elif url_type == 'mirna':
         if pathwaytype == 'KEGG':
             t2p_list = T2K.objects.filter(kegg = pw_obj).select_related('target').distinct()
+        elif pathwaytype == 'REACTOME':
+            t2p_list = T2R.objects.filter(path = pw_obj).select_related('target').distinct()
         else:
             t2p_list = T2W.objects.filter(wikipath = pw_obj).select_related('target').distinct()
 
@@ -171,6 +186,8 @@ def pw_method(request, id):
     else:
         if pathwaytype == 'KEGG':
             t2p_list = T2K.objects.filter(kegg = pw_obj).select_related('target').distinct()
+        elif pathwaytype == 'REACTOME':
+            t2p_list = T2R.objects.filter(path = pw_obj).select_related('target').distinct()
         else:
             t2p_list = T2W.objects.filter(wikipath = pw_obj).select_related('target').distinct()
             
@@ -199,10 +216,10 @@ def target_method(request, sym):
     context = {}
     context["entity_type"] = "target"
     a = Target.objects.filter(symbol__regex=r'^%s$'%sym) # exact match, kind of a hack as the __exact did not work
-    if len(a)>1:
+    if a.count() > 1:
         context["error"] = 'Query "%s" resulted in more then 1 entitiy.'%sym
         return render(request, "irndb2/404.html", context)
-    elif len(a)==0:
+    elif not a.exists():
         context["error"] = 'Query "%s" resulted in 0 entities.'%sym
         return render(request, "irndb2/404.html", context)
     else:
@@ -303,6 +320,9 @@ def target_method(request, sym):
         aK = T2K.objects.filter(target=target_obj.id).select_related('kegg').values_list('kegg__id',
                                                                                         'kegg__keggid',
                                                                                         'kegg__keggname').distinct()
+        aR = T2R.objects.filter(target=target_obj.id).select_related('path').values_list('path__id',
+                                                                                        'path__pathid',
+                                                                                        'path__pathname').distinct()
         aK2 = []
         for t in aK:
             a = list(t)
@@ -310,7 +330,7 @@ def target_method(request, sym):
             a[1] = a[1].split(':')[1]
             aK2.append(tuple(a))
 
-        context = {'t':target_obj, 'wikipath':aW, 'kegg':aK2}
+        context = {'t':target_obj, 'wikipath':aW, 'kegg':aK2, 'reactome':aR}
         return render(request, 'irndb2/target_pathway.html', context)
 
     elif url_type == "go":
@@ -441,6 +461,8 @@ def mirna_method(request, name, flush=True):
     irndb_wikipath_url = '<a class="g" title="IRNdb pathway view" href="%s/wikipathway/%s">%s</a>'
     kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/instance/%s">%s</a>'
+    irndb_reactome_url = '<a class="g" title="IRNdb pathway view" href="%s/reactome/%s">%s</a>'
+    reactome_url = '<a class="g" title="Link to REACTOME" href="http://www.reactome.org/PathwayBrowser/#/%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
     ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
 
@@ -517,16 +539,17 @@ def mirna_method(request, name, flush=True):
 
     elif url_type=="p":
         ## fetch pathways from session cache if exists or create new
-        if 'wikipath_exp' in request.session['mirnas'][mid]:
+        if 'wikipath' in request.session['mirnas'][mid]:
             aW  = request.session['mirnas'][mid]['wikipath']
             aK  = request.session['mirnas'][mid]['kegg']
+            aR  = request.session['mirnas'][mid]['reactome']
         else:
             ## create new
             # target ids
             aIDs = list(set([a[0] for a in aImmStrictExp+aImmExp+aImm+aImmStrict]))
            
             # wikipath exp
-            aWtemp = T2W.objects.filter(target__in=aIDs).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            aWtemp = list(T2W.objects.filter(target__in=aIDs).select_related('target', 'wikipath').values_list('wikipath__wikipathid', 'wikipath__wikipathname', 'target__id', 'target__symbol', 'target__tname').distinct())
             dW = {}
             for tRes in aWtemp:
                 tW = (tRes[0], tRes[1])
@@ -548,7 +571,7 @@ def mirna_method(request, name, flush=True):
                 aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aW = aWtemp[:]
 
-            aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
+            aWtemp = list(T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct())
             dW = {}
             for tRes in aWtemp:
                 tW = (tRes[0], tRes[1])
@@ -571,13 +594,39 @@ def mirna_method(request, name, flush=True):
                 aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aK = aWtemp[:]
 
+            aWtemp = list(T2R.objects.filter(target__in=aIDs).select_related('target', 'path').values_list('path__pathid', 'path__pathname', 'target__id', 'target__symbol', 'target__tname').distinct())
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list([str(t[0]) for t in v])
+                aT.sort()
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_reactome_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = reactome_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
+            aR = aWtemp[:]
+
             ## push to session cash
             request.session['mirnas'][mid]['wikipath'] = aW
             request.session['mirnas'][mid]['kegg'] = aK
+            request.session['mirnas'][mid]['reactome'] = aR
+            
             request.session.modified = True
 
         context['wikipath'] = aW
         context['kegg'] = aK
+        context['reactome'] = aR
+        
         context['type'] = url_type
         return render(request, 'irndb2/rna_pathways.html', context)
 
@@ -707,6 +756,8 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
     irndb_kegg_url = '<a class="g" title="IRNdb pathway view" href="%s/kegg/%s">%s</a>'
     irndb_wikipath_url = '<a class="g" title="IRNdb pathway view" href="%s/wikipathway/%s">%s</a>'
     kegg_url = '<a class="g" title="Link to KEGG" href="http://www.genome.jp/dbget-bin/www_bget?pathway:%s">%s</a>'
+    irndb_reactome_url = '<a class="g" title="IRNdb pathway view" href="%s/reactome/%s">%s</a>'
+    reactome_url = '<a class="g" title="Link to REACTOME" href="http://www.reactome.org/PathwayBrowser/#/%s">%s</a>'
     wikipath_url = '<a class="g" title="Link to Wikipathway" href="http://www.wikipathways.org/instance/%s">%s</a>'
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
     pmid_url = '<a class="g" title="Link to NCBI" href="https://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>'
@@ -852,6 +903,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         if 'wikipath' in request.session['lncrnas'][lid]:
             aW  = request.session['lncrnas'][lid]['wikipath']
             aK  = request.session['lncrnas'][lid]['kegg']
+            aR  = request.session['lncrnas'][lid]['reactome']
             iPexisted = 1
         else:
             ## create new
@@ -881,6 +933,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
                 aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aW = aWtemp[:]
 
+            # KEGG
             aWtemp = T2K.objects.filter(target__in=aIDs).select_related('target', 'kegg').values_list('kegg__keggid', 'kegg__keggname', 'target__id', 'target__symbol', 'target__tname').distinct()
             dW = {}
             for tRes in aWtemp:
@@ -904,14 +957,39 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
                 aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
                 
             aK = aWtemp[:]
+
+            # Reactome
+            aWtemp = list(T2R.objects.filter(target__in=aIDs).select_related('target', 'path').values_list('path__pathid', 'path__pathname', 'target__id', 'target__symbol', 'target__tname').distinct())
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list([str(t[0]) for t in v])
+                aT.sort()
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_reactome_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = reactome_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
+            aR = aWtemp[:]
             
             ## puch to session cash
             request.session['lncrnas'][lid]['wikipath'] = aW
             request.session['lncrnas'][lid]['kegg'] = aK
+            request.session['lncrnas'][lid]['reactome'] = aK
             request.session.modified = True
 
         context['wikipath'] = aW
         context['kegg'] = aK
+        context['reactome'] = aR
         context['type'] = url_type
         return render(request, 'irndb2/rna_pathways.html', context)
 
@@ -1002,6 +1080,8 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
     go_url = '<a class="g" title="Link to Gene Ontology" href="http://amigo.geneontology.org/amigo/term/%s">%s</a>'
     ncbi_url = '<a class="t1" title="Link to NCBI gene" href="http://www.ncbi.nlm.nih.gov/gene/%s">%s</a>'
     pmid_url = '<a class="g" title="Link to NCBI" href="https://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>'
+    irndb_reactome_url = '<a class="g" title="IRNdb pathway view" href="%s/reactome/%s">%s</a>'
+    reactome_url = '<a class="g" title="Link to REACTOME" href="http://www.reactome.org/PathwayBrowser/#/%s">%s</a>'
     
     #-- target tab --
     if url_type == "t":
@@ -1105,6 +1185,7 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
         if 'wikipath' in request.session['pirnas'][pid]:
             aW  = request.session['pirnas'][pid]['wikipath']
             aK  = request.session['pirnas'][pid]['kegg']
+            aR = request.session['pirnas'][pid]['reactome']
             iPexisted = 1
         else:
             ## create new
@@ -1157,13 +1238,39 @@ def pirna_method(request, name, flush=True): # need to change to False for prod.
                 aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
             aK = aWtemp[:]
 
+            # Reactome
+            aWtemp = list(T2R.objects.filter(target__in=aIDs).select_related('target', 'path').values_list('path__pathid', 'path__pathname', 'target__id', 'target__symbol', 'target__tname').distinct())
+            dW = {}
+            for tRes in aWtemp:
+                tW = (tRes[0], tRes[1])
+                if tW not in dW:
+                    dW[tW] = set()
+                dW[tW].add((tRes[3], tRes[2], tRes[4]))
+            aWtemp = []
+            for k,v in dW.items():
+                aT = list([str(t[0]) for t in v])
+                aT.sort()
+                gene_symbols = str(', '.join([target_url %(_APP_LINK_PREFIX, gene, gene) for gene in aT]))
+
+                pathid_orig = str(k[0])
+                pathname = str(k[1])
+
+                pathname_url = irndb_reactome_url % (_APP_LINK_PREFIX, pathid_orig, pathname)
+                pathid_url = reactome_url % (pathid_orig, pathid_orig)
+
+                aWtemp.append([ pathname_url, pathid_url, gene_symbols, str(len(aT))]) 
+            aR = aWtemp[:]
+
+            
             ## puch to session cash
             request.session['pirnas'][pid]['wikipath'] = aW
             request.session['pirnas'][pid]['kegg'] = aK
+            request.session['pirnas'][pid]['reactome'] = aR
             request.session.modified = True
 
         context['wikipath'] = aW
         context['kegg'] = aK
+        context['reactome'] = aR
         context['type'] = url_type
         context['existed'] = iPexisted
         return render(request, 'irndb2/rna_pathways.html', context)
@@ -1380,9 +1487,10 @@ def browse_method(request):
         
         # browse pathways instead --> return pathway list
         elif type == 'pathway':
-            if pathwaytype not in ["wikipathway","kegg"]:
+            if pathwaytype not in ["wikipathway","kegg","reactome"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
+                
                 # all t2l object
                 rna2t_list = M2T_EXP.objects.all().select_related('mirna','target').distinct()
                 #rna2t_list = M2T_EXP.objects.filter(target__strict = 1).select_related('mirna','target').distinct()
@@ -1450,7 +1558,7 @@ def browse_method(request):
         
         # browse pathways instead --> return pathway list
         elif type == 'pathway':
-            if pathwaytype not in ["wikipathway","kegg"]:
+            if pathwaytype not in ["wikipathway","kegg","reactome"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
                 # all t2l object
@@ -1483,7 +1591,7 @@ def browse_method(request):
         
         # browse pathways instead --> return pathway list
         elif type == 'pathway':
-            if pathwaytype not in ["wikipathway","kegg"]:
+            if pathwaytype not in ["wikipathway","kegg","reactome"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
                 rnasymbol = "pirna__pname"
@@ -1773,5 +1881,65 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                 # here make one row per target
                 for tlist in targetlist:
                     res_list.append([ str(wp.wikipathid), str(wp.wikipathname), tlist[0], tlist[1]])
+                    
+    elif pathwaytype == 'reactome':
+        if entitytype == 'pirna':
+            t2pw_list = T2R.objects.filter(~Q(pirna = '0')).select_related('target', 'path').distinct()
+        elif entitytype == 'lncrna':
+            t2pw_list = T2R.objects.filter(~Q(lncrna = '0')).select_related('target', 'path').distinct()
+        elif entitytype == 'mirna':
+            t2pw_list = T2R.objects.filter(~Q(mirna_exp = '0')).select_related('target', 'path').distinct()
 
+        for t2pw in t2pw_list:
+            if t2pw.path not in dPW:
+                dPW[t2pw.path] = []
+
+            if dnl != '1':
+                if entitytype == 'pirna':
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.pirna.split(',')])
+                elif entitytype == 'lncrna':
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.lncrna.split(',')])
+                elif entitytype == 'mirna':
+                    rnas = ', '.join([str(rnalink_template % (_APP_LINK_PREFIX,
+                                                              entitytype,
+                                                              rna.strip(),
+                                                              rna.strip())) for rna in t2pw.mirna_exp.split(',')])
+
+
+                dPW[t2pw.path].append([ str(targetlink_template % (_APP_LINK_PREFIX,
+                                                                       t2pw.target.symbol,
+                                                                       t2pw.target.symbol)),
+                                                                       rnas])
+            else:
+                if entitytype == 'pirna':
+                    rnas = str(t2pw.pirna)
+                elif entitytype == 'lncrna':
+                    rnas = str(t2pw.lncrna)
+                elif entitytype == 'mirna': 
+                    rnas = str(t2pw.mirna_exp)
+
+                dPW[t2pw.path].append([ str(t2pw.target.symbol), rnas])
+
+        for wp, targetlist in dPW.items():
+            if dnl != '1':
+                targetlist.sort()
+                str_table = '<table><tbody>'
+                for t_entry in targetlist:
+                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    str_table += row_str
+                str_table += '</tbody></table>'
+                res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
+                                                        pathwaytype,
+                                                        str(wp.pathid),
+                                                        str(wp.pathname))), str_table])
+            else:
+                # here make one row per target
+                for tlist in targetlist:
+                    res_list.append([ str(wp.pathid), str(wp.pathname), tlist[0], tlist[1]])
     return res_list

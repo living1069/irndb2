@@ -101,3 +101,53 @@
   </div>
 </div>
 
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>REACTOME pathways associated to target gene ({{ reactome|length }})</b>
+  </div>
+  <div class="panel-body">
+    {% if reactome %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioPath3" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
+            <th><img src="{% static 'irndb2/images/pathway.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for list in reactome %}
+          <tr>
+            <td>
+              <a class="g" title="IRNdb pathway view" href="{% url 'irndb2:reactome_url_name' list.1 %}">{{ list.2  }}</a>
+            </td>
+            <td>
+              <a class="g" title="Link to REACTOME" href="http://www.reactome.org/PathwayBrowser/#/{{ list.1 }}" title="REACTOME link">{{ list.1 }}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> 
+      <script>
+      $(document).ready( function () {
+      var tablePath3 = $('#sebioPath3').DataTable( {
+        "columns": [ null,  { "width": "150px" } ],
+          "order": [[ 0, "asc" ]],
+          "deferRender": true,
+          responsive: true,
+          lengthChange: false,
+          "pageLength": 10,
+          buttons: [ 'copy', 'excel', 'csv' ]
+        });
+        tablePath3.buttons().container()
+                     .appendTo( '#sebioPath3_wrapper .col-sm-6:eq(0)' );
+      } );
+      
+      </script>
+      {% else %}
+      <p>No pathways available.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+

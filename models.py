@@ -42,6 +42,18 @@ class M2T_PRED(models.Model):
     numsources = models.IntegerField()
 
 ## TARGET ANNOTATION
+class Reactome(models.Model):
+    pathid   = models.CharField(max_length=15, db_index=True)
+    pathname = models.CharField(max_length=130)
+
+class T2R(models.Model):
+    target   = models.ForeignKey(Target)
+    path = models.ForeignKey(Reactome)
+    mirna_exp = models.CharField(max_length=700, db_index=True)
+    mirna_pred = models.CharField(max_length=5010)
+    lncrna = models.CharField(max_length=310, db_index=True)
+    pirna = models.CharField(max_length=100, db_index=True)
+
 class Wikipath(models.Model):
     wikipathid   = models.CharField(max_length=15, db_index=True)
     wikipathname = models.CharField(max_length=80)
