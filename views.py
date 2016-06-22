@@ -1278,7 +1278,7 @@ def search_method(request):
         query = request.GET.get('q', None)
 
         if content == '0' and query:
-            context["search_term"] = query
+            context["search_term"] = '+'.join([s.strip() for s in query.split(' ')])  # make urlsafe
             return render(request, "irndb2/search_base.html", context)
        
         elif content == '1' and query:
@@ -1288,44 +1288,64 @@ def search_method(request):
             ## context["search_term"] = query
             ## # use "query" to look up things and store in "result"
             res_target = Target.objects.filter( Q(tname__icontains=query) | \
-                                        Q(symbol__icontains=query) | \
-                                        Q(id__icontains=query)
-                                        ).values_list('id',
-                                                      'symbol',
-                                                      'tname').distinct()
+                                            Q(symbol__icontains=query) | \
+                                            Q(id__icontains=query)
+                                            ).values_list('id',
+                                                        'symbol',
+                                                        'tname').distinct()
 
             res_mirna = Mirna.objects.filter( Q(mname__icontains=query) | \
-                                        Q(mirbase_id__icontains=query)
-                                        ).values_list('id',
-                                                      'mirbase_id',
-                                                      'mname').distinct()
+                                            Q(mirbase_id__icontains=query)
+                                            ).values_list('id',
+                                                        'mirbase_id',
+                                                        'mname').distinct()
 
             res_lncrna = Lncrna.objects.filter( Q(lname__icontains=query) | \
                                                 Q(lsymbol__icontains=query) | \
                                                 Q(lalias__icontains=query) | \
                                                 Q(lgeneid__icontains=query)
-                                        ).values_list('id',
-                                                      'lsymbol',
-                                                      'lgeneid',
-                                                      'lname',
-                                                      'lalias').distinct()
+                                            ).values_list('id',
+                                                        'lsymbol',
+                                                        'lgeneid',
+                                                        'lname',
+                                                        'lalias').distinct()
+            
             res_pirna = Pirna.objects.filter( Q(pname__icontains=query) | \
                                               Q(palias__icontains=query) | \
                                               Q(paccession__icontains=query)
-                                        ).values_list('id',
-                                                      'palias',
-                                                      'pname',
-                                                      'paccession').distinct()
+                                            ).values_list('id',
+                                                        'palias',
+                                                        'pname',
+                                                        'paccession').distinct()
 
+            # pathways
+            ## res_reactome = Reactome.objects.filter( Q(pathname__icontains=query) | Q(pathid__icontains=query) ).distinct()
+            ## res_wikipath = Wikipath.objects.filter( Q(wikipathname__icontains=query) | Q(wikipathid__icontains=query) ).distinct()
+            ## res_kegg = Kegg.objects.filter( Q(keggname__icontains=query) | Q(keggid__icontains=query) ).distinct()
+            ## a1 = [[str(t[0]), str(t[1]), 'REACTOME'] for t in res_reactome.values_list('pathid','pathname')]
+            ## a2 = [[str(t[0]), str(t[1]), 'WIKIPATHWAY'] for t in res_wikipath.values_list('wikipathid','wikipathname')]
+            ## a3 = [[str(t[0]), str(t[1]), 'KEGG'] for t in res_kegg.values_list('keggid','keggname')]
+            ## res_path = a1 + a2 + a3
+            
             context["search_target"] = res_target
             context["search_mirna"] = res_mirna
             context["search_lncrna"] = res_lncrna
             context["search_pirna"] = res_pirna
-            context["search_results"] = len(res_target) + len(res_mirna) + len(res_lncrna) + len(res_pirna)
+            ## context["search_path"] = res_path
+            
+            search_results_num = 0
             cat_num = 0
+            ## for res in [res_target, res_mirna, res_lncrna, res_pirna, res_path]:
             for res in [res_target, res_mirna, res_lncrna, res_pirna]:
-                if len(res) > 0:
+                try:
+                    len_res = res.count()
+                except:
+                    len_res = len(res)
+                if len_res > 0:
                     cat_num += 1
+                search_results_num += len_res
+
+            context["search_results"] = search_results_num
             context["search_cat"] = cat_num
             
         else:
@@ -1343,12 +1363,15 @@ def home_method(request):
     content = request.GET.get('content', '0')
     if content == '0':
         return render(request, "irndb2/home_base.html", context)
-    else:
+    elif content =='1':
         context['num_target'] = Target.objects.all().count()
         context['num_mirna'] = Mirna.objects.all().count()
         context['num_lncrna'] = Lncrna.objects.all().count()
         context['num_pirna'] = Pirna.objects.all().count()
         return render(request, "irndb2/home.html", context)
+    else:
+        context["error"] = 'Wrong GET parameter.'
+        return render(request, "irndb2/404.html", context)
 
 
 def doc_method(request):
@@ -1466,7 +1489,6 @@ def browse_method(request):
         elif type == 'celltype':
             context['title'] = 'Cell-types'
         return render(request, "irndb2/browse_base.html", context)
-        
     
     
     if entitytype == 'mirna':
@@ -1484,7 +1506,6 @@ def browse_method(request):
             if pathwaytype not in ["wikipathway","kegg","reactome"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
-                
                 # all t2l object
                 rna2t_list = M2T_EXP.objects.all().select_related('mirna','target').distinct()
                 #rna2t_list = M2T_EXP.objects.filter(target__strict = 1).select_related('mirna','target').distinct()

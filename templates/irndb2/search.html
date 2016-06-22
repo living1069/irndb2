@@ -206,3 +206,58 @@
     </div>
     {% endif %}
 
+    {% if search_path %}
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <b>Pathways</b>
+      </div>
+      <div class="panel-body">
+        <p>
+          <div class="dataTable_wrapper" width="100%">
+            <table class="table table-condensed" id="sebio5" width="100%">
+              <thead>
+                <tr>
+                  <th title="Pathway NAME"><img src="{% static 'irndb2/images/pathway.png' %}" alt="" / > Name</th>
+                  <th title="Pathway ID"><img src="{% static 'irndb2/images/pathway.png' %}" alt="" / > Id</th>
+                  <th title="Source"><img src="{% static 'irndb2/images/pathway.png' %}" alt="" / > Source</th>
+		        </tr>
+              </thead>
+              <tbody>
+                {% for e in search_path %}
+                <tr>
+                  {% if e.2 == 'KEGG' %}
+                  <td><a title="Open in IRNdb" class="m1" href="{% url 'irndb2:kegg_url_name' e.0 %}">{{ e.0 }}</a></td>
+                  {% elif e.2 == 'WIKIPATHWAY' %}
+                  <td><a title="Open in IRNdb" class="m1" href="{% url 'irndb2:wp_url_name' e.0 %}">{{ e.0 }}</a></td>
+                  {% else %}
+                  <td><a title="Open in IRNdb" class="m1" href="{% url 'irndb2:reactome_url_name' e.0 %}">{{ e.0 }}</a></td>
+                  {% endif %}
+                  <td>{{ e.1 }}</td>
+                  <td>{{ e.2 }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table> 
+            <!-- DataTables JavaScript -->
+            <script>
+              $(document).ready( function () {
+                  $('#sebio5').DataTable( {
+                      "columns": [
+                        {"width":"200px"},
+                        {"className":"text-left"}, 
+                        {"className":"text-left"}
+                       ],
+                    "order": [[ 0, "asc" ]],
+                    "deferRender": true,
+                    responsive: true
+                    });
+                  } );
+            </script>
+          </div>
+          <!-- /.table-responsive -->
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+
