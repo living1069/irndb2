@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q, F, Count
 import csv, re
 
-from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR
+from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR, MPRIMARY2MATURE, MPRIMARY2TFBS
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
@@ -625,30 +625,20 @@ def mirna_method(request, name, flush=True):
         context['type'] = url_type
         return render(request, 'irndb2/rna_pathways.html', context)
 
-    ## elif url_type == "r":
-    ##     aFINAL = []
-    ##     bTFBS = 0
-    ##     # fetch primary for mirna
-    ##     aPrimaries = MPRIMARY.objects.filter(mirna=mirna_obj).distinct()
-    ##     # Fetch TFBS for primaries
-    ##     aTFBS = MPRIMARY2TFBS.objects.filter(Q(mprimary__in=aPrimaries), Q(fdr__gt=-1) | Q(pvalue__gt=-1)).distinct()
+    elif url_type == "r":
+        # fetch primary for mirna
+        primaries = list(MPRIMARY2MATURE.objects.filter(mature_id=mirna_obj.mirbase_id).values_list('primary','name','chr_str').distinct())
+        # Fetch TFBS for primaries
+        list_res = []
+        for t in primaries:
+            list_tfbs = list(MPRIMARY2TFBS.objects.filter(primary=t[0]).values_list('tfbs_symbol', 'tfbs_id', 'chr_str', 'celltype', 'experiment_source','fdr', 'distance_primary').distinct())
+            for t2 in list_tfbs:
+                temp = [str(s) for s in list(t) + list(t2)]
+                list_res.append(temp)
 
-    ##     for primary_obj in aPrimaries:
-    ##         aTEMP = aTFBS.filter(mprimary=primary_obj).distinct()
-    ##         for oMTFBS in aTEMP:  # hChIP was the wrong name for the source
-    ##             if oMTFBS.experiment_source == 'hChIP':
-    ##                 oMTFBS.experiment_source = 'htChIP'
-    ##         if len(aTEMP)>0:
-    ##             aFINAL.append(aTEMP)
+        context['tfbs_list'] = list_res
 
-    ##     if len(aFINAL) > 0:
-    ##         bTFBS = 1
-    ##     context = {'m':mirna_obj,
-    ##                'aTFBS':aFINAL,
-    ##                'bTFBS':bTFBS,
-    ##                'type':url_type}
-
-    ##     return render(request, 'irndb2/m_tfbs.html', context)
+        return render(request, 'irndb2/mirna_tfbs.html', context)
 
     elif url_type == "t": # target view
         # experiemtnal targets
