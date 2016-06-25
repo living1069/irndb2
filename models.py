@@ -152,3 +152,22 @@ class M2EXPR(models.Model):
                                    db_index=True)
     celltype = models.CharField(max_length=64)
     exprfreq = models.FloatField()
+
+class MPRIMARY2MATURE(models.Model):
+    primary = models.CharField(max_length=9,
+                               db_index=True)
+    name       = models.CharField(max_length=20,
+                                  db_index=True)
+    chr_str = models.CharField(max_length=50)
+    mature_id    = models.CharField(max_length=14, db_index=True)
+
+class MPRIMARY2TFBS(models.Model):
+    primary = models.CharField(max_length=9, db_index=True)
+    tfbs_symbol = models.CharField(max_length=12)
+    tfbs_id = models.CharField(max_length=6)
+    chr_str = models.CharField(max_length=50)
+    celltype = models.CharField( max_length=15 )
+    experiment_source = models.CharField( max_length=6 )
+    fdr = models.FloatField()  # -log10
+    distance_primary = models.IntegerField(db_index = True)
+    

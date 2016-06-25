@@ -19,9 +19,6 @@
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2t_exp.json
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2t_pred.json
 
-    #time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/mprimary.json   
-    #time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/mprimary2tfbs.json   
-
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/lncrna.json
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/l2t.json    
 
@@ -29,6 +26,10 @@
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/p2t.json
 
     time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2expr.json
+    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/primary2mature.json
+    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/primary2tfbs.json   
+
+
     
     #-- IF YOU CHANGE DB TABLES IN THE models.py RUN:
     python ../manage.py makemigrations

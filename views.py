@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q, F, Count
 import csv, re
 
-from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR
+from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipath, Msigdb_c7, Mirna, M2T_EXP, M2T_PRED, Lncrna, L2T, Pirna, P2T, M2EXPR, MPRIMARY2MATURE, MPRIMARY2TFBS
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
@@ -625,30 +625,20 @@ def mirna_method(request, name, flush=True):
         context['type'] = url_type
         return render(request, 'irndb2/rna_pathways.html', context)
 
-    ## elif url_type == "r":
-    ##     aFINAL = []
-    ##     bTFBS = 0
-    ##     # fetch primary for mirna
-    ##     aPrimaries = MPRIMARY.objects.filter(mirna=mirna_obj).distinct()
-    ##     # Fetch TFBS for primaries
-    ##     aTFBS = MPRIMARY2TFBS.objects.filter(Q(mprimary__in=aPrimaries), Q(fdr__gt=-1) | Q(pvalue__gt=-1)).distinct()
+    elif url_type == "r":
+        # fetch primary for mirna
+        primaries = list(MPRIMARY2MATURE.objects.filter(mature_id=mirna_obj.mirbase_id).values_list('primary','name','chr_str').distinct())
+        # Fetch TFBS for primaries
+        list_res = []
+        for t in primaries:
+            list_tfbs = list(MPRIMARY2TFBS.objects.filter(primary=t[0]).values_list('tfbs_symbol', 'tfbs_id', 'chr_str', 'celltype', 'experiment_source','fdr', 'distance_primary').distinct())
+            for t2 in list_tfbs:
+                temp = [str(s) for s in list(t) + list(t2)]
+                list_res.append(temp)
 
-    ##     for primary_obj in aPrimaries:
-    ##         aTEMP = aTFBS.filter(mprimary=primary_obj).distinct()
-    ##         for oMTFBS in aTEMP:  # hChIP was the wrong name for the source
-    ##             if oMTFBS.experiment_source == 'hChIP':
-    ##                 oMTFBS.experiment_source = 'htChIP'
-    ##         if len(aTEMP)>0:
-    ##             aFINAL.append(aTEMP)
+        context['tfbs_list'] = list_res
 
-    ##     if len(aFINAL) > 0:
-    ##         bTFBS = 1
-    ##     context = {'m':mirna_obj,
-    ##                'aTFBS':aFINAL,
-    ##                'bTFBS':bTFBS,
-    ##                'type':url_type}
-
-    ##     return render(request, 'irndb2/m_tfbs.html', context)
+        return render(request, 'irndb2/mirna_tfbs.html', context)
 
     elif url_type == "t": # target view
         # experiemtnal targets
@@ -1278,7 +1268,7 @@ def search_method(request):
         query = request.GET.get('q', None)
 
         if content == '0' and query:
-            context["search_term"] = query
+            context["search_term"] = '+'.join([s.strip() for s in query.split(' ')])  # make urlsafe
             return render(request, "irndb2/search_base.html", context)
        
         elif content == '1' and query:
@@ -1288,44 +1278,64 @@ def search_method(request):
             ## context["search_term"] = query
             ## # use "query" to look up things and store in "result"
             res_target = Target.objects.filter( Q(tname__icontains=query) | \
-                                        Q(symbol__icontains=query) | \
-                                        Q(id__icontains=query)
-                                        ).values_list('id',
-                                                      'symbol',
-                                                      'tname').distinct()
+                                            Q(symbol__icontains=query) | \
+                                            Q(id__icontains=query)
+                                            ).values_list('id',
+                                                        'symbol',
+                                                        'tname').distinct()
 
             res_mirna = Mirna.objects.filter( Q(mname__icontains=query) | \
-                                        Q(mirbase_id__icontains=query)
-                                        ).values_list('id',
-                                                      'mirbase_id',
-                                                      'mname').distinct()
+                                            Q(mirbase_id__icontains=query)
+                                            ).values_list('id',
+                                                        'mirbase_id',
+                                                        'mname').distinct()
 
             res_lncrna = Lncrna.objects.filter( Q(lname__icontains=query) | \
                                                 Q(lsymbol__icontains=query) | \
                                                 Q(lalias__icontains=query) | \
                                                 Q(lgeneid__icontains=query)
-                                        ).values_list('id',
-                                                      'lsymbol',
-                                                      'lgeneid',
-                                                      'lname',
-                                                      'lalias').distinct()
+                                            ).values_list('id',
+                                                        'lsymbol',
+                                                        'lgeneid',
+                                                        'lname',
+                                                        'lalias').distinct()
+            
             res_pirna = Pirna.objects.filter( Q(pname__icontains=query) | \
                                               Q(palias__icontains=query) | \
                                               Q(paccession__icontains=query)
-                                        ).values_list('id',
-                                                      'palias',
-                                                      'pname',
-                                                      'paccession').distinct()
+                                            ).values_list('id',
+                                                        'palias',
+                                                        'pname',
+                                                        'paccession').distinct()
 
+            # pathways
+            ## res_reactome = Reactome.objects.filter( Q(pathname__icontains=query) | Q(pathid__icontains=query) ).distinct()
+            ## res_wikipath = Wikipath.objects.filter( Q(wikipathname__icontains=query) | Q(wikipathid__icontains=query) ).distinct()
+            ## res_kegg = Kegg.objects.filter( Q(keggname__icontains=query) | Q(keggid__icontains=query) ).distinct()
+            ## a1 = [[str(t[0]), str(t[1]), 'REACTOME'] for t in res_reactome.values_list('pathid','pathname')]
+            ## a2 = [[str(t[0]), str(t[1]), 'WIKIPATHWAY'] for t in res_wikipath.values_list('wikipathid','wikipathname')]
+            ## a3 = [[str(t[0]), str(t[1]), 'KEGG'] for t in res_kegg.values_list('keggid','keggname')]
+            ## res_path = a1 + a2 + a3
+            
             context["search_target"] = res_target
             context["search_mirna"] = res_mirna
             context["search_lncrna"] = res_lncrna
             context["search_pirna"] = res_pirna
-            context["search_results"] = len(res_target) + len(res_mirna) + len(res_lncrna) + len(res_pirna)
+            ## context["search_path"] = res_path
+            
+            search_results_num = 0
             cat_num = 0
+            ## for res in [res_target, res_mirna, res_lncrna, res_pirna, res_path]:
             for res in [res_target, res_mirna, res_lncrna, res_pirna]:
-                if len(res) > 0:
+                try:
+                    len_res = res.count()
+                except:
+                    len_res = len(res)
+                if len_res > 0:
                     cat_num += 1
+                search_results_num += len_res
+
+            context["search_results"] = search_results_num
             context["search_cat"] = cat_num
             
         else:
@@ -1343,12 +1353,15 @@ def home_method(request):
     content = request.GET.get('content', '0')
     if content == '0':
         return render(request, "irndb2/home_base.html", context)
-    else:
+    elif content =='1':
         context['num_target'] = Target.objects.all().count()
         context['num_mirna'] = Mirna.objects.all().count()
         context['num_lncrna'] = Lncrna.objects.all().count()
         context['num_pirna'] = Pirna.objects.all().count()
         return render(request, "irndb2/home.html", context)
+    else:
+        context["error"] = 'Wrong GET parameter.'
+        return render(request, "irndb2/404.html", context)
 
 
 def doc_method(request):
@@ -1466,7 +1479,6 @@ def browse_method(request):
         elif type == 'celltype':
             context['title'] = 'Cell-types'
         return render(request, "irndb2/browse_base.html", context)
-        
     
     
     if entitytype == 'mirna':
@@ -1484,7 +1496,6 @@ def browse_method(request):
             if pathwaytype not in ["wikipathway","kegg","reactome"]:
                 return render_to_response("irndb2/browsepw.html", context)
             else:
-                
                 # all t2l object
                 rna2t_list = M2T_EXP.objects.all().select_related('mirna','target').distinct()
                 #rna2t_list = M2T_EXP.objects.filter(target__strict = 1).select_related('mirna','target').distinct()

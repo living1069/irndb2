@@ -1,0 +1,73 @@
+{% load staticfiles %}
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>TFBS upstream of miRNAs</b>
+    <div style="float: right"><a href="#" data-toggle="tooltip" data-placement="left" title="ChIP's TFs in upstream regions (up to 2500bp) of associated miRNA genes. For more information see Documentation"><i class="fa fa-question-circle"></i></a></div>
+  </div>
+  <div class="panel-body">
+    {% if tfbs_list|length > 0 %}
+    <div class="dataTable_wrapper" width="100%">
+      <table id="sebioTFBS1" class="table table-condensed" width="100%">
+        <thead>
+          <tr>
+            <th>pri-miRNA</th>
+	    <th title="ChIP'd TF">TF</th>
+	    <th title="Open in genome browser">Browser</th>
+	    <th>Cell-type</th>
+	    <th>Source</th>
+	    <th title="-log(FDR)">FDR&nbsp;</th>
+	    <th title="Distance to pri-miRNA 5'end">d(m)&nbsp;</th>
+          </tr>
+        </thead>
+	<tbody>
+	  {% for list in tfbs_list %}
+	  <tr>
+	    <td><a class="m1" title="Open at miRBase" href="http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc={{ list.0 }}">{{ list.1 }}</a></td>
+	    <td><a class="t1" title="Open at NCBI" href="https://www.ncbi.nlm.nih.gov/gene/{{ list.4 }}">{{ list.3 }}</a></td>
+	    <td><a title="Open at UCSC genome browser" class="t1" href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&position={{ list.5 }}">UCSC</a></td>
+	    <td>{{ list.6 }}</td>	    
+	    <td>{{ list.7 }}</td>
+	    <td>{{ list.8|floatformat:2 }}</td>
+	    <td>{{ list.9 }}</td>
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
+            
+      <script>
+        $(document).ready( function () {
+        var tableTFBS1 = $('#sebioTFBS1').DataTable( {
+              "columns": [ 
+                    { "width": "200px" },
+                    {},
+                    { "className": "text-center"},
+                    {}, 
+                    { "className": "text-center"}, 
+                    { "className": "text-right"},
+                    { "className": "text-right"}, 
+              ],
+              "order": [[ 6, "desc" ]],
+              "deferRender": true,
+              responsive: true,
+              lengthChange: false,
+              "pageLength": 10,
+              buttons: [ 'copy', 'excel', 'csv' ]
+        });
+         tableTFBS1.buttons().container()
+                     .appendTo( '#sebioTFBS1_wrapper .col-sm-6:eq(0)' );
+       });
+      </script>
+
+    </div>
+    {% else %}
+    <p>No TFBS available for microRNA.</p>
+    {% endif %}
+  </div>
+</div>
