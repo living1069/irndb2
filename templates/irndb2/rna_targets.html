@@ -22,8 +22,8 @@ $(document).ready(function(){
             <th><img title="Target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Symbol</th>
             <th><img title="Target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Name</th>
             <th title="Immune-relevance inferred from">Species&nbsp;</th>
-            <th title="Immune-relevance source">Immune source</th>
-            <th title="Source of the interaction">Target Source</th>
+            <th title="Immune-relevance source">Source</th>
+            <th title="Source of the interaction">Target&nbsp;source&nbsp;</th>
             <th title="Link to PubMed"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;PMID</th>
           </tr>
         </thead>      
@@ -36,12 +36,12 @@ $(document).ready(function(){
         var table = $('#sebio1').DataTable( {
          "data":dataSetT,
          "columns": [
-           {"width":"120px"},
+           {"width":"130px"},
            null, 
-           {"width":"75px", "className": "text-center"},
+           {"width":"80px", "className": "text-center"},
            {"width":"120px", "bSortable": false},
-           {"width":"120px", "className": "text-center"},
-           {"width":"60px", "className": "text-center", "bSortable": false},
+           {"width":"140px", "className": "text-center"},
+           {"width":"70px", "className": "text-center", "bSortable": false},
           ],
           "order": [[ 0, "asc" ]],
           "deferRender": true,
