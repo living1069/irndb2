@@ -15,8 +15,8 @@
       <table id="sebioG1" class="table table-condensed" width="100%">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO-Process Term</th>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO Id</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO-Process&nbsp;term</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO&nbsp;Id</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Genes</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
@@ -30,7 +30,7 @@
         var tableG1 = $('#sebioG1').DataTable( {
               "data":dataSet1,
               "columns": [ 
-                    { "width": "450px" },
+                    { "width": "350px" },
                     { "width": "100px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
@@ -67,8 +67,8 @@
       <table id="sebioG2" class="table table-condensed" width="100%">
         <thead>
           <tr>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > GO-Function Term</th>
-            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO Id</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > GO-Function&nbsp;term</th>
+            <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO&nbsp;Id</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
             <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
@@ -82,7 +82,7 @@
         var tableG2 = $('#sebioG2').DataTable( {
               "data":dataSet2,
               "columns": [ 
-                    { "width": "450px" },
+                    { "width": "350px" },
                     { "width": "100px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
