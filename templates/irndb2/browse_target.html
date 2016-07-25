@@ -45,7 +45,16 @@
                     responsive: true,
                     lengthChange: false,
                     "pageLength": 15,
-                    buttons: [ 'copy', 'excel', 'csv' ]
+                    buttons: [ 'copy',
+                     {
+                      extend: 'excelHtml5',
+                      title: 'irndb_export'
+                     },
+                     { 
+                      extend: 'csvHtml5',
+                      title: 'irndb_export'
+                     }
+                    ]
                   });
                  table.buttons().container()
                       .appendTo( '.col-sm-6:eq(0)' );

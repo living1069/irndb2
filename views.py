@@ -338,19 +338,11 @@ def target_method(request, sym):
         aGf = []
         aTemp = []
         for t in aG:
-            ## Build HTML link
-            ##http://www.ncbi.nlm.nih.gov/pubmed/?term=8751592[uid]+OR+16204232[uid]+OR+23931754[uid]
             aPMID = [str(s).strip() for s in t[4].split(',')]
-            sLink = 0
-            if len(aPMID[0]) != 0:
-                sLink = 'http://www.ncbi.nlm.nih.gov/pubmed/?term=' + \
-                '[uid]+OR+'.join(aPMID) + \
-                '[uid]'
-                    
             if t[3]=='Process':
-                aGp.append((t[0], t[1], t[2], sLink))
+                aGp.append((t[0], t[1], t[2], aPMID))
             elif t[3]=='Function':
-                aGf.append((t[0], t[1], t[2], sLink))
+                aGf.append((t[0], t[1], t[2], aPMID))
 
         context['go_p'] = aGp
         context['go_f'] = aGf
@@ -1814,7 +1806,7 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                 targetlist.sort()
                 str_table = '<table><tbody>'
                 for t_entry in targetlist:
-                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
                     str_table += row_str
                 str_table += '</tbody></table>'
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
@@ -1875,7 +1867,7 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                 targetlist.sort()
                 str_table = '<table><tbody>'
                 for t_entry in targetlist:
-                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
                     str_table += row_str
                 str_table += '</tbody></table>'
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
@@ -1936,7 +1928,7 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
                 targetlist.sort()
                 str_table = '<table><tbody>'
                 for t_entry in targetlist:
-                    row_str = '<tr><td style="width:120px; vertical-align: top;">%s</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
                     str_table += row_str
                 str_table += '</tbody></table>'
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,

@@ -26,9 +26,7 @@
               <a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ list.2 }}" title="Open miRNA in mirBase">{{ list.2 }}</a>
             </td>
             <td>
-              {% for source in list.3 %}
-              {{ source }}, 
-              {% endfor %}
+              {{ list.3|join:", " }}
             </td>
             <td>
               {{ list.3|length }}
@@ -86,9 +84,7 @@
               <a class="m1" href="http://mirbase.org/cgi-bin/mature.pl?mature_acc={{ list.2 }}" title="Open miRNA in mirBase">{{ list.2 }}</a>
             </td>
             <td>
-              {% for source in list.3 %}
-              {{ source }},
-              {% endfor %}
+              {{ list.3|join:", " }}
             </td>
             <td>
               {{ list.3|length }}

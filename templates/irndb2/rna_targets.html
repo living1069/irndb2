@@ -21,10 +21,10 @@ $(document).ready(function(){
           <tr>
             <th><img title="Target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Symbol</th>
             <th><img title="Target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Name</th>
-            <th title="Immune-relevance inferred from"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / ></th>
+            <th title="Immune-relevance inferred from">Species&nbsp;</th>
             <th title="Immune-relevance source">Immune source</th>
             <th title="Source of the interaction">Target Source</th>
-            <th title="Link to PubMed"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / ></th>
+            <th title="Link to PubMed"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;PMID</th>
           </tr>
         </thead>      
       </table> 
@@ -38,10 +38,10 @@ $(document).ready(function(){
          "columns": [
            {"width":"120px"},
            null, 
-           {"width":"50px", "className": "text-center"},
+           {"width":"75px", "className": "text-center"},
            {"width":"120px", "bSortable": false},
            {"width":"120px", "className": "text-center"},
-           {"width":"20px", "className": "text-center", "bSortable": false},
+           {"width":"60px", "className": "text-center", "bSortable": false},
           ],
           "order": [[ 0, "asc" ]],
           "deferRender": true,

@@ -18,8 +18,8 @@
                 <th title="lncRNA symbol"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Symbol</th>
                 <th title="lncRNA name"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Name</th>
                 <th title="lncRNA alias"><img src="{% static 'irndb2/images/lncrna-small.png' %}" alt="" / > Alias</th>
-                <th title="# targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / ></th>
-                <th title="# targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / ></th>
+                <th title="# targets with immune relevance in mice.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > mmu&nbsp;</th>
+                <th title="# targets with immune relevance inferred from humans.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > hsa&nbsp;</th>
               </tr>
             </thead>
           </table> 
@@ -35,15 +35,24 @@
                         {"width":"110px"},
                         {"className": "text-left"},
                         {"width":"200px"}, 
-                        {"className": "text-right", "width":"55px"},
-                        {"className": "text-right", "width":"55px"}
+                        {"className": "text-right", "width":"75px"},
+                        {"className": "text-right", "width":"75px"}
                        ],
                     "order": [[ 0, "asc" ]],
                     "deferRender": true,
                     responsive: true, 
                     lengthChange: false,
                     "pageLength": 15,
-                    buttons: [ 'copy', 'excel', 'csv' ]
+                     buttons: [ 'copy',
+                     {
+                      extend: 'excelHtml5',
+                      title: 'irndb_export'
+                     },
+                     { 
+                      extend: 'csvHtml5',
+                      title: 'irndb_export'
+                     }
+                    ]
                });
                  table.buttons().container()
                      .appendTo( '.col-sm-6:eq(0)' );

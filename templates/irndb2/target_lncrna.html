@@ -14,7 +14,7 @@
             <th><img title="lncRNA" src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Name</th>
             <th><img title="lncRNA" src="{% static 'irndb2/images/lncrna-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Alias</th>
             <th><img title="target" src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Source</th>
-            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" title="Link to Pubmed" / ></th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" title="Link to Pubmed" / >&nbsp;PMID</th>
           </tr>
         </thead>
         <tbody class="dt-nowrap">
@@ -27,7 +27,7 @@
             <td>
               {% if l.5 == "" %}
               {% else %}
-              <a title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{ l.5 }}"><img src="{% static 'irn/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid" / ></a>
+              <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ l.5 }}">{{ l.5 }}</a>
               {% endif %}
             </td>
           </tr>
@@ -43,7 +43,7 @@
          null,
          {"width":"200px"},
          {"width":"130px", "className": "text-center"},
-         {"width": "20px", "bSortable": false, "className": "text-center"}],
+         {"width": "75px", "bSortable": false, "className": "text-center"}],
           "order": [[ 0, "asc" ]],
           "deferRender": true,
           responsive: true,
