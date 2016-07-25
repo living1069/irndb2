@@ -15,10 +15,10 @@
               <tr>
                 <th title="microRNA name"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > ID</th>
                 <th title="microRNA id"><img src="{% static 'irndb2/images/mirna-small.png' %}" alt="" / > mirBase</th>
-                <th title="# experimentally supported targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / > (exp)</th>
-                <th title="# predicted targets with immune relevance in mice."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/mouse.png' %}" alt="mouse" / > (pred)</th>
-                <th title="# experimentally supported targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / > (exp)</th>
-                <th title="# predicted targets with immune relevance inferred from humans."><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > <img src="{% static 'irndb2/images/man.png' %}" alt="human" / > (pred)</th>
+                <th title="# experimentally supported targets with immune relevance in mice.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;mmu&nbsp;(exp)</th>
+                <th title="# predicted targets with immune relevance in mice.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;mmu&nbsp;(pred)</th>
+                <th title="# experimentally supported targets with immune relevance inferred from humans.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;hsa&nbsp;(exp)</th>
+                <th title="# predicted targets with immune relevance inferred from humans.">#&nbsp;<img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;hsa&nbsp;(pred)</th>
                  </tr>
             </thead>
           </table> 
@@ -43,7 +43,16 @@
                     responsive: true,
                     lengthChange: false,
                     "pageLength": 20,
-                    buttons: [ 'copy', 'excel', 'csv' ]
+                    buttons: [ 'copy',
+                     {
+                      extend: 'excelHtml5',
+                      title: 'irndb_export'
+                     },
+                     { 
+                      extend: 'csvHtml5',
+                      title: 'irndb_export'
+                     }
+                    ]
                   });
                  table.buttons().container()
                      .appendTo( '.col-sm-6:eq(0)' );

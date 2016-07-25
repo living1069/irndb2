@@ -27,13 +27,22 @@
                     "order": [[ 0, "asc" ]],
                     "deferRender": true,
                     responsive: true, 
-                   lengthChange: false,
+                    lengthChange: false,
         {% if entity_type = 'pirna' %}
               "pageLength": 10,
         {% else %}
              "pageLength": 5,
         {% endif %}
-                    buttons: [ 'copy', 'excel', 'csv' ]
+                    buttons: [ 'copy',
+                     {
+                      extend: 'excelHtml5',
+                      title: 'irndb_export'
+                     },
+                     { 
+                      extend: 'csvHtml5',
+                      title: 'irndb_export'
+                     }
+                    ]
                });
                  tablePW{{ pwt }}.buttons().container()
                      .appendTo( ' #sebio{{ pwt }}_wrapper .col-sm-6:eq(0)' );

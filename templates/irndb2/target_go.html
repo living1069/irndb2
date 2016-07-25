@@ -12,7 +12,7 @@
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
-            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" / > Pubmed</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid:" / > PMID</th>
           </tr>
         </thead>
         
@@ -28,7 +28,7 @@
             <td>
               {% if tuple.3 == 0 %}
               {% else %}
-              <a title="Link to PubMed" href="{{ tuple.3 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="PMID" / ></a>
+              <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ tuple.3|join:',' }}">{{ tuple.3|join:', ' }}</a>
               {% endif %}
             </td>
           </tr>
@@ -69,7 +69,7 @@
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > Name</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > ID</th>
-            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / > Pubmed</th>
+            <th><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="" / > PMID</th>
           </tr>
         </thead>
         <tbody>
@@ -84,7 +84,7 @@
             <td>
               {% if tuple.3 == 0 %}
               {% else %}
-              <a title="Link to PubMed" href="{{ tuple.3 }}"><img src="{% static 'irndb2/images/pubmed-small.png' %}" style="vertical-align: middle;" alt="Pmid" / ></a>
+               <a class="g" title="Link to PubMed" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ tuple.3|join:',' }}">{{ tuple.3|join:', ' }}</a>
               {% endif %}
             </td>
           </tr>

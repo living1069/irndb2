@@ -18,12 +18,12 @@ $(document).ready(function(){
         <thead>
           <tr>
             <th>pri-miRNA</th>
-	    <th title="ChIP'd TF">TF</th>
-	    <th title="Open in genome browser">Browser</th>
-	    <th>Cell-type</th>
-	    <th>Source</th>
-	    <th title="-log(FDR)">FDR&nbsp;</th>
-	    <th title="Distance to pri-miRNA 5'end">d(m)&nbsp;</th>
+            <th title="ChIP'd TF">TF</th>
+            <th title="Open TFBS peak postion in UCSC genome browser">TFBS peak</th>
+            <th title="TFBS measured in this cell-type">Cell-type</th>
+            <th title="Source of experiment">Source</th>
+            <th title="-log(FDR)">FDR&nbsp;</th>
+            <th title="Distance to pri-miRNA 5'end">d(m)&nbsp;</th>
           </tr>
         </thead>
 	<tbody>
@@ -31,7 +31,7 @@ $(document).ready(function(){
 	  <tr>
 	    <td><a class="m1" title="Open at miRBase" href="http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc={{ list.0 }}">{{ list.1 }}</a></td>
 	    <td><a class="t1" title="Open at NCBI" href="https://www.ncbi.nlm.nih.gov/gene/{{ list.4 }}">{{ list.3 }}</a></td>
-	    <td><a title="Open at UCSC genome browser" class="t1" href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&position={{ list.5 }}">UCSC</a></td>
+	    <td><a title="Open TFBS peak position at UCSC genome browser" class="g" href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&position={{ list.5 }}">{{ list.5 }}</a></td>
 	    <td>{{ list.6 }}</td>	    
 	    <td>{{ list.7 }}</td>
 	    <td>{{ list.8|floatformat:2 }}</td>
@@ -47,7 +47,7 @@ $(document).ready(function(){
               "columns": [ 
                     { "width": "200px" },
                     {},
-                    { "className": "text-center"},
+                    {},
                     {}, 
                     { "className": "text-center"}, 
                     { "className": "text-right"},
