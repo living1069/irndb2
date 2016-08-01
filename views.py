@@ -1521,10 +1521,31 @@ def browse_method(request):
 
             data = []
             for k,v in dict_ct.items():
+
+                # Sub table
+                str_temp = '<table>'
+                i = 0
+                for mirna in v:
+                    if i == 0:
+                        str_temp += '<tr>'
+                    str_temp += '<td style="padding:0 10px 0 10px;">%s</td>' % (mirna_url_str % (_APP_LINK_PREFIX, mirna[0], mirna[0], mirna[1]))
+                    i+=1
+                    if i == 3:
+                        i = 0
+                        str_temp += '</tr>'
+
+                if len(v) % 3 == 0:
+                    str_temp += '</table>'
+                else:
+                    str_temp += '</tr></table>'
+                mirna_str = str_temp
                 
-                mirna_str = ', '.join([mirna_url_str % (_APP_LINK_PREFIX, mirna[0], mirna[0], mirna[1]) for mirna in v])
+                # no table just concat with comma
+                #mirna_str = ', '.join([mirna_url_str % (_APP_LINK_PREFIX, mirna[0], mirna[0], mirna[1]) for mirna in v])
                 data.append([str(k), str(mirna_str), '%i' % (len(v))])
+
             
+                
             context["data"] = data
             return render(request, "irndb2/browse_celltype.html", context)
 
@@ -1804,11 +1825,14 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
         for kegg, targetlist in dPW.items():
             if dnl != '1':
                 targetlist.sort()
-                str_table = '<table><tbody>'
-                for t_entry in targetlist:
-                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                str_table = '<table width="100%"><tbody>'
+                row_str = '<tr><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[0][0], targetlist[0][1])
+                str_table += row_str
+                for i in range(1,len(targetlist)):
+                    row_str = '<tr style="border-top:1pt solid #f2f2f3;"><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[i][0], targetlist[i][1])
                     str_table += row_str
                 str_table += '</tbody></table>'
+                
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
                                                         pathwaytype,
                                                         str(kegg.keggid),
@@ -1865,9 +1889,11 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
         for wp, targetlist in dPW.items():
             if dnl != '1':
                 targetlist.sort()
-                str_table = '<table><tbody>'
-                for t_entry in targetlist:
-                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                str_table = '<table width="100%"><tbody>'
+                row_str = '<tr><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[0][0], targetlist[0][1])
+                str_table += row_str
+                for i in range(1,len(targetlist)):
+                    row_str = '<tr style="border-top:1pt solid #f2f2f3;"><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[i][0], targetlist[i][1])
                     str_table += row_str
                 str_table += '</tbody></table>'
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
@@ -1926,9 +1952,11 @@ def get_pathways(entitytype, pathwaytype, dnl='0'):
         for wp, targetlist in dPW.items():
             if dnl != '1':
                 targetlist.sort()
-                str_table = '<table><tbody>'
-                for t_entry in targetlist:
-                    row_str = '<tr><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td style="width:120px; vertical-align: top;">%s</td><td style="width:30px; vertical-align: top; horizontal-align: middle;">|</td><td>%s</td></tr>' % (t_entry[0], t_entry[1])
+                str_table = '<table width="100%"><tbody>'
+                row_str = '<tr><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[0][0], targetlist[0][1])
+                str_table += row_str
+                for i in range(1,len(targetlist)):
+                    row_str = '<tr style="border-top:1pt solid #f2f2f3;"><td style="width:120px; vertical-align: top; padding-bottom: 10px;">%s</td><td style="padding-bottom: 10px;">%s</td></tr>' % (targetlist[i][0], targetlist[i][1])
                     str_table += row_str
                 str_table += '</tbody></table>'
                 res_list.append([str(pwlink_template % (_APP_LINK_PREFIX,
