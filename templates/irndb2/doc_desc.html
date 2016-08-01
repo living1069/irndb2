@@ -1,90 +1,104 @@
-
 {% load staticfiles %}
 
+{% url 'irndb2:browse_url_name' as browse_url %}
+
+
 <div class="text-justify">
-<p>
-<h2>Contents</h2>
-<a class="g" href="#target">The target view</a><br />
-<a class="g" href="#mirna">The microRNA view</a><br />
-<a class="g" href="#pathway">The pathway view</a><br />
-
-</p>
-
-<a name="target"></a>
-<h3>The target view</h3>
-<p>
-This is the view for one particular target gene. In this example we are looking at target gene <a class="t1" href="{{ target_url }}Pdpk1">Pdpk1</a>. The first tab shows all miRNAs that are either confirmed or predicted to be targeting <a class="t1" href="{{ target_url }}Pdpk1">Pdpk1</a>. We also are able to see the sources.
-</p>
-<p>
-<img src="{% static 'irn/desc/target1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<p>
-The next two tabs are similar to the miRNA views tabs but for piRNAs and lncRNAs that interact with the target gene. The next two tabs show pathway and GO-terms that are associated with the target gene. In the pathway view, one can find links to IRNdb individual pathway view pages that show all targets of ncRNAs in the pathway (see below "The pathway view").
-</p>
-<p>
-The <b>Experiment-tab</b> shows immunologically themed experiments in which the target gene is either down- or up-regulated. We also find a link to <a class="g" href="https://www.broadinstitute.org/gsea/msigdb/">MSigDB</a> where the information was extracted from and a link to the original publication and dataset if available.
-</p>
-<p>
-<img src="{% static 'irn/desc/target2.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<p>
-The final <b>M.tb-tab</b> shows the expression and fold-changes (of available) of the gene in the M.tb dataset for different stimulations <a href="http://www.ncbi.nlm.nih.gov/pubmed/25678556" alt="Pubmed">PMID:25678556 <img src="{% static 'irn/pubmed-small.png' %}" title="Transcribed enhancers lead waves of coordinated transcription in transitioning mammalian cells. Science. 2015 Feb 27;347(6225):1010-4." /></a>.
-</p>
-<p>
-<img src="{% static 'irn/desc/target3.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<a name="mirna"></a>
-<h3>The microRNA view</h3>
-
-<p>
-Here, we have look at the miRNA view of an individual miRNA found either through the <a class="g" href="{{ browse_url }}?type=mirna">browse/search</a> function or through a target view of the site. In this example, we look at the miRNA <a class="m1" href="{{ mirna_url }}mmu-miR-223-3p">mmu-miR-223-3p</a>. The first image shows the "Targets"-tab of the miRNA view. Here one can investigate the experimentally supported and predicted targets of the miRNA, considering only mouse or mouse+human immune genes.
-</p>
-<p>
-<img src="{% static 'irn/desc/mirna1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<p>
-The next tab is the <b>"Pathways"-tab</b> of the miRNA view. Here one can investigate the pathways that the targets of the miRNA are part of.<br><br>
-<img src="{% static 'irn/desc/mirna2.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-<p>
-On the <b>"GO"-tab</b> of the miRNA view one can investigate the Gene Ontology terms that the targets of the miRNA are associated with.
-</p>
-<p>
-<img src="{% static 'irn/desc/mirna3.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<p>
-The <b>TFBS-tab</b> shows transcription factor binding sites based on ChIP experiments that we collected. The process to derive these is a bit more involved. First, we used <a class="g" href="http://promirna.molgen.mpg.de/">PROmiRNA</a> [<a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/23958307">1</a>] to identify promoter regions of pri-miRNAs (based on <a href="http://www.mirbase.org/" class="g">miRBase</a>) using data from [<a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/25678556" alt="Pubmed">2</a>,<a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/26117544" alt="Pubmed">3</a>]. Next, we mapped 1000nt upstream of the CAGE promoter start ChIP data from several sources (see "Resources"). A mature miRNA can have more then one pri-miRNA with several locations in the genome. Furthermore, each pri-miRNA can have several associated CAGE promoters. We show for each pri-miRNA an individual table.
-</p>
-<p>
-<img src="{% static 'irn/desc/mirna4.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<p>
-Finally, on the <b>M.tb-tab</b> of the miRNA view, we show for <i>targets</i> the fold-change values of a particular experiment [<a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/25678556" alt="Pubmed">2</a>,<a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/26117544" alt="Pubmed">3</a>]. Here, the log2(fold-change) values of the experiment are visualised. We only show the lowest log2(fold-change) value per stimulation post TB infection over all time-points measured. The idea is that miRNAs down-regulate their target expression, thus one might be interested in down-regulated targets. Expression for pri-miRNAs of the mature miRNA is shown as the summation of all its associated promoters based on the strategy explained above. Should pri-miRNAs be missing for a mature miRNA, then we were unable to associate promoters to the pri-miRNAs.
-</p>
-<p>
-<img src="{% static 'irn/desc/mirna5.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>    
-
-<a name="pathway"></a>
-<h3>The pathway view</h3>
-<p>
-Here, we have look at the pathway view. In this example, we look at the KEGG pathway <a class="m1" href="{{ pw_url }}mmu05164">Influenza A</a>. We find some general inforamtion about the pathway and the numbers of miRNAs, piRNAs, and lncRNA that target genes in the pathway. In addition, one can find association-maps of target genes to RNAs. Finally, we show the pathway map itself.
-</p>
-<p>
-<img src="{% static 'irn/desc/pathway1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
-</p>
-
-<h2>References</h2>
-<ol>
-  <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/23958307">PROmiRNA: a new miRNA promoter recognition method uncovers the complex regulation of intronic miRNAs. Genome Biol. 2013 Aug 16;14(8):R84.</a></li>
-  <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/25678556" alt="Pubmed">Transcribed enhancers lead waves of coordinated transcription in transitioning mammalian cells. Science. 2015 Feb 27;347(6225):1010-4.</a></li>
-  <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/26117544">Redefining the transcriptional regulatory dynamics of classically and alternatively activated macrophages by deepCAGE transcriptomics. Nucleic Acids Res. 2015 Aug 18;43(14):6969-82.</a></li>
-</ol> 
-
+  <p>
+    <h2>Contents</h2>
+    <a class="g" href="#mirna">The microRNA view</a><br />
+    <a class="g" href="#target">The target view</a><br />
+    <a class="g" href="#pathway">The pathway view</a><br />
+    <a class="g" href="#ref">References</a><br />
+  </p>
+  
+  
+  <a name="mirna"></a>
+  <h3>The microRNA view</h3>
+  
+  <p>
+    Here, we have look at the miRNA view of an individual miRNA found e.g. through the <a class="g" href="{{ browse_url }}?type=rna&etype=mirna">browse/search</a> function or through a target view of the site. In this example, we look at the miRNA <a class="m1" href="{% url 'irndb2:mirna_url_name'  'mmu-miR-125b-5p' %}">mmu-miR-125b-5p</a>. The first image below shows the "Targets"-tab of the miRNA view. Here one can investigate the experimentally supported and predicted targets of the miRNA. The table can be searched using the search field (1). One can use all targets of the table to run a gene set enrichment analysis via Enrichr [<a class="g" href="#ref">Kuleshov et al.</a>] by clicking on the button in the right hand corner of the table (2). One can also download the content of the table (3).
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/mirna1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  ]<p>
+    The next tab is the <b>"Pathways"-tab</b> of the miRNA view. Here one can investigate the pathways that the targets of the miRNA are part of. Currently, IRNdb holds data for KEGG, Wikipathway and Reactome.<br><br>
+    <img src="{% static 'irndb2/images/doc/mirna2.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  <p>
+    On the <b>"GO"-tab</b> of the miRNA view one can investigate the Gene Ontology terms that the targets of the miRNA are associated with.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/mirna3.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <p>
+    The <b>"TFBS"-tab</b> shows transcription factor binding sites based on ChIP experiments that we collected. We extracted pri-miRNAs (based on <a href="http://www.mirbase.org/" class="g">miRBase</a>) for the mature miRNAs. Next, we mapped within 2500nt upstream of the 5'end of the pir-miRNA ChIP-seq data from several sources (see "Resources") based on the GRCm38 genome build. A mature miRNA can have more than one pri-miRNA, thus the table may contain more than one pri-miRNA for one mature miRNA under investigation. The table list the pri-miRNAs as well as the TFs that could be mapped in their vicinity. We also show the cell-type in which the ChIP-seq experiment was performed, the FDR with which the ChIP-seq region could be mapped as well as the distance of the ChIP-seq region to the 5'end of the pri-miRNA.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/mirna4.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <p>
+    Finally, the <b>"Cell-types"-tab</b> shows the expression of the miRNA in different cell-types based on a miRNA expression atlas [<a class="g" href="#ref">Landgraf et al.</a>]. The percentage shows the miRNA contribution in expression on the total expression of all miRNAs expressed in the cell-type.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/mirna5.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>    
+  
+  
+  <a name="target"></a>
+  <h3>The target view</h3>
+  <p>
+    This is the view for one particular target gene. In this example we are looking at target gene <a class="t1" href="{% url 'irndb2:target_url_name' 'Bak1' %}">Bak1</a>. There is some general information about the gene (1) as well as a quick overview of associated ncRNAs (2). The first tab shows all miRNAs that are either confirmed or predicted to be targeting <a class="t1" href="{% url 'irndb2:target_url_name' 'Bak1' %}">Bak1</a>. We also are able to see the sources.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/target1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <p>
+    The next two tabs are similar to the miRNA views tabs but for piRNAs and lncRNAs that interact with the target gene. The next two tabs show pathway and GO-terms that are associated with the target gene. In the pathway view, one can find links to IRNdb individual pathway view pages that show all targets of ncRNAs in the pathway (see below "The pathway view").
+  </p>
+  
+  <p>
+    <img src="{% static 'irndb2/images/doc/target2.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <p>
+    The "GO"-tab shows all GO-terms that are associated to the target gene.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/target3.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  <p>
+    The <b>"Experiments"-tab</b> shows immunologically themed experiments in which the target gene is either down- or up-regulated. We also find a link to <a class="g" href="https://www.broadinstitute.org/gsea/msigdb/">MSigDB</a> [<a class="g" href="#ref">Liberzon A et al.</a>] where the information was extracted from and a link to the original publication and dataset if available.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/target4.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <a name="pathway"></a>
+  <h3>The pathway view</h3>
+  <p>
+    Here, we have look at the pathway view. In this example, we look at the REACTOME pathway <a class="m1" href="{% url 'irndb2:reactome_url_name' 'R-MMU-909733' %}">Interferon alpha/beta signaling</a>. We find some general information about the pathway (1) and the numbers of miRNAs, lncRNAs, and piRNA that target genes in the pathway (2). We present tables that show the elements associated to the pathway from the view of different biological entities, e.g. the 'Targets'-tab table shows for each ncRNA-targeted gene in the pathway the gene and its interacting ncRNAs.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/pw1.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  <p>
+    Finally, we show in the ncRNA-tabs the same information from the view-point of the ncRNA type in question, e.g. the next image shows the 'miRNAs'-tab.
+  </p>
+  <p>
+    <img src="{% static 'irndb2/images/doc/pw2.png' %}" style="vertical-align: middle; border:1px solid #021a40;" alt="" / >
+  </p>
+  
+  <a name="ref"></a>
+  <h2>References</h2>
+  <ul>
+    <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/27141961">Kuleshov MV et al. Enrichr: a comprehensive gene set enrichment analysis web server 2016 update. Nucleic Acids Res. 2016 Jul 8;44(W1):W90-7. doi: 10.1093/nar/gkw377.</a></li>
+    <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/17604727" alt="Pubmed">Landgraf P et al. A mammalian microRNA expression atlas based on small RNA library sequencing. Cell. 2007 Jun 29;129(7):1401-14.</a></li>
+    <li><a class="g" href="http://www.ncbi.nlm.nih.gov/pubmed/21546393" alt="Pubmed">Liberzon A et al. Molecular signatures database (MSigDB) 3.0. Bioinformatics, 27, 1739–40. </a></li>
+  </ul> 
 </div>
