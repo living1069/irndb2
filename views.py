@@ -227,6 +227,28 @@ def target_method(request, sym):
     if url_type not in ["mirna","experiment","pirna","go","lncrna","pathway"]:
         context['m_exp'] = []
         context['m_pred'] = []
+
+        immu_sources = target_obj.immusources.split(',')
+        immu_sources.sort()
+
+        # septicshock, MAPK and IRIS do not have seperate resources to link to.
+        innatedb_url_template = 'http://innatedb.com/moleculeSearch.do?taxonId=all&field1=name&keyword1=%s'
+        immport_url = 'http://immport.org/immport-open/public/reference/genelists'
+        immunome_url = 'http://structure.bmc.lu.se/idbase/Immunome/index.php'
+        dISources = {'IRIS': innatedb_url_template % target_obj.symbol,
+                    'ImmPort': immport_url,
+                    'InnateDB': innatedb_url_template % target_obj.symbol ,
+                    'MAPK/NFKB': innatedb_url_template % target_obj.symbol,
+                    'SepticShock': innatedb_url_template % target_obj.symbol,
+                    'Immunome': immunome_url}
+
+        immu_source_template  = '<a class="g" href="%s" title="Link to source database">%s</a>'
+        immu_sources_links = []
+        for isource in immu_sources:
+            immu_sources_links.append(immu_source_template % (dISources[isource], isource))
+        immu_sources_links = ', '.join(immu_sources_links)
+        
+        context["t"].immusourcelinks = immu_sources_links
         return render_to_response("irndb2/target_base.html", context)
 
     elif url_type == "pirna":
