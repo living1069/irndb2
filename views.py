@@ -108,7 +108,7 @@ def pw_method(request, id):
             target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, s, s) for s in target_list])
 
             lncrna_str = lncrna_url_str % (_APP_LINK_PREFIX, str(lncrna), str(lncrna))
-            results_list.append([lncrna_str, target_str])
+            results_list.append([lncrna_str, target_str, str(len(target_list))])
   
         context['data'] = results_list
         return render_to_response("irndb2/pathway_lncrna.html", context)
@@ -133,7 +133,7 @@ def pw_method(request, id):
             target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, s, s) for s in target_list])
 
             pirna_str = pirna_url_str % (_APP_LINK_PREFIX, str(pirna), str(pirna))
-            results_list.append([pirna_str, target_str])
+            results_list.append([pirna_str, target_str, str(len(target_list))])
 
         context['data'] = results_list
         return render_to_response("irndb2/pathway_pirna.html", context)
@@ -160,7 +160,7 @@ def pw_method(request, id):
             target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, str(s), str(s)) for s in target_list])
 
             mirna_str = mirna_url_str % (_APP_LINK_PREFIX, str(mirna), str(mirna))
-            results_list1.append([mirna_str, target_str])
+            results_list1.append([mirna_str, target_str, str(len(target_list))])
             
         context['data1'] = results_list1
         
@@ -178,7 +178,7 @@ def pw_method(request, id):
             target_str = ', '.join([target_url_str % (_APP_LINK_PREFIX, str(s), str(s)) for s in target_list])
 
             mirna_str = mirna_url_str % (_APP_LINK_PREFIX, str(mirna), str(mirna))
-            results_list2.append([mirna_str, target_str])
+            results_list2.append([mirna_str, target_str, str(len(target_list))])
             
         context['data2'] = results_list2
         return render_to_response("irndb2/pathway_mirna.html", context)
