@@ -17,8 +17,8 @@
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO-Process&nbsp;term</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO&nbsp;Id</th>
-            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Genes</th>
-            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+            <th title="Targets of ncRNA associated to GO-term"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;Genes</th>
+            <th title="Number of targets"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
       </table> 
@@ -31,7 +31,7 @@
               "data":dataSet1,
               "columns": [ 
                     { "width": "350px" },
-                    { "width": "100px" },
+                    { "width": "140px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
               "order": [[ 3, "desc" ]],
@@ -69,8 +69,8 @@
           <tr>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / > GO-Function&nbsp;term</th>
             <th><img src="{% static 'irndb2/images/go-logo-small.png' %}" style="vertical-align: middle;" alt="" / >&nbsp;GO&nbsp;Id</th>
-            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
-            <th><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
+            <th title="Targets of ncRNA associated to GO-term"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / > Genes</th>
+            <th title="Number of targets"><img src="{% static 'irndb2/images/target-small.png' %}" style="vertical-align: middle;" alt="" / >#&nbsp;</th>
           </tr>
         </thead>
        </table> 
@@ -83,7 +83,7 @@
               "data":dataSet2,
               "columns": [ 
                     { "width": "350px" },
-                    { "width": "100px" },
+                    { "width": "140px" },
                     { "bSortable": false },
                     { "width": "75px", "className": "text-right"} ],
               "order": [[ 3, "desc" ]],
