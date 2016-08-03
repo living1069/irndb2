@@ -1280,7 +1280,8 @@ def search_method(request):
     if request.method == 'GET':
         content = request.GET.get('content', '0')
         query = request.GET.get('q', None)
-
+        query = query.strip()
+        
         if content == '0' and query:
             context["search_term"] = '+'.join([s.strip() for s in query.split(' ')])  # make urlsafe
             return render(request, "irndb2/search_base.html", context)
