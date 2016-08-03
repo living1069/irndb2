@@ -9,7 +9,8 @@
         <thead>
           <tr>
             <th title="piRNAs targeting genes in pathway"><img src="{% static 'irndb2/images/pirna-small.png' %}" style="vertical-align: middle;" alt="" / > piRNAs</th>
-            <th title="Targets in pathway"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / > Symbols</th>
+	    <th title="Targets in pathway"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;Symbols</th>                                                                                                 
+            <th title="Number of targets"><img src="{% static 'irndb2/images/target-small.png' %}" alt="" / >&nbsp;#&nbsp;&nbsp;</th>
           </tr>
         </thead>
       </table> 
@@ -23,7 +24,8 @@
                       "data": dataSet,
                       "columns": [
                         {"width":"220px"},
-                        {"bSortable": false}
+                        {"bSortable": false},
+                 	{"width":"75px", "className": "text-right"}
                        ],
                     "order": [[ 0, "asc" ]],
                     "deferRender": true,
