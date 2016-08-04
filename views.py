@@ -391,7 +391,7 @@ def target_method(request, sym):
         return render(request, 'irndb2/target_experiments.html', context)
 
 
-def mirna_method(request, name, flush=True):
+def mirna_method(request, name, flush=False):
     context = {}
     context["entity_type"] = "mirna"
     
@@ -640,18 +640,24 @@ def mirna_method(request, name, flush=True):
         return render(request, 'irndb2/rna_pathways.html', context)
 
     elif url_type == "r":
-        # fetch primary for mirna
-        primaries = list(MPRIMARY2MATURE.objects.filter(mature_id=mirna_obj.mirbase_id).values_list('primary','name','chr_str').distinct())
-        # Fetch TFBS for primaries
-        list_res = []
-        for t in primaries:
-            list_tfbs = list(MPRIMARY2TFBS.objects.filter(primary=t[0]).values_list('tfbs_symbol', 'tfbs_id', 'chr_str', 'celltype', 'experiment_source','fdr', 'distance_primary').distinct())
-            for t2 in list_tfbs:
-                temp = [str(s) for s in list(t) + list(t2)]
-                list_res.append(temp)
-
+        if 'tfbs' in request.session['mirnas'][mid]:
+            list_res  = request.session['mirnas'][mid]['tfbs']
+        else:
+            # fetch primary for mirna
+            primaries = list(MPRIMARY2MATURE.objects.filter(mature_id=mirna_obj.mirbase_id).values_list('primary','name','chr_str').distinct())
+            # Fetch TFBS for primaries
+            list_res = []
+            for t in primaries:
+                list_tfbs = list(MPRIMARY2TFBS.objects.filter(primary=t[0]).values_list('tfbs_symbol', 'tfbs_id', 'chr_str', 'celltype', 'experiment_source','fdr', 'distance_primary').distinct())
+                for t2 in list_tfbs:
+                    temp = [str(s) for s in list(t) + list(t2)]
+                    list_res.append(temp)
+            
+            # push to cache
+            request.session['mirnas'][mid]['tfbs'] = list_res
+            request.session.modified = True
+            
         context['tfbs_list'] = list_res
-
         return render(request, 'irndb2/mirna_tfbs.html', context)
 
     elif url_type == "t": # target view
@@ -714,7 +720,7 @@ def mirna_method(request, name, flush=True):
         return render(request, 'irndb2/mirna_targets.html', context)
 
 
-def lncrna_method(request, sym, flush=True): # need to change to False for prod.
+def lncrna_method(request, sym, flush=False): # need to change to False for prod.
     """"""
     context = {}
     context["entity_type"] = "lncrna"
@@ -993,7 +999,7 @@ def lncrna_method(request, sym, flush=True): # need to change to False for prod.
         return render(request, 'irndb2/rna_pathways.html', context)
 
 
-def pirna_method(request, name, flush=True): # need to change to False for prod.
+def pirna_method(request, name, flush=False): # need to change to False for prod.
     """"""
     context = {}
     context['entity_type'] = 'pirna'
