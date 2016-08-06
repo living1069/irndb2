@@ -1360,7 +1360,7 @@ def search_method(request):
             context["search_cat"] = cat_num
             
         else:
-            context["search_term"] = "No term entered."
+            context["search_term"] = ""
             context["search_results"] = 0
             
         return render(request, 'irndb2/search.html', context)
