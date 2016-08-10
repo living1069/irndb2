@@ -1476,18 +1476,46 @@ def doc_method(request):
     
 def browse_method(request):
     # get url params
+    # can be: rn, celltype, pathways, gene
     type = request.GET.get('type', '0')
+    # can be: "mirna", "lncrna", "pirna", "target", "0"
     entitytype = request.GET.get('etype', '0')
+    # can be:
     pathwaytype = request.GET.get('pwt', 'x')
+    # can be: 0, 1
     dnl = request.GET.get('dnl', '0')
     filename = request.GET.get('f','data.csv')
-
+    content = request.GET.get('content', '0')
+    
     context = {}
     context["type"] = type
     context["entity_type"] = entitytype
     context["pwt"] = pathwaytype
 
-    content = request.GET.get('content', '0')
+    # catch some URL errors early ------
+    if entitytype not in ["mirna", "lncrna", "pirna", "target", "0"]:
+        context["error"] = 'Wrong URL: etype needs to be one of: mirna, lncrna, pirna, target.'
+        return render(request, "irndb2/404.html", context)
+
+    if type == "celltype":
+        if entitytype != 'mirna':
+            context["error"] = 'Wrong URL: Cell-types currently only available for miRNAs.'
+            return render(request, "irndb2/404.html", context)
+
+    elif type == "rna":
+        if entitytype not in ["mirna" , "pirna", "lncrna"]:
+            context["error"] = 'Wrong URL. etype needs to be one of: mirna, lncrna, pirna for type=rna'
+            return render(request, "irndb2/404.html", context)
+    elif type == "gene":
+        if entitytype != 'target':
+            context["error"] = 'Wrong URL. etype needs to be "target" for type=gene.'
+            return render(request, "irndb2/404.html", context)
+    elif type == "pathway":
+        if entitytype not in ["mirna" , "pirna", "lncrna"]:
+            context["error"] = 'Wrong URL. etype needs to be one of: mirna, lncrna, pirna for type=pathway'
+            return render(request, "irndb2/404.html", context)
+    #-----------------------------------
+
     if content == '0' and type in ['gene', 'rna', 'celltype']:
         if entitytype == 'target':
             context['title'] = 'Targets'
@@ -1658,7 +1686,8 @@ def browse_method(request):
             return render(request, "irndb2/browse_pirna.html", context)
 
     else:
-        return render(request, "irndb2/home.html", context)
+        context["error"] = 'Wrong URL.'
+        return render(request, "irndb2/404.html", context)
 
     
 def tables_method(request):
