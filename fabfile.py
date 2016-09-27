@@ -48,3 +48,39 @@ def deploy():
     # reminder new static files
     puts(yellow('Do not forget to run collect staticfiles on DJANGO server.'))
 
+
+def github(branch, version=None):
+    """Execute local git cheackout master, merge branch into master and push to github.
+
+    Keyword arguments:
+    branch -- the branch that should be merged into master.
+    version -- new version/tag number requested this will create a repo tag.
+
+    Usage:
+    fab github:branch='new_feature',version='v1.2.5'
+    """
+
+    # co master and merge
+    puts(yellow("[Checkout master]"))
+    local("git checkout master")
+
+    puts(yellow("[Merge branch '%s' into master]"%branch))
+    local("git merge %s --no-ff" %branch)
+
+    with settings(warn_only=True):
+        if version:
+            puts(yellow("[Bump version: %s]"%version))
+            # bump version number: project specific
+            local("sed -i -- 's/v.\..\../%s/g' templates/%s/base.html" %(version, REPO_NAME))
+            # add config.json and commit
+            local("git add config.json")
+            local('git commit -m "Bumped to %s"' %version)
+
+            # add tag
+            puts(yellow("[Tag new version: %s]"%version))
+            local('git tag -a %s'%version)
+
+    # deploy
+    puts(yellow("[Deploy to origin]"))
+    local("git push origin master")
+    puts(red("[Do not fprgot to deploy to production]"))
