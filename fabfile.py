@@ -83,3 +83,4 @@ def github(branch, version=None):
     # deploy
     puts(yellow("[Deploy to origin]"))
     local("git push origin master")
+    puts(red("[Do not fprgot to deploy to production]"))
