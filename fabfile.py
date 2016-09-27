@@ -70,10 +70,11 @@ def github(branch, version=None):
     with settings(warn_only=True):
         if version:
             puts(yellow("[Bump version: %s]"%version))
+
             # bump version number: project specific
             local("sed -i -- 's/v.\..\../%s/g' templates/%s/base.html" %(version, REPO_NAME))
-            # add config.json and commit
-            local("git add config.json")
+            local("git add templates/%s/base.html"%REPO_NAME)
+
             local('git commit -m "Bumped to %s"' %version)
 
             # add tag
