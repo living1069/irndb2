@@ -1625,7 +1625,7 @@ def browse_method(request):
 
     elif entitytype == 'lncrna':
         context["rna_title"] = "lncRNA"
-        if dnl == '1' and pathway != '1':  # download instead of display
+        if dnl == '1' and type != 'pathway':  # download instead of display
             query_set = Lncrna.objects.all().distinct()
             data = create_data_lncrna(query_set, 0)
             response = create_dnl_response(filename, data, ['symbol', 'name', 'alias',  'NumMouseInferredImmuneTargets', 'NumHumanInferredImmuneTargets'])
@@ -1832,7 +1832,7 @@ def create_dnl_response(filename, data, header):
 def get_pathways(entitytype, pathwaytype, dnl='0'):
     rnalink_template = '<a class="m1" href="%s/%s/%s"><span style="white-space: nowrap;">%s</span></a>' # _APP_LINK_PREFIX, rnatype, rnasymbol/name, symbol/name
     pwlink_template = '<a title="Open in IRNdb" class="g" href="%s/%s/%s">%s</a>' # _APP_LINK_PREFIX, pathwaytype, pwid, pwname
-    targetlink_template = '<a title="Open in IRNdb" class="t1" href="%s/target/%s"><span style="white-space: nowrap;">%s</span></a>' # _APP_LINK_PREFIX, symbol, symbol 
+    targetlink_template = '<a title="Open in IRNdb" class="t1" href="%s/target/%s"><span style="white-space: nowrap;"> %s </span></a>' # _APP_LINK_PREFIX, symbol, symbol 
   
     dPW = {}
     res_list = []
