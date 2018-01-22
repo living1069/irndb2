@@ -7,7 +7,7 @@ from .models import Target, T2G, T2K, T2W, T2R, T2C7, Go, Reactome, Kegg, Wikipa
 
 # GLOBAL VARIABLE: change according to the url.py of the main project
 # e.g. url(r'^apps/irndb/', include('irndb2.urls', namespace="irndb2")),
-_APP_LINK_PREFIX = '/apps/irndb'
+_APP_LINK_PREFIX = '/irndb'
 
 #----------------------------------------------------------------
 # VIEW methods
