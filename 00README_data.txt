@@ -37,7 +37,7 @@
 
 
     #-- store the data nicely
-    gzip data/*.json
+    zip data/data.json.zip data/*.json
 
     #-- To collect all static content in on place for the testing and profction server do:
     python ../manage.py collectstatic
