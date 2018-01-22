@@ -3,31 +3,31 @@
     python ../manage.py migrate    
 
     #-- fill database with data
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/target.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/kegg.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/t2k.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/wikipath.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/t2w.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/reactome.json		
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/t2r.json	
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/go.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/t2g.json 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/msigdb_c7.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/t2c7.json
+    time python ../manage.py loaddata data/target.json
+    time python ../manage.py loaddata data/kegg.json 
+    time python ../manage.py loaddata data/t2k.json 
+    time python ../manage.py loaddata data/wikipath.json 
+    time python ../manage.py loaddata data/t2w.json 
+    time python ../manage.py loaddata data/reactome.json		
+    time python ../manage.py loaddata data/t2r.json	
+    time python ../manage.py loaddata data/go.json 
+    time python ../manage.py loaddata data/t2g.json 
+    time python ../manage.py loaddata data/msigdb_c7.json
+    time python ../manage.py loaddata data/t2c7.json
 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/mirna.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2t_exp.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2t_pred.json
+    time python ../manage.py loaddata data/mirna.json
+    time python ../manage.py loaddata data/m2t_exp.json
+    time python ../manage.py loaddata data/m2t_pred.json
 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/lncrna.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/l2t.json    
+    time python ../manage.py loaddata data/lncrna.json
+    time python ../manage.py loaddata data/l2t.json    
 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/pirna.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/p2t.json
+    time python ../manage.py loaddata data/pirna.json
+    time python ../manage.py loaddata data/p2t.json
 
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/m2expr.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/primary2mature.json
-    time python ../manage.py loaddata ../../temp/DJANGODATA4/irndb2/primary2tfbs.json   
+    time python ../manage.py loaddata data/m2expr.json
+    time python ../manage.py loaddata data/primary2mature.json
+    time python ../manage.py loaddata data/primary2tfbs.json   
 
 
     
@@ -37,7 +37,7 @@
 
 
     #-- store the data nicely
-    gzip ../../temp/DJANGODATA4/irndb2/*.json
+    gzip data/*.json
 
     #-- To collect all static content in on place for the testing and profction server do:
     python ../manage.py collectstatic
